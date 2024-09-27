@@ -43,6 +43,7 @@ stages:
       stageDisplayname: v15
       jobName: w19d15id
       jobDisplayname: w19d-15-id
+      jobcondition: or(eq(variables['Build-V15'], 'True'), eq(variables['Build-all'], 'True'))
 
   - template: Cloud Account Id Image Release 3.0 - template.yml
     parameters:
@@ -50,3 +51,4 @@ stages:
       stageDisplayname: v15
       jobName: w19d15id
       jobDisplayname: w19d-15-id
+      jobcondition: or(eq(variables['Build-V15'], 'True'), eq(variables['Build-all'], 'True'))
