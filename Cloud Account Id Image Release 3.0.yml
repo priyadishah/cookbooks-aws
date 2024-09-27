@@ -9,7 +9,7 @@ resources:
       name: lansa/azure-quickstart-templates
       type: github
       ref: support/scalable
-      endpoint: nkhlLANSA
+      endpoint: priyadishah
     - repository: _CelestialSystemAzureQuickstartTemplates
       name: CelestialSystem/azure-quickstart-templates
       type: github
