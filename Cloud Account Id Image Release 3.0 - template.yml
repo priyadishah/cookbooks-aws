@@ -88,7 +88,7 @@ stages:
         displayName: 'Deploy ARM Template '
         inputs:
           azureResourceManagerConnection: 'Azure Baking Images'
-          subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
+          subscriptionId: $(SubscriptionId)
           resourceGroupName: '$(Gate.StackName)'
           location: 'Australia East'
           csmFile: '$(System.DefaultWorkingDirectory)/_lansa_azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json'
@@ -126,7 +126,7 @@ stages:
         displayName: 'Delete Resource Group'
         inputs:
           azureResourceManagerConnection: 
-          subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
+          subscriptionId: $(SubscriptionId)
           action: DeleteRG
           resourceGroupName: '$(Gate.StackName)'
         continueOnError: true

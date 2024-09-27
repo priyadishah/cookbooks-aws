@@ -21,6 +21,21 @@ resources:
       ref: debug/paas
       endpoint: nkhlLANSA
 
+variables:
+  - group: Template Parameters
+  - group: SKU Versions
+  - group: Image Names
+  - group: Azure Logins
+  - group: Git Repos
+  - name: CookbooksSource
+    value: $(System.DefaultWorkingDirectory)\cookbooks
+  - name: jpnLanguage
+    value: JPN
+  - name: ResourceGroupName
+    value: BakingDP
+  - name: SubscriptionId
+    value: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+
 stages:
   - template: Cloud Account Id Image Release 3.0 - template.yml
     parameters:
