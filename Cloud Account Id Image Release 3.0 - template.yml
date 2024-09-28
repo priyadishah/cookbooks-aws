@@ -48,10 +48,10 @@ stages:
       steps:
       - download: _BuildCloudAccountIdArtefacts
       - download: _BuildImageReleaseArtefacts
-      # - checkout: self
+      - checkout: self
       - checkout: _LansaAzureQuickstartTemplates
       - checkout: _CelestialSystemAzureQuickstartTemplates
-      - checkout: _Robe070Cookbooks
+      # - checkout: _Robe070Cookbooks
 
       - task: PowerShell@2
         name: Gate
