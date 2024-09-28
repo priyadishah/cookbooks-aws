@@ -72,7 +72,7 @@ stages:
         displayName: 'Artifact Check: Output Gate Variable'
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      - task: AzurePowerShell@5
+      - task: AzurePowerShell@5 
         displayName: 'Delete Resource Group'
         inputs:
           azureSubscription: 'Azure Baking Images'
@@ -80,8 +80,8 @@ stages:
           Inline: |
             Write-Host "Deleting Resource Group $(Gate.StackName)"
             Remove-AzResourceGroup -Name $(Gate.StackName) -Force
-            errorActionPreference: silentlyContinue
-            azurePowerShellVersion: LatestVersion
+          errorActionPreference: silentlyContinue
+          azurePowerShellVersion: LatestVersion
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
       - task: AzureResourceManagerTemplateDeployment@3
