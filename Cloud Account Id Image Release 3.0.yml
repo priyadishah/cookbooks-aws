@@ -15,11 +15,11 @@ resources:
       type: github
       ref: feature/139
       endpoint: priyadishah
-    # - repository: _Robe070Cookbooks
-    #   name: robe070/cookbooks
-    #   type: github
-    #   ref: debug/paas
-    #   endpoint: priyadishah
+    - repository: _Robe070Cookbooks
+      name: robe070/cookbooks
+      type: github
+      ref: debug/paas
+      endpoint: priyadishah
 
 variables:
   - group: Template Parameters
