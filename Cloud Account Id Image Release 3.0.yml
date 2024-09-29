@@ -6,10 +6,13 @@ resources:
       source: Build Image Release Artefacts 3.0
   repositories:
     - repository: _LansaAzureQuickstartTemplates
-      name: lansa/azure-quickstart-templates
+      # name: lansa/azure-quickstart-templates
+      name: nkhl-accolite/azure-quickstart-templates-nkhl
       type: github
-      ref: support/scalable
-      endpoint: priyadishah
+      # ref: support/scalable
+      ref: feature/classic2yml-release
+      # endpoint: priyadishah
+      endpoint: nkhl-accolite
     - repository: _CelestialSystemAzureQuickstartTemplates
       name: CelestialSystem/azure-quickstart-templates
       type: github
