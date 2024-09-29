@@ -52,6 +52,7 @@ stages:
       - checkout: _LansaAzureQuickstartTemplates
       - checkout: _CelestialSystemAzureQuickstartTemplates
       # - checkout: _Robe070Cookbooks
+      - pwsh: gc $(System.DefaultWorkingDirectory)/azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
 
       - task: PowerShell@2
         name: Gate
@@ -83,6 +84,8 @@ stages:
           errorActionPreference: silentlyContinue
           azurePowerShellVersion: LatestVersion
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+
+      # - pwsh: gc $(System.DefaultWorkingDirectory)/azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: 'Deploy ARM Template '
