@@ -63,84 +63,84 @@ stages:
 
       - pwsh: tree $(Pipeline.Workspace)
 
-      # - task: PowerShell@2
-      #   name: Gate
-      #   displayName: 'Artifact Check: Set Gate Variable'
-      #   inputs:
-      #     targetType: filePath
-      #     filePath: '$(Pipeline.Workspace)/cookbooks/scripts/azure_set_gate_variable_cloud_account_id.ps1'
-      #     arguments: '-Version "$(System.JobDisplayName)" -osName "Windows Server 2019"'
+      - task: PowerShell@2
+        name: Gate
+        displayName: 'Artifact Check: Set Gate Variable'
+        inputs:
+          targetType: filePath
+          filePath: '$(System.DefaultWorkingDirectory)/cookbooks/scripts/azure_set_gate_variable_cloud_account_id.ps1'
+          arguments: '-Version "$(System.JobDisplayName)" -osName "Windows Server 2019"'
 
-      # - powershell: |
-      #     # Print the Gate variables.
-      #     Write-Host "Gate.IsEnabled: $(Gate.IsEnabled)"
-      #     Write-Host "Gate.Version: $(Gate.Version)"
-      #     Write-Host "Gate.VersionClean: $(Gate.VersionClean)"
-      #     Write-Host "Gate.ImageUrl: $(Gate.ImageUrl)"
-      #     Write-Host "Gate.osName: $(Gate.osName)"
-      #     Write-Host "Gate.Sku: $(Gate.Sku)"
-      #   displayName: 'Artifact Check: Output Gate Variable'
-      #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+      - powershell: |
+          # Print the Gate variables.
+          Write-Host "Gate.IsEnabled: $(Gate.IsEnabled)"
+          Write-Host "Gate.Version: $(Gate.Version)"
+          Write-Host "Gate.VersionClean: $(Gate.VersionClean)"
+          Write-Host "Gate.ImageUrl: $(Gate.ImageUrl)"
+          Write-Host "Gate.osName: $(Gate.osName)"
+          Write-Host "Gate.Sku: $(Gate.Sku)"
+        displayName: 'Artifact Check: Output Gate Variable'
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      # - task: AzurePowerShell@5 
-      #   displayName: 'Delete Resource Group'
-      #   inputs:
-      #     azureSubscription: 'Azure Baking Images'
-      #     ScriptType: InlineScript
-      #     Inline: |
-      #       Write-Host "Deleting Resource Group $(Gate.StackName)"
-      #       Remove-AzResourceGroup -Name $(Gate.StackName) -Force
-      #     errorActionPreference: silentlyContinue
-      #     azurePowerShellVersion: LatestVersion
-      #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+      - task: AzurePowerShell@5 
+        displayName: 'Delete Resource Group'
+        inputs:
+          azureSubscription: 'Azure Baking Images'
+          ScriptType: InlineScript
+          Inline: |
+            Write-Host "Deleting Resource Group $(Gate.StackName)"
+            Remove-AzResourceGroup -Name $(Gate.StackName) -Force
+          errorActionPreference: silentlyContinue
+          azurePowerShellVersion: LatestVersion
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      # # - pwsh: gc $(System.DefaultWorkingDirectory)/azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
+      # - pwsh: gc $(System.DefaultWorkingDirectory)/azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
 
-      # - task: AzureResourceManagerTemplateDeployment@3
-      #   displayName: 'Deploy ARM Template '
-      #   inputs:
-      #     azureResourceManagerConnection: 'Azure Baking Images'
-      #     subscriptionId: $(SubscriptionId)
-      #     resourceGroupName: '$(Gate.StackName)'
-      #     location: 'Australia East'
-      #     csmFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json' 
-      #     overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL $(msiURLv15) -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static'
-      #     deploymentName: CustomTestTemplate
-      #     deploymentOutputs: deploymentOutput
-      #     addSpnToEnvironment: true
-      #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: 'Deploy ARM Template '
+        inputs:
+          azureResourceManagerConnection: 'Azure Baking Images'
+          subscriptionId: $(SubscriptionId)
+          resourceGroupName: '$(Gate.StackName)'
+          location: 'Australia East'
+          csmFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json' 
+          overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL $(msiURLv15) -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static'
+          deploymentName: CustomTestTemplate
+          deploymentOutputs: deploymentOutput
+          addSpnToEnvironment: true
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      # - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
-      #   displayName: 'Azure Resource Group Tagging'
-      #   inputs:
-      #     ConnectedServiceName: 'Azure Baking Images'
-      #     ResourceGroupName: '$(Gate.StackName)'
-      #     Key: Usage
-      #     Value: 'test-temp'
-      #   continueOnError: true
-      #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+      - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+        displayName: 'Azure Resource Group Tagging'
+        inputs:
+          ConnectedServiceName: 'Azure Baking Images'
+          ResourceGroupName: '$(Gate.StackName)'
+          Key: Usage
+          Value: 'test-temp'
+        continueOnError: true
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      # - powershell: |
-      #     # Print the Deployment Output
-      #     Write-Host "$(deploymentOutput)" | out-default | Write-Verbose
-      #   displayName: 'Print Deployment Output'
-      #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+      - powershell: |
+          # Print the Deployment Output
+          Write-Host "$(deploymentOutput)" | out-default | Write-Verbose
+        displayName: 'Print Deployment Output'
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
   
-      # - task: PowerShell@2
-      #   displayName: 'Test ARM Deployment: URL Tests'
-      #   inputs:
-      #     targetType: filePath
-      #     filePath: '$(Pipeline.Workspace)/_Robe070Cookbooks/scripts/azure_url_tests.ps1'
-      #     arguments: '-deploymentOutput ''$(deploymentOutput)'''
-      #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+      - task: PowerShell@2
+        displayName: 'Test ARM Deployment: URL Tests'
+        inputs:
+          targetType: filePath
+          filePath: '$(Pipeline.Workspace)/_Robe070Cookbooks/scripts/azure_url_tests.ps1'
+          arguments: '-deploymentOutput ''$(deploymentOutput)'''
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      # - task: AzureResourceManagerTemplateDeployment@3
-      #   displayName: 'Delete Resource Group'
-      #   inputs:
-      #     azureResourceManagerConnection: 
-      #     subscriptionId: $(SubscriptionId)
-      #     action: DeleteRG
-      #     resourceGroupName: '$(Gate.StackName)'
-      #   continueOnError: true
-      #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
-      #   timeoutInMinutes: 240
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: 'Delete Resource Group'
+        inputs:
+          azureResourceManagerConnection: 
+          subscriptionId: $(SubscriptionId)
+          action: DeleteRG
+          resourceGroupName: '$(Gate.StackName)'
+        continueOnError: true
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+        timeoutInMinutes: 240
