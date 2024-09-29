@@ -119,7 +119,7 @@ stages:
               $output = Get-AzPublicIpAddress -Name $pipName -ResourceGroupName '$(Gate.StackName)'
               $vmIP = $output.IpAddress
               Write-Host "##vso[task.setvariable variable=pip;isOutput=true]$vmIP" | Out-Default | Write-Verbose 
-              azurePowerShellVersion: LatestVersion
+            azurePowerShellVersion: LatestVersion
           condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
         - task: AzureResourceManagerTemplateDeployment@3
