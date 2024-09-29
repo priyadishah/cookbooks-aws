@@ -50,8 +50,9 @@ stages:
       - download: _BuildImageReleaseArtefacts
       - checkout: self
       - checkout: _LansaAzureQuickstartTemplates
-        path: 
+        path: $(Agent.BuildDirectory)/_LansaAzureQuickstartTemplates
       - checkout: _CelestialSystemAzureQuickstartTemplates
+        path: $(Agent.BuildDirectory)/_CelestialSystemAzureQuickstartTemplates
       # - checkout: _Robe070Cookbooks
       # - pwsh: gc $(System.DefaultWorkingDirectory)/azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
       - pwsh: tree $(Agent.BuildDirectory)
