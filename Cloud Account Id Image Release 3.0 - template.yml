@@ -62,6 +62,8 @@ stages:
         path: _Robe070Cookbooks
 
       - pwsh: tree $(Pipeline.Workspace)
+      
+      - pwsh: gc $(System.DefaultWorkingDirectory)/cookbooks/scripts/azure_set_gate_variable_cloud_account_id.ps1
 
       - task: PowerShell@2
         name: Gate
