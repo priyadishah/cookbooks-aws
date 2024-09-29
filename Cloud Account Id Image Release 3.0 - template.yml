@@ -130,7 +130,7 @@ stages:
             resourceGroupName: '$(Gate.StackName)'
             location: 'Australia East'
             csmFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json'
-            overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL $(msiURLv132) -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseNewOrExisting "existing" -databaseType "MSSQLS" -databaseServerName "$(sqlDBOutput.pip)" -databaseName "lansa" -databaseLogin "lansa" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas-v13sp2"'
+            overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL $(msiURLv132) -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseNewOrExisting "existing" -databaseType "MSSQLS" -databaseServerName "$(sqlDBOutput.pip)" -databaseName "lansa" -databaseLogin "lansa" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas-v13sp2" -agpublicIpSku Standard -agpublicIpAllocationMethod Static'
             deploymentName: CustomTestTemplate
             deploymentOutputs: deploymentOutput
             addSpnToEnvironment: true
