@@ -152,7 +152,7 @@ stages:
           deploymentOutputs: deploymentOutput
           addSpnToEnvironment: true
         # condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'), or(ne(parameters['stageName'], 'v13sp2'), ne(parameters['stageName'], 'v13sp2scalable')))
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'), or({{ ne(parameters.stageName, 'v13sp2') }}, {{ ne(parameters.stageName, 'v13sp2scalable') }}))
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'), or( ${{ ne(parameters.stageName, 'v13sp2') }}, ${{ ne(parameters.stageName, 'v13sp2scalable') }} ))
 
       - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
         displayName: 'Azure Resource Group Tagging'
