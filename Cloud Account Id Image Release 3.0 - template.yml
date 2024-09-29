@@ -50,13 +50,14 @@ stages:
       - download: _BuildImageReleaseArtefacts
       - checkout: self
       - checkout: _LansaAzureQuickstartTemplates
-        path: $(System.DefaultWorkingDirectory)/_LansaAzureQuickstartTemplates
+        path: _LansaAzureQuickstartTemplates
       - checkout: _CelestialSystemAzureQuickstartTemplates
-        path: $(System.DefaultWorkingDirectory)/_CelestialSystemAzureQuickstartTemplates
+        path: _CelestialSystemAzureQuickstartTemplates
       # - checkout: _Robe070Cookbooks
       # - pwsh: gc $(System.DefaultWorkingDirectory)/azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
       - pwsh: tree $(Agent.BuildDirectory)
       - pwsh: tree $(System.DefaultWorkingDirectory)
+      - pwsh: tree $(Pipeline.Workspace)
 
       # - task: PowerShell@2
       #   name: Gate
