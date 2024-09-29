@@ -62,10 +62,6 @@ stages:
       - checkout: _Robe070Cookbooks
         path: _Robe070Cookbooks
 
-      - pwsh: tree $(Pipeline.Workspace)
-      
-      - pwsh: gc $(Pipeline.Workspace)/_Cookbooks/scripts/azure_set_gate_variable_cloud_account_id.ps1
-
       - task: PowerShell@2
         name: Gate
         displayName: 'Artifact Check: Set Gate Variable'
@@ -96,8 +92,52 @@ stages:
           errorActionPreference: silentlyContinue
           azurePowerShellVersion: LatestVersion
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+      
+      - ${{ if or(eq(parameters['stageName'], 'v13sp2'), eq(parameters['stageName'], 'v13sp2scalable')) }}:
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Deploy SQL Server'
+          inputs:
+            azureResourceManagerConnection: 
+            subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
+            resourceGroupName: '$(Gate.StackName)'
+            location: 'Australia East'
+            csmFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/DatabaseDeploymentTemplates/sqlServerTemplate.json'
+            csmParametersFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/DatabaseDeploymentTemplates/sqlServerParameters.json'
+            overrideParameters: '-diagnosticsStorageAccountName "$(Gate.VersionClean)"'
+            deploymentName: mssqls1Test
+            deploymentOutputs: mssqlsdb1deploymentOutput
+            addSpnToEnvironment: true
+          condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      # - pwsh: gc $(System.DefaultWorkingDirectory)/azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
+        - task: AzurePowerShell@5
+          displayName: 'Azure PowerShell script: GetServerIP'
+          inputs:
+            azureSubscription: 'Azure Baking Images'
+            ScriptType: InlineScript
+            Inline: |
+              # Print the Deployment Output
+              Write-Host "$(mssqlsdb1deploymentOutput)" | out-default | Write-Verbose
+              $deploymentOutput =ConvertFrom-Json '$(mssqlsdb1deploymentOutput)'
+              $pipName = $deploymentOutput.publicIpAddressName.value
+              $output = Get-AzPublicIpAddress -Name $pipName -ResourceGroupName '$(Gate.StackName)'
+              $vmIP = $output.IpAddress
+              Write-Host "##vso[task.setvariable variable=pip;isOutput=true]$vmIP" | Out-Default | Write-Verbose 
+              azurePowerShellVersion: LatestVersion
+          condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+
+        - task: AzureResourceManagerTemplateDeployment@3
+          displayName: 'Deploy LANSA MSI'
+          inputs:
+            azureResourceManagerConnection: 
+            subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
+            resourceGroupName: '$(Gate.StackName)'
+            location: 'Australia East'
+            csmFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json'
+            overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL $(msiURLv132) -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseNewOrExisting "existing" -databaseType "MSSQLS" -databaseServerName "$(sqlDBOutput.pip)" -databaseName "lansa" -databaseLogin "lansa" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas-v13sp2"'
+            deploymentName: CustomTestTemplate
+            deploymentOutputs: deploymentOutput
+            addSpnToEnvironment: true
+          condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: 'Deploy ARM Template '
@@ -111,7 +151,7 @@ stages:
           deploymentName: CustomTestTemplate
           deploymentOutputs: deploymentOutput
           addSpnToEnvironment: true
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'), or(ne(parameters['stageName'], 'v13sp2'), ne(parameters['stageName'], 'v13sp2scalable')))
 
       - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
         displayName: 'Azure Resource Group Tagging'
