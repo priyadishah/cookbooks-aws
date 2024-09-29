@@ -38,9 +38,6 @@ stages:
       condition: ${{ parameters. jobcondition}}
       displayName: ${{ parameters.jobDisplayname }}
 
-      variables:
-        TemplateS3Namespace: '/image-cd-pipeline'
-
       pool:
         vmImage: ${{ parameters.vmImage }}
         # demands: ${{ parameters.jobDemand }}
@@ -97,7 +94,7 @@ stages:
         - task: AzureResourceManagerTemplateDeployment@3
           displayName: 'Deploy SQL Server'
           inputs:
-            azureResourceManagerConnection: 
+            azureResourceManagerConnection: 'Azure Baking Images'
             subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
             resourceGroupName: '$(Gate.StackName)'
             location: 'Australia East'
@@ -128,7 +125,7 @@ stages:
         - task: AzureResourceManagerTemplateDeployment@3
           displayName: 'Deploy LANSA MSI'
           inputs:
-            azureResourceManagerConnection: 
+            azureResourceManagerConnection: 'Azure Baking Images'
             subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
             resourceGroupName: '$(Gate.StackName)'
             location: 'Australia East'
