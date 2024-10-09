@@ -64,7 +64,7 @@ stages:
         displayName: 'Artifact Check: Set Gate Variable'
         inputs:
           targetType: filePath
-          filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_set_gate_variable_cloud_account_id.ps1'
+          filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_set_gate_variable.ps1'
           arguments: '-Version "$(System.JobDisplayName)" -osName "Windows Server 2019"'
 
       - powershell: |
