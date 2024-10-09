@@ -1,11 +1,11 @@
 resources:
   pipelines: 
-    - pipeline: _BuildCloudAccountIdArtefacts
+    - pipeline: _Build Cloud Account Id Artefacts
       source: Build Cloud Account Id Artefacts 3.0
-    - pipeline: _BuildImageReleaseArtefacts
+    - pipeline: _Lansa Images - Cookbooks
       source: Build Image Release Artefacts 3.0
   repositories:
-    - repository: _LansaAzureQuickstartTemplates
+    - repository: _lansa_azure-quickstart-templates
       # name: lansa/azure-quickstart-templates
       name: nkhl-accolite/azure-quickstart-templates-nkhl
       type: github
@@ -13,12 +13,12 @@ resources:
       ref: feature/classic2yml-release
       # endpoint: priyadishah
       endpoint: nkhl-accolite
-    - repository: _CelestialSystemAzureQuickstartTemplates
+    - repository: _lansa_azure-quickstart-templates-celestial
       name: CelestialSystem/azure-quickstart-templates
       type: github
       ref: feature/139
       endpoint: priyadishah
-    - repository: _Robe070Cookbooks
+    - repository: _robe070_cookbooks
       type: github
       endpoint: priyadishah
       name: priyadishah/cookbooks

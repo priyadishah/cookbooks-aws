@@ -43,28 +43,28 @@ stages:
         # demands: ${{ parameters.jobDemand }}
 
       steps:
-      - download: _BuildCloudAccountIdArtefacts
+      - download: _Build Cloud Account Id Artefacts
 
-      - download: _BuildImageReleaseArtefacts
+      - download: _Lansa Images - Cookbooks
 
       - checkout: self
-        path: _Cookbooks
+        #path: _Cookbooks
 
-      - checkout: _LansaAzureQuickstartTemplates
-        path: _LansaAzureQuickstartTemplates
+      - checkout: _lansa_azure-quickstart-templates
+        path: _lansa_azure-quickstart-templates
 
-      - checkout: _CelestialSystemAzureQuickstartTemplates
-        path: _CelestialSystemAzureQuickstartTemplates
+      - checkout: _lansa_azure-quickstart-templates-celestial
+        path: _lansa_azure-quickstart-templates-celestial
 
-      - checkout: _Robe070Cookbooks
-        path: _Robe070Cookbooks
+      - checkout: _robe070_cookbooks
+        path: _robe070_cookbooks
 
       - task: PowerShell@2
         name: Gate
         displayName: 'Artifact Check: Set Gate Variable'
         inputs:
           targetType: filePath
-          filePath: '$(Pipeline.Workspace)/_Cookbooks/scripts/azure_set_gate_variable_cloud_account_id.ps1'
+          filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_set_gate_variable_cloud_account_id.ps1'
           arguments: '-Version "$(System.JobDisplayName)" -osName "Windows Server 2019"'
 
       - powershell: |
@@ -98,8 +98,8 @@ stages:
             subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
             resourceGroupName: '$(Gate.StackName)'
             location: 'Australia East'
-            csmFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/DatabaseDeploymentTemplates/sqlServerTemplate.json'
-            csmParametersFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/DatabaseDeploymentTemplates/sqlServerParameters.json'
+            csmFile: '$(Pipeline.Workspace)/_lansa_azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/DatabaseDeploymentTemplates/sqlServerTemplate.json'
+            csmParametersFile: '$(Pipeline.Workspace)/_lansa_azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/DatabaseDeploymentTemplates/sqlServerParameters.json'
             overrideParameters: '-diagnosticsStorageAccountName "$(Gate.VersionClean)"'
             deploymentName: mssqls1Test
             deploymentOutputs: mssqlsdb1deploymentOutput
@@ -129,7 +129,7 @@ stages:
             subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
             resourceGroupName: '$(Gate.StackName)'
             location: 'Australia East'
-            csmFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json'
+            csmFile: '$(Pipeline.Workspace)/_lansa_azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json'
             overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL $(msiURLv132) -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseNewOrExisting "existing" -databaseType "MSSQLS" -databaseServerName "$(sqlDBOutput.pip)" -databaseName "lansa" -databaseLogin "lansa" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas-v13sp2" -agpublicIpSku Standard -agpublicIpAllocationMethod Static'
             deploymentName: CustomTestTemplate
             deploymentOutputs: deploymentOutput
@@ -143,7 +143,7 @@ stages:
           subscriptionId: $(SubscriptionId)
           resourceGroupName: '$(Gate.StackName)'
           location: 'Australia East'
-          csmFile: '$(Pipeline.Workspace)/_LansaAzureQuickstartTemplates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json' 
+          csmFile: '$(Pipeline.Workspace)/_lansa_azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json' 
           overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL $(msiURLv15) -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static'
           deploymentName: CustomTestTemplate
           deploymentOutputs: deploymentOutput
@@ -171,7 +171,7 @@ stages:
         displayName: 'Test ARM Deployment: URL Tests'
         inputs:
           targetType: filePath
-          filePath: '$(Pipeline.Workspace)/_Robe070Cookbooks/scripts/azure_url_tests.ps1'
+          filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_url_tests.ps1'
           arguments: '-deploymentOutput ''$(deploymentOutput)'''
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
