@@ -1,0 +1,107 @@
+name: Build-Cloud-Account-Id-Artefacts-$(Build.BuildId)
+
+trigger: none
+
+pr: none
+
+jobs:
+- job: w19d_15_ID
+  displayName: w19d-15-ID
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w19d-15-ID'], 'true'), eq(variables['Build-all'], 'true')))
+  
+  variables:
+  - group: 'External IP Addresses'
+  - group: 'Image Names'
+  - group: 'Azure Logins'
+  - name: azureUserId
+    value: PowershellScriptsSP
+  - name: GitBranchPR
+    value: 'debug/paas'
+  - name: JpnLanguage
+    value: JPN
+  - name: quickstart-scripts
+    value: '$(Agent.BuildDirectory)\test'
+
+  pool:
+    vmImage: windows-2019
+    
+  steps:
+  - checkout: self
+
+  - task: PowerShell@2
+    displayName: Install PS Module
+    condition: and(succeeded(), or(eq(variables['Build-w19d-15-ID'], 'true'), eq(variables['Build-all'], 'true')))
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      errorActionPreference: continue
+
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret $(ConvertTo-SecureString $(clientSecret) -AsPlainText -force)
+      workingDirectory: scripts
+
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: -VersionText '$(System.JobDisplayName)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -CloudAccountLicense 'x_lic_AZR*.5.lic' -MaxRetry $(MaxRetry)
+      workingDirectory: scripts
+
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: true
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-$(System.JobDisplayName)
+      Key: Usage
+      Value: test-temp
+
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "$(System.JobDisplayName).txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+
+  - task: PowerShell@2
+    displayName: 'VM Tests'
+    inputs:
+      targetType: filePath
+      filePath: './scripts/invoke-pester-tests.ps1'
+    env:
+      TestImageName: $(System.JobDisplayName)
+      TestCloudName: Azure
+      TestVmName: $(System.JobDisplayName)
+
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    name: Vmtest
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: $(System.JobDisplayName)
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/$(System.JobDisplayName).txt
+      ArtifactName: $(System.JobDisplayName)
+      FileCopyOptions: ''
+
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-$(System.JobDisplayName)
+
