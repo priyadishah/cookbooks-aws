@@ -71,6 +71,7 @@ stages:
       setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
       msiURL: $(msiURLv132)
       gitBranch: debug/paas-v13sp2
+      databaseLogin: lansa
       
 
   - template: Cloud Account Id Image Release 3.0 - template.yml
@@ -103,3 +104,4 @@ stages:
       setGateVariableScriptPath: 'azure_set_gate_variable.ps1'
       msiURL: $(msiURLv132)
       gitBranch: debug/paas-v13sp2
+      databaseLogin: lansa
