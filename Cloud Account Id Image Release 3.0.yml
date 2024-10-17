@@ -1,9 +1,9 @@
 resources:
   pipelines: 
-    - pipeline: _Build Cloud Account Id Artefacts
+    - pipeline: _BuildCloudAccountIdArtefacts
       source: 'Build Cloud Account Id Artefacts 3.0'
 
-    - pipeline: _Lansa Images - Cookbooks
+    - pipeline: _LansaImagesCookbooks
       source: 'Build Image Release Artefacts 3.0'
   repositories:
     - repository: _lansa_azure-quickstart-templates

@@ -83,26 +83,23 @@ stages:
         # demands: ${{ parameters.jobDemand }}
 
       steps:
-      - download: _Build Cloud Account Id Artefacts
-        displayName: Download artifacts from Build Cloud Account Id Artefacts
+      - download: _BuildCloudAccountIdArtefacts
+        displayName: Download artifacts from Build Cloud Account Id Artefacts 3.0
 
-      - download: _Lansa Images - Cookbooks
+      - download: _LansaImagesCookbooks
         displayName: Download artifacts from Build Image Release Artefacts 3.0
 
       - checkout: self
-        #path: _Cookbooks
+        displayName: self Cookbooks
+        path: _robe070_cookbooks
 
       - checkout: _lansa_azure-quickstart-templates
         displayName: checkout lansa_azure-quickstart-templates
         path: _lansa_azure-quickstart-templates
 
-      - checkout: _lansa_azure-quickstart-templates-celestial
-        displayName: checkout lansa_azure-quickstart-templates-celestial
-        path: _lansa_azure-quickstart-templates-celestial
-
-      - checkout: _robe070_cookbooks
-        displayName: Rob cookbooks
-        path: _robe070_cookbooks
+      # - checkout: _robe070_cookbooks
+      #   displayName: Rob cookbooks
+      #   path: _robe070_cookbooks
 
       - task: PowerShell@2
         name: Gate
