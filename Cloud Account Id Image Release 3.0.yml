@@ -1,9 +1,10 @@
 resources:
   pipelines: 
     - pipeline: _Build Cloud Account Id Artefacts
-      source: Build Cloud Account Id Artefacts 3.0
+      source: 'Build Cloud Account Id Artefacts 3.0'
+
     - pipeline: _Lansa Images - Cookbooks
-      source: Build Image Release Artefacts 3.0
+      source: 'Build Image Release Artefacts 3.0'
   repositories:
     - repository: _lansa_azure-quickstart-templates
       # name: lansa/azure-quickstart-templates
@@ -22,7 +23,7 @@ resources:
       type: github
       endpoint: priyadishah
       name: priyadishah/cookbooks
-      ref: feature/AWSImageRelease-3.0
+      ref: feature/priyanka-classic2YAML-release
 
 variables:
   - group: Template Parameters
