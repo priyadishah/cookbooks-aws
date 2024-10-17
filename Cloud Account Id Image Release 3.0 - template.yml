@@ -86,7 +86,7 @@ stages:
       - download: _BuildCloudAccountIdArtefacts
         displayName: Download artifacts from Build Cloud Account Id Artefacts 3.0
 
-      - download: _LansaImagesCookbooks
+      - download: _Lansa Images - Cookbooks
         displayName: Download artifacts from Build Image Release Artefacts 3.0
 
       - checkout: self
