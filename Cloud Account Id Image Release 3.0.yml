@@ -31,7 +31,7 @@ variables:
   - group: Azure Logins
   - group: Git Repos
   - name: CookbooksSource
-    value: $(System.DefaultWorkingDirectory)\cookbooks
+    value: $(Pipeline.Workspace)\cookbooks
   - name: jpnLanguage
     value: JPN
   - name: ResourceGroupName
