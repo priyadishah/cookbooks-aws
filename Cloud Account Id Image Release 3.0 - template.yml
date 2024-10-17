@@ -189,7 +189,7 @@ stages:
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: 'Delete Resource Group'
         inputs:
-          azureResourceManagerConnection: 
+          azureResourceManagerConnection: $(ConnectedServiceName)
           subscriptionId: $(SubscriptionId)
           action: DeleteRG
           resourceGroupName: '$(Gate.StackName)'
