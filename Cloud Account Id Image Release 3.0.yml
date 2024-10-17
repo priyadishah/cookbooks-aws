@@ -39,8 +39,6 @@ variables:
     value: BakingDP
   - name: SubscriptionId
     value: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
-  - name: ConnectedServiceName
-    value: Azure Baking Images
 
 stages:
   - template: Cloud Account Id Image Release 3.0 - template.yml
@@ -50,8 +48,8 @@ stages:
       jobName: w19d15id
       jobDisplayname: w19d-15-ID
       jobcondition: or(eq(variables['Build-V15'], 'True'), eq(variables['Build-all'], 'True'))
-      paramsetGateVariable: 'azure_set_gate_variable_cloud_account_id.ps1'
-      parammsiURL: "$(msiURLv15)"
+      setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
+      msiURL: $(msiURLv15)
 
   - template: Cloud Account Id Image Release 3.0 - template.yml
     parameters:
@@ -60,8 +58,8 @@ stages:
       jobName: w19d15id
       jobDisplayname: w19d-15-ID
       jobcondition: or(eq(variables['Build-V14SP2'], 'True'), eq(variables['Build-all'], 'True'))
-      paramsetGateVariable: 'azure_set_gate_variable_cloud_account_id.ps1'
-      parammsiURL: "$(msiURLv142)"
+      setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
+      msiURL: $(msiURLv142)
 
   - template: Cloud Account Id Image Release 3.0 - template.yml
     parameters:
@@ -70,8 +68,10 @@ stages:
       jobName: w19d15id
       jobDisplayname: w19d-15-ID
       jobcondition: or(eq(variables['Build-V13SP2'], 'True'), eq(variables['Build-all'], 'True'))
-      paramsetGateVariable: 'azure_set_gate_variable_cloud_account_id.ps1'
-      parammsiURL: "$(msiURLv132)"
+      setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
+      msiURL: $(msiURLv132)
+      gitBranch: debug/paas-v13sp2
+      
 
   - template: Cloud Account Id Image Release 3.0 - template.yml
     parameters:
@@ -80,8 +80,8 @@ stages:
       jobName: w19d150
       jobDisplayname: w19d-15-0
       jobcondition: or(eq(variables['Build-V15-scalable'], 'True'), eq(variables['Build-all'], 'True'))
-      paramsetGateVariable: 'azure_set_gate_variable.ps1'
-      parammsiURL: "$(msiURLv15)"
+      setGateVariableScriptPath: 'azure_set_gate_variable.ps1'
+      msiURL: $(msiURLv15)
 
   - template: Cloud Account Id Image Release 3.0 - template.yml
     parameters:
@@ -90,8 +90,8 @@ stages:
       jobName: w19d150
       jobDisplayname: w19d-15-0
       jobcondition: or(eq(variables['Build-V14SP2-scalable'], 'True'), eq(variables['Build-all'], 'True'))
-      paramsetGateVariable: 'azure_set_gate_variable.ps1'
-      parammsiURL: "$(msiURLv142)"
+      setGateVariableScriptPath: 'azure_set_gate_variable.ps1'
+      msiURL: $(msiURLv142)
 
   - template: Cloud Account Id Image Release 3.0 - template.yml
     parameters:
@@ -100,5 +100,6 @@ stages:
       jobName: w19d150
       jobDisplayname: w19d-15-0
       jobcondition: or(eq(variables['Build-V13SP2-Scalable'], 'True'), eq(variables['Build-all'], 'True'))
-      paramsetGateVariable: 'azure_set_gate_variable.ps1'
-      parammsiURL: "$(msiURLv132)"
+      setGateVariableScriptPath: 'azure_set_gate_variable.ps1'
+      msiURL: $(msiURLv132)
+      gitBranch: debug/paas-v13sp2

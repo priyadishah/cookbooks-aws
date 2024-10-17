@@ -25,12 +25,31 @@ parameters:
   - name: jobDemand
     type: string
     default: ''
-  - name: paramsetGateVariable
+  - name: setGateVariableScriptPath
     type: string
     default: none
-  - name: parammsiURL
+  - name: msiURL
     type: string
     default: none
+  - name: applicationGatewaySkuTier
+    type: string
+    default: Standard_v2
+  - name: applicationGatewaySkuName
+    type: string
+    default: Standard_v2
+  - name: lansaVersion
+    type: string
+    default: V15 GA
+  - name: imageSource
+    type: string
+    default: Custom
+  - name: databaseLogin
+    default: $(databaseLogin)
+  - name: databaseLoginPassword
+    default: $(databaseLoginPassword)
+  - name: gitBranch
+    type: string
+    default: debug/paas
 
 stages:
   - stage: ${{ parameters.stageName }}
@@ -43,6 +62,21 @@ stages:
       cancelTimeoutInMinutes: 1
       condition: ${{ parameters. jobcondition}}
       displayName: ${{ parameters.jobDisplayname }}
+
+      variables:
+        - name: additionalOverrideParameters
+          ${{ if or(eq(parameters['stageName'], 'v13sp2'), eq(parameters['stageName'], 'v13sp2scalable')) }}:
+            value: '-databaseNewOrExisting "existing" -databaseType "MSSQLS" -databaseServerName "$(sqlDBOutput.pip)" -databaseName "${{ parameters.databaseName }}"'
+          ${{ else }}:
+            value: '' 
+        - name: deployARMTemplate
+          ${{ if or(eq(parameters['stageName'], 'v13sp2'), eq(parameters['stageName'], 'v13sp2scalable')) }}:
+            value: Deploy LANSA MSI
+          ${{ else }}:
+            value: Deploy ARM Template
+        - name: ConnectedServiceName
+          value: Azure Baking Images
+
 
       pool:
         vmImage: ${{ parameters.vmImage }}
@@ -75,7 +109,7 @@ stages:
         displayName: 'Artifact Check: Set Gate Variable'
         inputs:
           targetType: filePath
-          filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/${{ parameters.paramsetGateVariable }}'
+          filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/${{ parameters.setGateVariableScriptPath }}'
           arguments: '-Version "$(System.JobDisplayName)" -osName "Windows Server 2019"'
 
       - powershell: |
@@ -92,11 +126,11 @@ stages:
       - task: AzurePowerShell@5 
         displayName: 'Delete Resource Group'
         inputs:
-          azureSubscription: 'Azure Baking Images'
+          azureSubscription: $(ConnectedServiceName)
           ScriptType: InlineScript
           Inline: |
             Write-Host "Deleting Resource Group $(Gate.StackName)"
-            Remove-AzResourceGroup -Name $(Gate.StackName) -Force
+            Remove-AzResourceGroup -Name $(Gate.StackName) -Force -ErrorAction SilentlyContinue
           errorActionPreference: silentlyContinue
           azurePowerShellVersion: LatestVersion
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
@@ -105,7 +139,7 @@ stages:
         - task: AzureResourceManagerTemplateDeployment@3
           displayName: 'Deploy SQL Server'
           inputs:
-            azureResourceManagerConnection: 'Azure Baking Images'
+            azureResourceManagerConnection: $(ConnectedServiceName)
             subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
             resourceGroupName: '$(Gate.StackName)'
             location: 'Australia East'
@@ -119,8 +153,9 @@ stages:
 
         - task: AzurePowerShell@5
           displayName: 'Azure PowerShell script: GetServerIP'
+          name: sqlDBOutput
           inputs:
-            azureSubscription: 'Azure Baking Images'
+            azureSubscription: $(ConnectedServiceName)
             ScriptType: InlineScript
             Inline: |
               # Print the Deployment Output
@@ -133,35 +168,33 @@ stages:
             azurePowerShellVersion: LatestVersion
           condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-        - task: AzureResourceManagerTemplateDeployment@3
-          displayName: 'Deploy LANSA MSI'
-          inputs:
-            azureResourceManagerConnection: 'Azure Baking Images'
-            subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
-            resourceGroupName: '$(Gate.StackName)'
-            location: 'Australia East'
-            csmFile: '$(Pipeline.Workspace)/_lansa_azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json'
-            overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL ${{ parameters.parammsiURL }} -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseNewOrExisting "existing" -databaseType "MSSQLS" -databaseServerName "$(sqlDBOutput.pip)" -databaseName "lansa" -databaseLogin "lansa" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas-v13sp2" -agpublicIpSku Standard -agpublicIpAllocationMethod Static'
-            deploymentName: CustomTestTemplate
-            deploymentOutputs: deploymentOutput
-            addSpnToEnvironment: true
-          condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+        # - task: AzureResourceManagerTemplateDeployment@3
+        #   displayName: 'Deploy LANSA MSI'
+        #   inputs:
+        #     azureResourceManagerConnection: 'Azure Baking Images'
+        #     subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
+        #     resourceGroupName: '$(Gate.StackName)'
+        #     location: 'Australia East'
+        #     csmFile: '$(Pipeline.Workspace)/_lansa_azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json'
+        #     overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL ${{ parameters.msiURL }} -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseNewOrExisting "existing" -databaseType "MSSQLS" -databaseServerName "$(sqlDBOutput.pip)" -databaseName "lansa" -databaseLogin "lansa" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas-v13sp2" -agpublicIpSku Standard -agpublicIpAllocationMethod Static'
+        #     deploymentName: CustomTestTemplate
+        #     deploymentOutputs: deploymentOutput
+        #     addSpnToEnvironment: true
+        #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
       - task: AzureResourceManagerTemplateDeployment@3
-        displayName: 'Deploy ARM Template '
+        displayName: $(deployARMTemplate)
         inputs:
-          azureResourceManagerConnection: 'Azure Baking Images'
-          subscriptionId: $(SubscriptionId)
-          resourceGroupName: '$(Gate.StackName)'
+          azureResourceManagerConnection: $(ConnectedServiceName)
+          resourceGroupName: $(Gate.StackName)
           location: 'Australia East'
           csmFile: '$(Pipeline.Workspace)/_lansa_azure-quickstart-templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json' 
-          overrideParameters: '-osName "$(Gate.osName)" -lansaVersion "V15 GA" -imageId "$(Gate.ImageUrl)" -imageSource "Custom" -msiURL ${{ parameters.parammsiURL }} -stackName "$(Gate.VersionClean)" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static'
+          overrideParameters: '-osName "$(Gate.osName)" -imageId "$(Gate.ImageUrl)" -stackName "$(Gate.VersionClean)" -lansaVersion "${{ parameters.lansaVersion }}"  -imageSource "${{ parameters.imageSource }}" -msiURL ${{ parameters.msiURL }}  -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "${{ parameters.databaseLogin }}" -databaseLoginPassword "${{ parameters.databaseLoginPassword }}" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "${{ parameters.gitBranch }}" -agpublicIpSku Standard -agpublicIpAllocationMethod Static $(additionalOverrideParameters)'
           deploymentName: CustomTestTemplate
           deploymentOutputs: deploymentOutput
           addSpnToEnvironment: true
-        # condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'), or(ne(parameters['stageName'], 'v13sp2'), ne(parameters['stageName'], 'v13sp2scalable')))
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'), or( ${{ ne(parameters.stageName, 'v13sp2') }}, ${{ ne(parameters.stageName, 'v13sp2scalable') }} ))
-
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+        
       - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
         displayName: 'Azure Resource Group Tagging'
         inputs:
@@ -183,7 +216,7 @@ stages:
         inputs:
           targetType: filePath
           filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_url_tests.ps1'
-          arguments: '-deploymentOutput ''$(deploymentOutput)'''
+          arguments: -deploymentOutput '$(deploymentOutput)'
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
       - task: AzureResourceManagerTemplateDeployment@3
