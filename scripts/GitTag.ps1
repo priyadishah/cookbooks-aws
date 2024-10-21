@@ -8,7 +8,10 @@ param (
     $Tags
   )
 
-cd "$($env:System_DefaultWorkingDirectory)/$($GitRepoName)"
+cd "$($env:System_DeWorkinfaultgDirectory)/$($GitRepoName)"
+
+# Change path System_DeWorkinfaultgDirectory to Pipeline_Workspace
+# cd "$($env:Pipeline_Workspace)/$($GitRepoName)"
 
 Write-Host( "Tagging the current HEAD")
 git status

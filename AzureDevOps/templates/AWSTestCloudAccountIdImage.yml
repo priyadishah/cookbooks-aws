@@ -1,0 +1,213 @@
+parameters:
+  - name: stageName
+    type: string
+    default: none
+  - name: stageDisplayname
+    type: string
+    default: none
+  - name: runStage
+    type: boolean
+    default: true
+  # - name: dependsOn
+  #   default: []
+  - name: jobName
+    type: string
+    default: none
+  - name: jobDisplayname
+    type: string
+    default: none
+  - name: vmImage
+    type: string
+    default: windows-2022
+  - name: jobcondition
+    type: string
+    default: ''
+  - name: jobDemand
+    type: string
+    default: ''
+  - name: paramsetGateVariable
+    type: string
+    default: none
+  - name: paramLansaVersion
+    type: string
+    default: none
+  - name: parammsiURL
+    type: string
+    default: none
+  - name: paramWebserverOSVersionValue
+    type: string
+    default: none
+  - name: paramTagValue
+    type: string
+    default: none
+
+stages:
+  - stage: ${{ parameters.stageName }}
+    condition: ${{ parameters.runStage }}
+    dependsOn: []
+    displayName: ${{ parameters.stageDisplayname }}
+    jobs:
+    - job: ${{ parameters.jobName }}
+      timeoutInMinutes: 0
+      cancelTimeoutInMinutes: 1
+      condition: ${{ parameters. jobcondition}}
+      displayName: ${{ parameters.jobDisplayname }}
+
+      variables:
+        TemplateS3Namespace: '/image-cd-pipeline'
+        SetGateVariable: ${{ parameters.paramsetGateVariable }}
+
+      pool:
+        vmImage: ${{ parameters.vmImage }}
+        demands: ${{ parameters.jobDemand }}
+
+      steps:
+      - download: _Build Cloud Account Id Artefacts
+        displayName: Download artifacts from Build Cloud Account Id Artefacts
+
+      - download: _Build Image Release Artefacts
+        displayName: Download artifacts from Build Image Release Artefacts 3.0
+
+      - checkout: self
+
+      - checkout: _lansa_aws-templates
+        displayName: Checkout _lansa_aws-templates
+        path: _lansa_aws-templates
+
+      # - checkout: _priyadishahCookbooks
+      #   displayName: Checkout cookbooks
+
+      - checkout: _robe070_cookbooks
+        displayName: Rob cookbooks
+        path: _robe070_cookbooks
+
+      - task: AWSPowerShellModuleScript@1
+        name: Gate
+        displayName: 'Artifact Check: Set Gate Variable'
+        inputs:
+          awsCredentials: AzureDevOps
+          regionName: 'ap-southeast-2'
+          arguments: '-BaseImageName ''$(System.JobDisplayName)'' -stackname ''$(System.StageDisplayName)-$(System.JobDisplayName)'''
+          filePath: "$(Pipeline.Workspace)/_lansa_aws-templates/scripts/${{ parameters.paramsetGateVariable }}"
+          failOnStderr: true
+        continueOnError: false
+      
+      - pwsh: |
+          # Print the Gate variables.
+          Write-Host "Gate.IsEnabled: $(Gate.IsEnabled); Gate.ImageID: $(Gate.ImageID); Gate.stack:$(Gate.stack)" | Out-Default
+        displayName: 'Artifact Check: Output Gate Variable'
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+
+      - task: AWSPowerShellModuleScript@1
+        displayName: 'Delete previous Failed Stack'
+        inputs:
+          awsCredentials: AzureDevOps
+          regionName: 'ap-southeast-2'
+          arguments: '-Gatestack $(Gate.stack)'
+          filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/DeletePreviousFailedStack.ps1'
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+
+      - task: CloudFormationCreateOrUpdateStack@1
+        displayName: 'Deploy AWS template'
+        inputs:
+          awsCredentials: AzureDevOps
+          regionName: 'ap-southeast-2'
+          stackName: '$(Gate.stack)'
+          templateSource: s3
+          s3BucketName: lansa
+          s3ObjectKey: 'templates/$(CookbooksBranch)$(TemplateS3Namespace)/lansa-master-win.cfn.template'
+          templateParametersSource: inline
+          templateParameters: |
+            [{
+                "ParameterKey": "$(DBPasswordKey)",
+                "ParameterValue": "$(DBPasswordValue)"
+            }, 
+            {
+                "ParameterKey": "$(WebPasswordKey)",
+                "ParameterValue": "$(WebPasswordValue)"
+            }, {
+                "ParameterKey": "$(KeyNameKey)",    
+                "ParameterValue": "$(KeyNameValue)"
+            }, {
+                "ParameterKey": "$(RemoteAccessLocationKey)",   
+                "ParameterValue": "$(RemoteAccessLocationValue)"
+            }, {
+                "ParameterKey": "ImageSource",   
+                "ParameterValue": "Custom"
+            }, {
+                "ParameterKey": "AMIId",   
+                "ParameterValue": "$(Gate.ImageID)"
+            }, {
+                "ParameterKey": "TagValue",   
+                "ParameterValue": "${{ parameters.paramTagValue }}"
+            }, {
+                "ParameterKey": "LansaVersion",   
+                "ParameterValue": "${{ parameters.paramLansaVersion }}"
+            }, {
+                "ParameterKey": "11WebserverOSVersion",   
+                "ParameterValue": "${{ parameters.paramWebserverOSVersionValue }}"
+            }, {
+                "ParameterKey": "10LansaGitRepoBranch",   
+                "ParameterValue": "$(CookbooksBranch)"
+            }, {
+                "ParameterKey": "TemplateS3Namespace",   
+                "ParameterValue": "$(TemplateS3Namespace)"
+            }, {
+                "ParameterKey": "$(LansaMSIKey)",   
+                "ParameterValue": "${{ parameters.parammsiURL }}"
+            }, {
+                "ParameterKey": "CurrentVPC",   
+                "ParameterValue": "$(CurrentVPC)"
+            }, {
+                "ParameterKey": "AvailabilityZones",   
+                "ParameterValue": "$(AvailabilityZones)"
+            }, {
+                "ParameterKey": "NumberOfAZs",   
+                "ParameterValue": "$(NumberOfAZs)"
+            }, {
+                "ParameterKey": "DBSubnetGroupName",   
+                "ParameterValue": "$(DBSubnetGroupName)"
+            }, {
+                "ParameterKey": "ELBSubnetIds",   
+                "ParameterValue": "$(ELBSubnetIds)"
+            }, {
+                "ParameterKey": "03DBUsername",   
+                "ParameterValue": "$(03DBUsername)"
+            }
+            ]
+          onFailure: 'DO_NOTHING'
+          disableRollback: true
+          outputVariable: deploymentOutput
+          captureStackOutputs: asJSON
+          captureAsSecuredVars: false
+          timeoutInMins: 120
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+
+      - task: AWSPowerShellModuleScript@1
+        displayName: 'Print Deployment Output'
+        inputs:
+          awsCredentials: AzureDevOps
+          regionName: 'ap-southeast-2'
+          arguments: '-Gatestack $(Gate.stack)'
+          filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/PrintDeploymentOutput.ps1'
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+
+      - task: AWSPowerShellModuleScript@1
+        displayName: 'Test CFN Deployment: URL tests'
+        inputs:
+          awsCredentials: AzureDevOps
+          regionName: 'ap-southeast-2'
+          arguments: '-Gatestack $(Gate.stack)'
+          filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/TestCFNDeployment.ps1'
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+
+      - task: AWSPowerShellModuleScript@1
+        displayName: 'Delete Stack'
+        inputs:
+          awsCredentials: AzureDevOps
+          regionName: 'ap-southeast-2'
+          arguments: '-Gatestack $(Gate.stack)'
+          filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/DeletePreviousFailedStack.ps1'
+          ignoreLASTEXITCODE: true
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+        timeoutInMinutes: 240
