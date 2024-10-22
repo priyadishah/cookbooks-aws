@@ -12,7 +12,7 @@ param (
     $GitTargetBranch
   )
 
-cd "$($env:System_DefaultWorkingDirectory)/$($GitRepoName)"
+cd "$($env:Pipeline_Workspace)/$($GitRepoName)"
 
 # git fetch
 git fetch
