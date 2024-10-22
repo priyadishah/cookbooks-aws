@@ -1,0 +1,1683 @@
+# Variable 'azureUserId' was defined in the Variables tab
+# Variable 'Build-all' was defined in the Variables tab
+# Variable 'Build-w12r2d-14-2' was defined in the Variables tab
+# Variable 'Build-w12r2d-15-0' was defined in the Variables tab
+# Variable 'Build-w16d-14-2' was defined in the Variables tab
+# Variable 'Build-w16d-14-2j' was defined in the Variables tab
+# Variable 'Build-w16d-15-0' was defined in the Variables tab
+# Variable 'Build-w16d-15-0j' was defined in the Variables tab
+# Variable 'Build-w19d-14-2' was defined in the Variables tab
+# Variable 'Build-w19d-14-2j' was defined in the Variables tab
+# Variable 'Build-w19d-15-0' was defined in the Variables tab
+# Variable 'Build-w19d-15-0j' was defined in the Variables tab
+# Variable 'clientsecret' was defined in the Variables tab
+# Variable 'GitBranch' was defined in the Variables tab
+# Variable 'GitBranchPR' was defined in the Variables tab
+# Variable 'JpnLanguage' was defined in the Variables tab
+# Variable 'quickstart-scripts' was defined in the Variables tab
+# Variable 'VersionText-w12r2d-14-2' was defined in the Variables tab
+# Variable 'VersionText-w12r2d-15-0' was defined in the Variables tab
+# Variable 'VersionText-w16d-14-2' was defined in the Variables tab
+# Variable 'VersionText-w16d-14-2j' was defined in the Variables tab
+# Variable 'VersionText-w16d-15-0' was defined in the Variables tab
+# Variable 'VersionText-w16d-15-0j' was defined in the Variables tab
+# Variable 'VersionText-w19d-14-2' was defined in the Variables tab
+# Variable 'VersionText-w19d-14-2j' was defined in the Variables tab
+# Variable 'VersionText-w19d-15-0' was defined in the Variables tab
+# Variable 'VersionText-w19d-15-0j' was defined in the Variables tab
+# Variable Group 'External IP Addresses' was defined in the Variables tab
+# Variable Group 'Image Names' was defined in the Variables tab
+variables:
+  - group : "Azure Logins"
+  - group : "Image Names"
+  - group : "External IP Addresses"
+# azureUserId: $(azureUserId) #LPC-AsBake
+#  - imagetype: windows-2022
+#  - Build-all : $(Build-all) #True
+#  - Build-w12r2d-14-2 :  $(Build-w12r2d-14-2) #False
+#  - Build-w12r2d-15-0 : $(Build-w12r2d-15-0) #False
+#  - Build-w16d-14-2 : $(Build-w16d-14-2) #False
+#  - Build-w16d-14-2j : $(Build-w16d-14-2j) #True
+#  - Build-w16d-15-0 : $(Build-w16d-15-0) #False
+#  - Build-w16d-15-0j : $(Build-w16d-15-0j) #True
+#  - Build-w19d-14-2 : $(Build-w19d-14-2) #False
+#  - Build-w19d-14-2j : $(Build-w19d-14-2j) #True
+#  - Build-w19d-15-0 : $(Build-w19d-15-0) #False
+#  - Build-w19d-15-0j : $(Build-w19d-15-0j) #True
+#  - clientsecret : $(clientsecret) #"********"
+#  - GitBranch : $(Build.SourceBranch)
+#  - GitBranchPR : $(GitBranchPR) #debug/paas
+#  - JpnLanguage : $(JpnLanguage) #JPN
+#  - quickstart-scripts : $(quickstart-scripts) # $(Agent.BuildDirectory)\test
+#  - system.collectionId : $(system.collectionId) # 556ac44f-caae-4fef-a5b6-d964fed453e6
+#  - system.debug :  $(system.debug) #false
+#  - system.definitionId : $(system.definitionId) #31
+#  - system.teamProject : $(system.teamProject) #Lansa Azure Scalable License Images
+#  - VersionText-w12r2d-14-2 : $(VersionText-w12r2d-14-2) #26
+#  - VersionText-w12r2d-15-0 : $(VersionText-w12r2d-15-0) #16
+#  - VersionText-w16d-14-2 : $(VersionText-w16d-14-2) #16
+#  - VersionText-w16d-14-2j : $(VersionText-w16d-14-2j) #16
+#  - VersionText-w16d-15-0 : $(VersionText-w16d-15-0) #16
+#  - VersionText-w16d-15-0j : $(VersionText-w16d-15-0j) #16
+#  - VersionText-w19d-14-2 : $(VersionText-w19d-14-2) #16
+#  - VersionText-w19d-14-2j : $(VersionText-w19d-14-2j) #16
+#  - VersionText-w19d-15-0 : $(VersionText-w19d-15-0) #16
+#  - VersionText-w19d-15-0j : $(VersionText-w19d-15-0j) #16
+#  - imagetype : $(image)
+
+# jobs:
+# - job: CheckVariables
+#   displayName: 'Check Variable Values'
+#   pool:
+#     vmImage: windows-2022
+#   steps:
+#   - script: |
+#       echo "The value of External IP Addresses is: $(ExternalIPAddresses)"
+#     displayName: 'Print ExternalIPAddresses'
+
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: Feature/Debjit #debug/paas
+
+   
+jobs:
+- job: Job_1
+  displayName: 'Agent job : w22d-14-2'
+  timeoutInMinutes: 120
+  condition: and(succeeded(), or(eq(variables['Build-w12r2d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    name: ''
+    displayName: Install PS Module
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      script: >-
+        if ("$(GitBranch)".Contains("refs/heads")) {
+            $branch ="$(GitBranch)".replace("refs/heads/", "")
+        } else {
+            $branch = "$(GitBranchPR)"
+        }
+
+        $branch | Write-Host | Out-Default | Write-Verbose
+
+        Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+        if ($Env:PsModuleInstalled -eq 'True') {
+            Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+            return;
+        }
+
+
+        Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+        Install-Module -Name AzureRM -AllowClobber -Force
+
+        Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+        Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+        # Az.Accounts for Get-AzVMImage
+
+        Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+        # Az.Compute for Connect-AzAccount
+
+        Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+        # Az.Resources for Get-AzResource
+
+        Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+        # Az for Azure Modules
+
+        Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+        # Pester for Testing
+
+        Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+        Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+        Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+        $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    name: ''
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString "$(clientSecret)" -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: -VersionText 'w12r2d-14-2-$(VersionText-w12r2d-14-2)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2012-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $true -ExternalIPAddresses  $(ExternalIPAddresses)
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w12r2d-14-2-$(VersionText-w12r2d-14-2)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    name: ''
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w12r2d-14-2.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    name: ''
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w12r2d-14-2
+  - task: PublishBuildArtifacts@1
+    name: ''
+    displayName: 'Publish Artifact: Image URL'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w12r2d-14-2.txt
+      ArtifactName: w12r2d-14-2
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w12r2d-14-2-$(VersionText-w12r2d-14-2)
+- job: Job_5
+  displayName: 'Agent job : w22d-15-0'
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w12r2d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Install PS Module
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      script: >-
+        if ("$(GitBranch)".Contains("refs/heads")) {
+            $branch ="$(GitBranch)".replace("refs/heads/", "")
+        } else {
+            $branch = "$(GitBranchPR)"
+        }
+
+        $branch | Write-Host | Out-Default | Write-Verbose
+
+        Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+        if ($Env:PsModuleInstalled -eq 'True') {
+            Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+            return;
+        }
+
+
+        Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+        Install-Module -Name AzureRM -AllowClobber -Force
+
+        Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+        Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+        # Az.Accounts for Get-AzVMImage
+
+        Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+        # Az.Compute for Connect-AzAccount
+
+        Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+        # Az.Resources for Get-AzResource
+
+        Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+        # Az for Azure Modules
+
+        Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+        # Pester for Testing
+
+        Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+        Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+        Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+          $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString "$(clientSecret)" -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: -VersionText 'w12r2d-15-0-$(VersionText-w12r2d-15-0)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2012-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $true -ExternalIPAddresses  $(ExternalIPAddresses)
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w12r2d-15-0-$(VersionText-w12r2d-15-0)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w12r2d-15-0.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w12r2d-15-0
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w12r2d-15-0.txt
+      ArtifactName: w12r2d-15-0
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w12r2d-15-0-$(VersionText-w12r2d-15-0)
+- job: Job_6
+  displayName: 'Agent job : w16d-14-2'
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w16d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Install PS Module
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      script: >-
+        if ("$(GitBranch)".Contains("refs/heads")) {
+            $branch ="$(GitBranch)".replace("refs/heads/", "")
+        } else {
+            $branch = "$(GitBranchPR)"
+        }
+
+        $branch | Write-Host | Out-Default | Write-Verbose
+
+        Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+        if ($Env:PsModuleInstalled -eq 'True') {
+            Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+            return;
+        }
+
+
+        Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+        Install-Module -Name AzureRM -AllowClobber -Force
+
+        Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+        Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+        # Az.Accounts for Get-AzVMImage
+
+        Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+        # Az.Compute for Connect-AzAccount
+
+        Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+        # Az.Resources for Get-AzResource
+
+        Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+        # Az for Azure Modules
+
+        Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+        # Pester for Testing
+
+        Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+        Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+        Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+        $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString "$(clientSecret)" -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: -VersionText 'w16d-14-2-$(VersionText-w16d-14-2)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2016-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses)
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w16d-14-2-$(VersionText-w16d-14-2)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w16d-14-2.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w16d-14-2
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w16d-14-2.txt
+      ArtifactName: w16d-14-2
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w16d-14-2-$(VersionText-w16d-14-2)
+- job: Job_4
+  displayName: 'Agent job : w16d-15-0'
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w16d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Install PS Module
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      script: >-
+        if ("$(GitBranch)".Contains("refs/heads")) {
+            $branch ="$(GitBranch)".replace("refs/heads/", "")
+        } else {
+            $branch = "$(GitBranchPR)"
+        }
+
+        $branch | Write-Host | Out-Default | Write-Verbose
+
+        Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+        if ($Env:PsModuleInstalled -eq 'True') {
+            Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+            return;
+        }
+
+
+        Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+        Install-Module -Name AzureRM -AllowClobber -Force
+
+        Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+        Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+        # Az.Accounts for Get-AzVMImage
+
+        Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+        # Az.Compute for Connect-AzAccount
+
+        Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+        # Az.Resources for Get-AzResource
+
+        Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+        # Az for Azure Modules
+
+        Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+        # Pester for Testing
+
+        Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+        Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+        Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+        $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString "$(clientSecret)" -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: -VersionText 'w16d-15-0-$(VersionText-w16d-15-0)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2016-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses)
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w16d-15-0-$(VersionText-w16d-15-0)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w16d-15-0.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w16d-15-0
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w16d-15-0.txt
+      ArtifactName: w16d-15-0
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w16d-15-0-$(VersionText-w16d-15-0)
+- job: Job_3
+  displayName: 'Agent job : w19d-14-2'
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w19d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Install PS Module
+    condition: and(succeeded(), or(eq(variables['Build-w19d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      # script: >-
+      #   if ("$(GitBranch)".Contains("refs/heads")) {
+      #       $branch ="$(GitBranch)".replace("refs/heads/", "")
+      #   } else {
+      #       $branch = "$(GitBranchPR)"
+      #   }
+
+      #   $branch | Write-Host | Out-Default | Write-Verbose
+
+      #   Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+      #   if ($Env:PsModuleInstalled -eq 'True') {
+      #       Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+      #       return;
+      #   }
+
+
+      #   Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+      #   Install-Module -Name AzureRM -AllowClobber -Force
+
+      #   Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+      #   Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+      #   Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+      #   Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+      #   # Az.Accounts for Get-AzVMImage
+
+      #   Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+      #   Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+      #   Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+      #   # Az.Compute for Connect-AzAccount
+
+      #   Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+      #   Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+      #   Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+      #   # Az.Resources for Get-AzResource
+
+      #   Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+      #   Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+      #   Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+      #   # Az for Azure Modules
+
+      #   Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+      #   Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+      #   Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+      #   # Pester for Testing
+
+      #   Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+      #   Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+      #   Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+      #   $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString $(clientSecret) -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: -VersionText 'w19d-14-2-$(VersionText-w19d-14-2)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2019-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses)
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w19d-14-2-$(VersionText-w19d-14-2)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w19d-14-2.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w19d-14-2
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w19d-14-2.txt
+      ArtifactName: w19d-14-2
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w19d-14-2-$(VersionText-w19d-14-2)
+- job: Job_2
+  displayName: 'Agent job : w19d-15-0'
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Install PS Module
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      script: >-
+        if ("$(GitBranch)".Contains("refs/heads")) {
+            $branch ="$(GitBranch)".replace("refs/heads/", "")
+        } else {
+            $branch = "$(GitBranchPR)"
+        }
+
+        $branch | Write-Host | Out-Default | Write-Verbose
+
+        Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+        if ($Env:PsModuleInstalled -eq 'True') {
+            Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+            return;
+        }
+
+
+        Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+        Install-Module -Name AzureRM -AllowClobber -Force
+
+        Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+        Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+        # Az.Accounts for Get-AzVMImage
+
+        Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+        # Az.Compute for Connect-AzAccount
+
+        Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+        # Az.Resources for Get-AzResource
+
+        Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+        # Az for Azure Modules
+
+        Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+        # Pester for Testing
+
+        Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+        Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+        Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+        $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString "$(clientSecret)" -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: -VersionText 'w19d-15-0-$(VersionText-w19d-15-0)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses)
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w19d-15-0-$(VersionText-w19d-15-0)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w19d-15-0.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w19d-15-0
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL copy'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w19d-15-0.txt
+      ArtifactName: w19d-15-0
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w19d-15-0-$(VersionText-w19d-15-0)
+- job: Job_7
+  displayName: 'Agent job : w16d-14-2j'
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w16d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Install PS Module
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      script: >-
+        if ("$(GitBranch)".Contains("refs/heads")) {
+            $branch ="$(GitBranch)".replace("refs/heads/", "")
+        } else {
+            $branch = "$(GitBranchPR)"
+        }
+
+        $branch | Write-Host | Out-Default | Write-Verbose
+
+        Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+        if ($Env:PsModuleInstalled -eq 'True') {
+            Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+            return;
+        }
+
+
+        Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+        Install-Module -Name AzureRM -AllowClobber -Force
+
+        Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+        Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+        # Az.Accounts for Get-AzVMImage
+
+        Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+        # Az.Compute for Connect-AzAccount
+
+        Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+        # Az.Resources for Get-AzResource
+
+        Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+        # Az for Azure Modules
+
+        Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+        # Pester for Testing
+
+        Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+        Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+        Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+        $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString "$(clientSecret)" -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: "-VersionText 'w16d-14-2j-$(VersionText-w16d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch \"$(GitBranch)\" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN' "
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w16d-14-2j-$(VersionText-w16d-14-2j)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w16d-14-2j.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w16d-14-2j
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w16d-14-2j.txt
+      ArtifactName: w16d-14-2j
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w16d-14-2j-$(VersionText-w16d-14-2j)
+- job: Job_8
+  displayName: 'Agent job : w16d-15-0j'
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Install PS Module
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      script: >-
+        if ("$(GitBranch)".Contains("refs/heads")) {
+            $branch ="$(GitBranch)".replace("refs/heads/", "")
+        } else {
+            $branch = "$(GitBranchPR)"
+        }
+
+        $branch | Write-Host | Out-Default | Write-Verbose
+
+        Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+        if ($Env:PsModuleInstalled -eq 'True') {
+            Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+            return;
+        }
+
+
+        Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+        Install-Module -Name AzureRM -AllowClobber -Force
+
+        Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+        Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+        # Az.Accounts for Get-AzVMImage
+
+        Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+        # Az.Compute for Connect-AzAccount
+
+        Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+        # Az.Resources for Get-AzResource
+
+        Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+        # Az for Azure Modules
+
+        Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+        # Pester for Testing
+
+        Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+        Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+        Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+        $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString "$(clientSecret)" -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: "-VersionText 'w16d-15-0j-$(VersionText-w16d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch \"$(GitBranch)\" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN' "
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w16d-15-0j-$(VersionText-w16d-15-0j)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w16d-15-0j.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w16d-15-0j
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w16d-15-0j.txt
+      ArtifactName: w16d-15-0j
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w16d-15-0j-$(VersionText-w16d-15-0j)
+- job: Job_9
+  displayName: 'Agent job : w19d-14-2j'
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w19d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Install PS Module
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      script: >-
+        if ("$(GitBranch)".Contains("refs/heads")) {
+            $branch ="$(GitBranch)".replace("refs/heads/", "")
+        } else {
+            $branch = "$(GitBranchPR)"
+        }
+
+        $branch | Write-Host | Out-Default | Write-Verbose
+
+        Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+        if ($Env:PsModuleInstalled -eq 'True') {
+            Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+            return;
+        }
+
+
+        Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+        Install-Module -Name AzureRM -AllowClobber -Force
+
+        Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+        Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+        # Az.Accounts for Get-AzVMImage
+
+        Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+        # Az.Compute for Connect-AzAccount
+
+        Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+        # Az.Resources for Get-AzResource
+
+        Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+        # Az for Azure Modules
+
+        Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+        # Pester for Testing
+
+        Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+        Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+        Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+        $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString "$(clientSecret)" -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    continueOnError: True
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: "-VersionText 'w19d-14-2j-$(VersionText-w19d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName  $(Windows-2019-IMAGE-URI-JPN) -GitBranch \"$(GitBranch)\" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true  -Language 'JPN' "
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w19d-14-2j-$(VersionText-w19d-14-2j)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w19d-14-2j.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w19d-14-2j
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w19d-14-2j.txt
+      ArtifactName: w19d-14-2j
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w19d-14-2j-$(VersionText-w19d-14-2j)
+- job: Job_10
+  displayName: 'Agent job : w19d-15-0j'
+  timeoutInMinutes: 360
+  condition: and(succeeded(), or(eq(variables['Build-w19d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))
+  pool:
+    vmImage: windows-2022
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Install PS Module
+    inputs:
+      filePath: scripts/install-powershell-modules-azure.ps1
+      script: >-
+        if ("$(GitBranch)".Contains("refs/heads")) {
+            $branch ="$(GitBranch)".replace("refs/heads/", "")
+        } else {
+            $branch = "$(GitBranchPR)"
+        }
+
+        $branch | Write-Host | Out-Default | Write-Verbose
+
+        Write-Host "##vso[task.setvariable variable=GitBranch]$branch" | Out-Default | Write-Verbose
+
+        if ($Env:PsModuleInstalled -eq 'True') {
+            Write-Host "PS Module already installed, skip the Install PS Module Task." | Out-Default | Write-Verbose
+            return;
+        }
+
+
+        Write-Host "Installing Module AzureRM" | Out-Default | Write-Verbose
+
+        Install-Module -Name AzureRM -AllowClobber -Force
+
+        Write-Host "Installed Module AzureRM" | Out-Default | Write-Verbose
+
+
+        Write-Host "Installing Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.KeyVault -RequiredVersion 2.0.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.KeyVault  -RequiredVersion 2.0.0" | Out-Default | Write-Verbose
+
+
+        # Az.Accounts for Get-AzVMImage
+
+        Write-Host "Installing Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Accounts -RequiredVersion 1.9.2 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Accounts -RequiredVersion 1.9.2" | Out-Default | Write-Verbose
+
+
+        # Az.Compute for Connect-AzAccount
+
+        Write-Host "Installing Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Compute -RequiredVersion 4.2.1 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Compute -RequiredVersion 4.2.1" | Out-Default | Write-Verbose
+
+
+        # Az.Resources for Get-AzResource
+
+        Write-Host "Installing Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az.Resources -RequiredVersion 2.4.0 -Force -AllowClobber | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az.Resources -RequiredVersion 2.4.0" | Out-Default | Write-Verbose
+
+
+        # Az for Azure Modules
+
+        Write-Host "Installing Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+        Install-Module -Name Az -RequiredVersion 4.5.0 -AllowClobber -Force | Out-Default | Write-Host | Write-Verbose
+
+        Write-Host "Installed Module Az -RequiredVersion 4.5.0" | Out-Default | Write-Verbose
+
+
+        # Pester for Testing
+
+        Write-Host "Installing Module Pester RequiredVersion 5.0.3" | Out-Default | Write-Verbose
+
+        Install-Module -Name Pester -RequiredVersion 5.0.3 -AllowClobber -Force
+
+        Write-Host "Installed Module Pester" | Out-Default | Write-Verbose
+
+
+        $Env:PsModuleInstalled = 'True'
+      errorActionPreference: continue
+  - task: PowerShell@2
+    displayName: Azure Login
+    inputs:
+      filePath: scripts/AzureLogin.ps1
+      arguments: -CloudAccount $(azureUserId) -CloudSecret (ConvertTo-SecureString "$(clientSecret)" -AsPlainText -force)
+      workingDirectory: scripts
+  - task: PowerShell@2
+    name: BuildImage
+    displayName: Build Image
+    timeoutInMinutes: 120
+    inputs:
+      filePath: scripts/bake-scalable-azure-image-pipeline.ps1
+      arguments: -VersionText 'w19d-15-0j-$(VersionText-w19d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -Language 'JPN' -InstallLanguagePack:$true
+      workingDirectory: scripts
+  - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
+    displayName: Azure Resource Group Tagging
+    continueOnError: True
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      ResourceGroupName: BakingDP-w19d-15-0j-$(VersionText-w19d-15-0j)
+      Key: Usage
+      Value: test-temp
+  - task: PowerShell@2
+    displayName: 'Generate: Image URL'
+    inputs:
+      targetType: inline
+      script: >-
+        Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
+
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "w19d-15-0j.txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+
+        Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
+  - task: PowerShell@2
+    displayName: VM Tests
+    inputs:
+      filePath: scripts/invoke-pester-tests.ps1
+      script: >-
+        # Invoke Pester Tests
+
+        cd $(System.DefaultWorkingDirectory)\Tests
+
+        $result = Invoke-Pester -Script '.\Image*' -OutputFormat  NUnitXml -OutputFile '$(System.DefaultWorkingDirectory)\Test-Vm.xml' -PassThru
+
+        $result | Out-Default | Write-Host
+
+        if ($result.Result -eq "Failed") {
+            throw "Failed Tests Count: $($result.FailedCount)"
+        } else {
+            Write-Host "Tested the image successfully."
+        }
+  - task: PublishTestResults@2
+    displayName: Publish Test Results **/Test-*.xml
+    inputs:
+      testRunner: NUnit
+      testResultsFiles: '**/Test-*.xml'
+      testRunTitle: w19d-15-0j
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Image URL copy'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/w19d-15-0j.txt
+      ArtifactName: w19d-15-0j
+      FileCopyOptions: ''
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Delete Resource Group
+    inputs:
+      ConnectedServiceName: $(ConnectedServiceName)
+      subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+      action: DeleteRG
+      resourceGroupName: BakingDP-w19d-15-0j-$(VersionText-w19d-15-0j)
+...
