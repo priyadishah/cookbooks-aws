@@ -31,7 +31,7 @@ variables:
   - group: Git Repos
 
 stages:
-# - template: AzureDevOps\templates\AzureTestImage.yml
+# - template: AzureDevOps\templates\Azure Test Image.yml
 #   parameters:
 #     dependsOn:
 #     stageName: w22d142Aus
@@ -42,7 +42,7 @@ stages:
 #     Version: w22d-14-2
 #     osName: Windows Server 2022
 
-# - template: AzureDevOps\templates\AzureTestImage.yml
+# - template: AzureDevOps\templates\Azure Test Image.yml
 #   parameters:
 #     dependsOn:
 #     stageName: w22d150Aus
@@ -53,7 +53,7 @@ stages:
 #     Version: w22d-15-0
 #     osName: Windows Server 2022
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     dependsOn:
     stageName: w16d142Aus
@@ -68,7 +68,7 @@ stages:
     resourceGroup: BakingDP-Custom-w16d-14-2
 
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     dependsOn:
     stageName: w16d150Aus
@@ -83,7 +83,7 @@ stages:
     resourceGroup: BakingDP-Custom-w16d-15-0
 
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     dependsOn:
     stageName: w19d142Aus
@@ -97,7 +97,7 @@ stages:
     msiURL: $(msiURLv142)
     resourceGroup: BakingDP-Custom-w19d-14-2
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     dependsOn:
     stageName: w19d150Aus
@@ -111,7 +111,7 @@ stages:
     msiURL: $(msiURLv15)
     resourceGroup: BakingDP-Custom-w19d-15-0
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     dependsOn:
     stageName: 'w16d142jAus'
@@ -125,7 +125,7 @@ stages:
     msiURL: $(msiURLJPN)
     resourceGroup: BakingDP-Custom-w16d-14-2j
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     dependsOn:
     stageName: 'w16d150jAus'
@@ -139,7 +139,7 @@ stages:
     msiURL: $(msiURLJPNLatest)
     resourceGroup: BakingDP-Custom-w16d-15-0j
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     dependsOn:
     stageName: 'w19d142jAus'
@@ -153,7 +153,7 @@ stages:
     msiURL: $(msiURLJPN)
     resourceGroup: BakingDP-Custom-w19d-14-2j
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     dependsOn:
     stageName: 'w19d150jAus'
@@ -220,7 +220,7 @@ stages:
           filePath: ' $(Pipeline.Workspace)/_robe070_cookbooks/scripts/GitMerge.ps1'
           arguments: '-GitRepoName ''$(CookbooksSourceAlias)'' -GitSourceBranch ''$(CookbooksBranch)'' -GitTargetBranch ''$(CookbooksBranchPreview)'''
       
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w22d142AusEastPreview'
     stagedisplayName: 'w22d142 Aus East Preview'
@@ -229,7 +229,7 @@ stages:
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w22d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w22d142USEastPreview'
     stagedisplayName: 'w22d142 US East Preview'
@@ -238,7 +238,7 @@ stages:
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w22d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w22d142FranceCentralPreview'
     stagedisplayName: 'w22d142 France Central Preview'
@@ -247,7 +247,7 @@ stages:
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w22d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w22d150AusEastPreview'
     stagedisplayName: 'w22d150 Aus East Preview'
@@ -256,7 +256,7 @@ stages:
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w12r2d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w22d150USEastPreview'
     stagedisplayName: 'w22d150 US East Preview'
@@ -265,7 +265,7 @@ stages:
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w22d-15-0'], 'True'), eq(variables['Build-all'], 'True')))    
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w22d150FranceCentralPreview'
     stagedisplayName: 'w22d150 France Central Preview'
@@ -274,7 +274,7 @@ stages:
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w22d-15-0'], 'True'), eq(variables['Build-all'], 'True')))    
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d142EurWestPreview'
     stagedisplayName: 'w16d142 Eur West Preview'
@@ -282,17 +282,23 @@ stages:
     jobDisplayname: 'w16d142 Eur West Preview'
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w16d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-EW-w16d-14-2
+    lansaVersion: V14 SP2 
+    msiURL: msiURLv142
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d142USWestPreview'
     stagedisplayName: 'w16d142 US West Preview'
     jobName: 'w16d142USWestPreview'
     jobDisplayname: 'w16d142 US West Preview'
     dependsOn: MergePatch_PAASCookbooks
-    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-14-2'], 'True'), eq(variables['Build-all'], 'True')))  
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-UW-w16d-14-2
+    lansaVersion: V14 SP2
+    msiURL: msiURLv142
     
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d150SANorthPreview'
     stagedisplayName: 'w16d150 SA North Preview'
@@ -300,8 +306,11 @@ stages:
     jobDisplayname: 'w16d150 SA North Preview'
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-SN-w16d-15-0
+    lansaVersion: V15 GA
+    msiURL: msiURLv15
     
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d150CanadaCentralPreview'
     stagedisplayName: 'w16d150 Canada Central Preview'
@@ -309,26 +318,35 @@ stages:
     jobDisplayname: 'w16d150 Canada Central Preview'
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-CC-w16d-15-0
+    lansaVersion: V15 GA
+    msiURL: msiURLv15
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d150BrazilSouthPreview'
     stagedisplayName: 'w19d150 Brazil South Preview'
     jobName: 'w19d150BrazilSouthPreview'
     jobDisplayname: 'w19d150 Brazil South Preview'
     dependsOn: MergePatch_PAASCookbooks
-    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'True'), eq(variables['Build-all'], 'True')))   
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-BS-w19d-15-0
+    lansaVersion: V15 GA
+    msiURL: msiURLv15
     
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d142FranceCentralPreview'
     stagedisplayName: 'w19d142 France Central Preview'
     jobName: 'w19d142FranceCentralPreview'
     jobDisplayname: 'w19d142 France Central Preview'
     dependsOn: MergePatch_PAASCookbooks
-    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2'], 'True'), eq(variables['Build-all'], 'True')))   
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-FC-w19d-14-2
+    lansaVersion: V14 SP2
+    msiURL: msiURLv142
     
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d142IndiaCentralPreview'
     stagedisplayName: 'w16d142 India Central Preview'
@@ -336,8 +354,11 @@ stages:
     jobDisplayname: 'w16d142 India Central Preview'
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w16d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-IC-w16d-14-2
+    lansaVersion: V14 SP2
+    msiURL: msiURLv142
     
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d150UKWestPreview'
     stagedisplayName: 'w19d150 UK West Preview'
@@ -345,8 +366,11 @@ stages:
     jobDisplayname: 'w19d150 UK West Preview'
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-UW-w19d-15-0
+    lansaVersion: V15 GA
+    msiURL: msiURLv15
     
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d142jJapanWestPreview'
     stagedisplayName: 'w16d142j Japan West Preview'
@@ -354,17 +378,23 @@ stages:
     jobDisplayname: 'w16d142j Japan West Preview'
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-JW-w16d-14-2j
+    lansaVersion: V14 SP2
+    msiURL: msiURLJPN
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d150jKoreaCentralPreview'
     stagedisplayName: 'w16d150j Korea Central Preview'
     jobName: 'w16d150jKoreaCentralPreview'
     jobDisplayname: 'w16d150j Korea Central Preview'
     dependsOn: MergePatch_PAASCookbooks
-    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))   
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-KC-w16d-15-0j
+    lansaVersion: V15 GA
+    msiURL: msiURLJPNLatest
     
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d142jUSNorthCentralPreview'
     stagedisplayName: 'w19d142j US NorthCentral Preview'
@@ -372,15 +402,21 @@ stages:
     jobDisplayname: 'w19d142j US NorthCentral Preview'
     dependsOn: MergePatch_PAASCookbooks
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-NC-w19d-14-2j
+    lansaVersion: V14 SP2
+    msiURL: msiURLJPN
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d150jGermanyWestCentralPreview'
     stagedisplayName: 'w19d150j Germany West Central Preview'
     jobName: 'w19d150jGermanyWestCentralPreview'
     jobDisplayname: 'w19d150j Germany West Central Preview'
     dependsOn: MergePatch_PAASCookbooks
-    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))    
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Preview-GW-w19d-15-0j
+    lansaVersion: V15 GA
+    msiURL: msiURLJPNLatest
 
 - stage: 'GoLive'
   displayName: 'Go Live'
@@ -466,7 +502,7 @@ stages:
         filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/GitTag.ps1'
         arguments: '-GitRepoName ''$(CookbooksSourceAlias)'' -Tags  ''AzureImage-Bld-$(Build.BuildId)-$(Release.ReleaseName)-$(Gate.Sku)'''
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w22d142USEastProduction'
     stagedisplayName: 'w22d142 US East Production'
@@ -475,7 +511,7 @@ stages:
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w22d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w22d150AsiaEastProduction'
     stagedisplayName: 'w22d150 Asia East Production'
@@ -484,7 +520,7 @@ stages:
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w22d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d142EuropeWestProduction'
     stagedisplayName: 'w16d142 Europe West Production'
@@ -492,8 +528,11 @@ stages:
     jobDisplayname: 'w16d142 Europe West Production'
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w16d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Prod-EW-w16d-14-2
+    lansaVersion: V14 SP2 
+    msiURL: msiURLv142
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d150AusEastProduction'
     stagedisplayName: 'w16d150 Aus East Production'
@@ -501,8 +540,11 @@ stages:
     jobDisplayname: 'w16d150 Aus East Production'
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Prod-AE-w16d-15-0
+    lansaVersion: V15 GA
+    msiURL: msiURLv15
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d142UKSouthProduction'
     stagedisplayName: 'w19d142 UK South Production'
@@ -510,8 +552,11 @@ stages:
     jobDisplayname: 'w19d142 UK South Production'
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Prod-US-w19d-14-2
+    lansaVersion: V14 SP2
+    msiURL: msiURLv142
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d150SoutheastAsiaProduction'
     stagedisplayName: 'w19d150 Southeast Asia Production'
@@ -519,8 +564,11 @@ stages:
     jobDisplayname: 'w19d150 Southeast Asia Productionn'
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Prod-SA-w19d-15-0
+    lansaVersion: V15 GA
+    msiURL: msiURLv15
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d142jUSCentralProduction'
     stagedisplayName: 'w16d142j US Central Production'
@@ -528,8 +576,11 @@ stages:
     jobDisplayname: 'w16d142j US Central Production'
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w16d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Prod-UC-w16d-14-2j
+    lansaVersion: V14 SP2
+    msiURL: msiURLJPN
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w16d150jEuropeNorthProduction'
     stagedisplayName: 'w16d150j Europe North Production'
@@ -537,8 +588,11 @@ stages:
     jobDisplayname: 'w16d150j Europe North Production'
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Prod-EN-w16d-15-0j
+    lansaVersion: V15 GA
+    msiURL: msiURLJPNLatest
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d142jWestIndiaProduction'
     stagedisplayName: 'w19d142j West India Production'
@@ -546,12 +600,18 @@ stages:
     jobDisplayname: 'w19d142j West India Production'
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Prod-WI-w19d-14-2j
+    lansaVersion: 14 SP2
+    msiURL: msiURLJPN
 
-- template: AzureDevOps\templates\AzureTestImage.yml
+- template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d150jSwitzerlandNorthProduction'
     stagedisplayName: 'w19d150j Switzerland North Production'
     jobName: 'w19d150jSwitzerlandNorthProduction'
     jobDisplayname: 'w19d150j Switzerland North Production'
     dependsOn: CookbooksMergeAndTag
-    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))    
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))
+    resourceGroup: BakingDP-Prod-SN-w19d-15-0j
+    lansaVersion: V15 GA
+    msiURL: msiURLJPNLatest
