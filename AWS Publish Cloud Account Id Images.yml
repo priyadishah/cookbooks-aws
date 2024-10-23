@@ -45,19 +45,15 @@ resources:
   repositories:
     - repository: _lansa_aws-templates
       type: github
-      endpoint: priyadishah
-      name: priyadishah/aws-templates-md
+      endpoint: robe070
+      name: lansa/aws-templates
       ref: support/scalable
+
     - repository: _robe070_cookbooks
-      name: priyadishah/cookbooks
       type: github
-      ref: feature/AWS-Cloud-Account-Id-Image-Release
-      endpoint: priyadishah
-    # - repository: _robe070_cookbooks
-    #   type: github
-    #   endpoint: priyadishah
-    #   name: priyadishah/cookbooks
-    #   ref: feature/AWSImageRelease-3.0
+      endpoint: robe070
+      name: robe070/cookbooks
+      ref: debug/paas    
 
 pool:
   vmImage: windows-2022
@@ -71,20 +67,6 @@ stages:
     jobDisplayname: 'w19d-15-id-old'
     jobDemand: DotNetFramework
     jobcondition: or(eq(variables['Build-V15-OLD'], 'true'), eq(variables['Build-all'], 'true'))
-    paramLansaVersion: $(lansaVersion)
-    parammsiURL: $(msiURLLatest)
-    paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
-    paramsetGateVariable: 'SetGateVariableCloudAccountId.ps1'
-    paramTagValue: "Lansa-Prod"
-
-- template: AzureDevOps/templates/AWSTestCloudAccountIdImage.yml
-  parameters:
-    stageName: 'v13sp2idnew'
-    stageDisplayname: 'v13sp2-id-new'
-    jobName: 'w19d15idnew'
-    jobDisplayname: 'w19d-15-id-new'
-    jobDemand: DotNetFramework
-    jobcondition: or(eq(variables['Build-V13SP2-NEW'], 'true'), eq(variables['Build-all'], 'true'))
     paramLansaVersion: $(lansaVersion)
     parammsiURL: $(msiURLLatest)
     paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
@@ -121,31 +103,15 @@ stages:
 
 - template: AzureDevOps/templates/AWSTestCloudAccountIdImage.yml
   parameters:
-    stageName: 'v13sp2scalable'
-    stageDisplayname: 'v13sp2-scalable'
-    jobName: 'w19d150'
-    jobDisplayname: 'w19d-15-0'
-    jobDemand: DotNetFramework
-    # setGateVariable: SetGateVariable.ps1
-    jobcondition: or(eq(variables['Build-V13SP2-Scalable'], 'True'), eq(variables['Build-all'], 'True'))
-    paramLansaVersion: $(lansaVersion)
-    parammsiURL: $(msiURLLatest)
-    paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
-    paramsetGateVariable: 'SetGateVariable.ps1'
-    paramTagValue: "Lansa-Prod"
-
-- template: AzureDevOps/templates/AWSTestCloudAccountIdImage.yml
-  parameters:
     stageName: 'v14sp2scalable'
     stageDisplayname: 'v14sp2-scalable'
     jobName: 'w19d150'
     jobDisplayname: 'w19d-15-0'
     jobDemand: DotNetFramework
-    # setGateVariable: SetGateVariable.ps1
     jobcondition: or(eq(variables['Build-V14SP2-Scalable'], 'True'), eq(variables['Build-all'], 'True'))
     paramLansaVersion: $(lansaVersionPrevious)
     parammsiURL: $(msiURLPrevious)
-    paramWebserverOSVersionValue: $(WebserverOSPreviousVersionValue)
+    paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
     paramsetGateVariable: 'SetGateVariable.ps1'
     paramTagValue: "Lansa-Prod"
 
@@ -156,7 +122,6 @@ stages:
     jobName: 'w19d150'
     jobDisplayname: 'w19d-15-0'
     jobDemand: DotNetFramework
-    # setGateVariable: SetGateVariable.ps1
     jobcondition: or(eq(variables['Build-V15-Scalable'], 'True'), eq(variables['Build-all'], 'True'))
     paramLansaVersion: $(lansaVersion)
     parammsiURL: $(msiURLLatest)

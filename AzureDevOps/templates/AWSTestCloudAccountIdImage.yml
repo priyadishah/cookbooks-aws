@@ -74,9 +74,6 @@ stages:
         displayName: Checkout _lansa_aws-templates
         path: _lansa_aws-templates
 
-      # - checkout: _priyadishahCookbooks
-      #   displayName: Checkout cookbooks
-
       - checkout: _robe070_cookbooks
         displayName: Rob cookbooks
         path: _robe070_cookbooks
