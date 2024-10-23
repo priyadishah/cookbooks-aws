@@ -30,7 +30,7 @@ try
     Write-Host "$(Log-Date) Updating $Cloud instance, Language $Language"
 
     Write-Host "$(Log-Date) Synchronise clock"
-    
+
     cmd /c "sc triggerinfo w32time start/networkon stop/networkoff" | Out-Default
 
     Write-Host "$(Log-Date) Ensure that Framework caching is completed"

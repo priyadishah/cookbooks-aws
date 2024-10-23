@@ -8,26 +8,29 @@ parameters:
   - name: runStage
     type: boolean
     default: true
-  # - name: dependsOn
-  #   default: []
   - name: jobName
     type: string
     default: none
   - name: jobDisplayname
     type: string
     default: none
+  - name: BaseImageName
+    type: string
+    default: none
+  - name: stackname
+    type: string
+    default: none    
   - name: vmImage
     type: string
-    default: windows-2022
+    default: windows-2019
   - name: jobcondition
     type: string
     default: ''
   - name: jobDemand
     type: string
     default: ''
-  - name: paramsetGateVariable
-    type: string
-    default: none
+  - name: dependsOn
+    default: []
   - name: paramLansaVersion
     type: string
     default: none
@@ -44,67 +47,69 @@ parameters:
 stages:
   - stage: ${{ parameters.stageName }}
     condition: ${{ parameters.runStage }}
-    dependsOn: []
+    dependsOn: ${{ parameters.dependsOn }}
     displayName: ${{ parameters.stageDisplayname }}
     jobs:
     - job: ${{ parameters.jobName }}
-      timeoutInMinutes: 0
+      timeoutInMinutes: 120
       cancelTimeoutInMinutes: 1
       condition: ${{ parameters. jobcondition}}
       displayName: ${{ parameters.jobDisplayname }}
 
       variables:
-        TemplateS3Namespace: '/image-cd-pipeline'
-        SetGateVariable: ${{ parameters.paramsetGateVariable }}
+        - name: TemplateS3Namespace
+          value: '/image-cd-pipeline'
+        - name: japan_override
+          ${{ if endsWith(lower(parameters.BaseImageName), 'j')}}:
+            value: -Language $(jpnLanguage)
+          ${{ else }}:
+            value: ''
 
       pool:
         vmImage: ${{ parameters.vmImage }}
         demands: ${{ parameters.jobDemand }}
 
       steps:
-      - download: _Build Cloud Account Id Artefacts
-        displayName: Download artifacts from Build Cloud Account Id Artefacts
-
       - download: _Build Image Release Artefacts
         displayName: Download artifacts from Build Image Release Artefacts 3.0
 
       - checkout: self
 
       - checkout: _lansa_aws-templates
-        displayName: Checkout _lansa_aws-templates
+        displayName: Checkout Lansa AWS Templates
         path: _lansa_aws-templates
 
       - checkout: _robe070_cookbooks
-        displayName: Rob cookbooks
+        displayName: Checkout Rob cookbooks
         path: _robe070_cookbooks
 
-      - task: AWSPowerShellModuleScript@1
+      - task: AmazonWebServices.aws-vsts-tools.AWSPowerShellModuleScript.AWSPowerShellModuleScript@1
+        displayName: 'Artifact Check : Set Gate Variable'
         name: Gate
-        displayName: 'Artifact Check: Set Gate Variable'
         inputs:
           awsCredentials: AzureDevOps
           regionName: 'ap-southeast-2'
-          arguments: '-BaseImageName ''$(System.JobDisplayName)'' -stackname ''$(System.StageDisplayName)-$(System.JobDisplayName)'''
-          filePath: "$(Pipeline.Workspace)/_lansa_aws-templates/scripts/${{ parameters.paramsetGateVariable }}"
-          failOnStderr: true
-        continueOnError: false
-      
-      - pwsh: |
-          # Print the Gate variables.
-          Write-Host "Gate.IsEnabled: $(Gate.IsEnabled); Gate.ImageID: $(Gate.ImageID); Gate.stack:$(Gate.stack)" | Out-Default
-        displayName: 'Artifact Check: Output Gate Variable'
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+          #arguments: '-BaseImageName ${{ parameters.BaseImageName }} -stackname $(System.stackname)'
+          arguments: '-BaseImageName ''${{ parameters.BaseImageName }}'' -stackname ''${{ parameters.stackname }}'''
+          filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/SetGateVariable.ps1'
 
-      - task: AWSPowerShellModuleScript@1
+      - pwsh: |
+         # Print the Gate variables.
+         Write-Host "Gate.IsEnabled: $(Gate.IsEnabled); Gate.ImageID: $(Gate.ImageID); Gate.version:$(Gate.version); Gate.stack:$(Gate.stack)"| Out-Default
+        displayName: 'Artifact Check : Output Gate Variable'
+        #condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))'], 'true'))
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+
+      - task: AmazonWebServices.aws-vsts-tools.AWSPowerShellModuleScript.AWSPowerShellModuleScript@1
         displayName: 'Delete previous Failed Stack'
         inputs:
           awsCredentials: AzureDevOps
           regionName: 'ap-southeast-2'
           arguments: '-Gatestack $(Gate.stack)'
           filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/DeletePreviousFailedStack.ps1'
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      - task: CloudFormationCreateOrUpdateStack@1
+      - task: AmazonWebServices.aws-vsts-tools.CloudFormationCreateOrUpdateStack.CloudFormationCreateOrUpdateStack@1
         displayName: 'Deploy AWS template'
         inputs:
           awsCredentials: AzureDevOps
@@ -118,8 +123,7 @@ stages:
             [{
                 "ParameterKey": "$(DBPasswordKey)",
                 "ParameterValue": "$(DBPasswordValue)"
-            }, 
-            {
+            }, {
                 "ParameterKey": "$(WebPasswordKey)",
                 "ParameterValue": "$(WebPasswordValue)"
             }, {
@@ -130,23 +134,20 @@ stages:
                 "ParameterValue": "$(RemoteAccessLocationValue)"
             }, {
                 "ParameterKey": "ImageSource",   
-                "ParameterValue": "Custom"
-            }, {
-                "ParameterKey": "AMIId",   
-                "ParameterValue": "$(Gate.ImageID)"
-            }, {
-                "ParameterKey": "TagValue",   
-                "ParameterValue": "${{ parameters.paramTagValue }}"
+                "ParameterValue": "Marketplace"
             }, {
                 "ParameterKey": "LansaVersion",   
                 "ParameterValue": "${{ parameters.paramLansaVersion }}"
+            }, {
+                "ParameterKey": "TagValue",   
+                "ParameterValue": "${{ parameters.paramTagValue }}"
             }, {
                 "ParameterKey": "11WebserverOSVersion",   
                 "ParameterValue": "${{ parameters.paramWebserverOSVersionValue }}"
             }, {
                 "ParameterKey": "10LansaGitRepoBranch",   
                 "ParameterValue": "$(CookbooksBranch)"
-            }, {
+            },  {
                 "ParameterKey": "TemplateS3Namespace",   
                 "ParameterValue": "$(TemplateS3Namespace)"
             }, {
@@ -170,35 +171,45 @@ stages:
             }, {
                 "ParameterKey": "03DBUsername",   
                 "ParameterValue": "$(03DBUsername)"
-            }
-            ]
+            } ]
+          tags: 'usage=test-temp'
           onFailure: 'DO_NOTHING'
           disableRollback: true
+          warnWhenNoWorkNeeded: false
           outputVariable: deploymentOutput
           captureStackOutputs: asJSON
           captureAsSecuredVars: false
           timeoutInMins: 120
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+          condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      - task: AWSPowerShellModuleScript@1
+      - task: AmazonWebServices.aws-vsts-tools.AWSPowerShellModuleScript.AWSPowerShellModuleScript@1
         displayName: 'Print Deployment Output'
         inputs:
           awsCredentials: AzureDevOps
           regionName: 'ap-southeast-2'
           arguments: '-Gatestack $(Gate.stack)'
           filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/PrintDeploymentOutput.ps1'
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      - task: AWSPowerShellModuleScript@1
+      - task: AmazonWebServices.aws-vsts-tools.AWSPowerShellModuleScript.AWSPowerShellModuleScript@1
         displayName: 'Test CFN Deployment: URL tests'
         inputs:
           awsCredentials: AzureDevOps
           regionName: 'ap-southeast-2'
-          arguments: '-Gatestack $(Gate.stack)'
+          arguments: '-Gatestack $(Gate.stack) $(japan_override)'
           filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/TestCFNDeployment.ps1'
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      - task: AWSPowerShellModuleScript@1
+      - task: AmazonWebServices.aws-vsts-tools.AWSPowerShellModuleScript.AWSPowerShellModuleScript@1
+        displayName: 'Alternate Image Version Test'
+        inputs:
+          awsCredentials: AzureDevOps
+          regionName: 'ap-southeast-2'
+          arguments: '-Gatestack ''$(Gate.stack)'' -Gateversion ''$(Gate.version)'''
+          filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/AlternateImageVersion.ps1'
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+
+      - task: AmazonWebServices.aws-vsts-tools.AWSPowerShellModuleScript.AWSPowerShellModuleScript@1
         displayName: 'Delete Stack'
         inputs:
           awsCredentials: AzureDevOps
@@ -206,5 +217,5 @@ stages:
           arguments: '-Gatestack $(Gate.stack)'
           filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/DeletePreviousFailedStack.ps1'
           ignoreLASTEXITCODE: true
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'))
-        timeoutInMinutes: 240
+        continueOnError: true
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
