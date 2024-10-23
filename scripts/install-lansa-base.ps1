@@ -141,7 +141,7 @@ try
     }
     #  Enabling TLS 1.2 security protocol to establsih a secure connection with the server when making web requests.
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    
+
     Write-Host( "$(Log-Date) Installing Windows Feature WebServer")
     Install-WindowsFeature -name Web-Server -IncludeManagementTools
 
@@ -218,8 +218,7 @@ try
                 (New-Object System.Net.WebClient).DownloadFile($CWASetup, $installer_file) | Out-Default | Write-Host
                 $downloaded = $true
             } catch {
-                $_
-                $TotalFailedDownloadAttempts += 1 
+                $TotalFailedDownloadAttempts += 1
                 New-ItemProperty -Path HKLM:\Software\LANSA  -Name 'TotalFailedDownloadAttempts' -Value ($TotalFailedDownloadAttempts) -PropertyType DWORD -Force | Out-Null
                 $loops += 1
 
