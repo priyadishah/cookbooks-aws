@@ -397,7 +397,7 @@ stages:
                   "ParameterValue": "Small"
               },{
                   "ParameterKey": "10LansaGitRepoBranch",
-                  "ParameterValue": "$(CookbooksBranchPreview)"
+                  "ParameterValue": "$(CookbooksBranchProduction)"
               },{
                   "ParameterKey": "$(DBPasswordKey)",
                   "ParameterValue": "$(DBPasswordValue)"
