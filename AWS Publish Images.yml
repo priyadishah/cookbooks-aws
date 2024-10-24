@@ -959,27 +959,15 @@ stages:
   dependsOn: CommitUStemplatechanges
 
   jobs:
-    - job:
-      displayName: Agentless job
-      timeoutInMinutes: 0
-
+    - job: 'Job_1'
+      displayName: 'Agentless Job'
       pool: server
-      #   vmImage: $(vmImage)
-
+      
       steps:
-        # - download: _Build Image Release Artefacts 3.0
-        #   displayName: Download artifacts from Build Image Release Artefacts 3.0
-
-        # - checkout: self
-
-        # - checkout: _lansa_aws-templates
-        #   displayName: Checkout Divakshi/aws-templates
-
-        # - checkout: _priyadishahCookbooks
-        #   displayName: Checkout Divakshi/cookbooks
-
+      
         - task: ManualIntervention@8
           displayName: 'Marketplace Instructions'
+          timeoutInMinutes: 43200
           inputs:
             instructions: |
               1. Manual step. Submit US AMIs to AWS MP. Upload the AMIs to AWS Markeplace.
