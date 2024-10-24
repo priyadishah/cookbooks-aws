@@ -43,6 +43,9 @@ parameters:
   - name: paramTagValue
     type: string
     default: none
+  - name: paramDBCCSID
+    type: string
+    default: ''
 
 stages:
   - stage: ${{ parameters.stageName }}
@@ -180,6 +183,9 @@ stages:
            }, {
                "ParameterKey": "DBSubnetGroupName",   
                "ParameterValue": "$(DBSubnetGroupNameUS)"
+           }, {
+                "ParameterKey": "DBCCSID",   	
+                "ParameterValue": "${{ parameters.paramDBCCSID }}"
            }, {
                "ParameterKey": "ELBSubnetIds",   
                "ParameterValue": "$(ELBSubnetIdsUS)"

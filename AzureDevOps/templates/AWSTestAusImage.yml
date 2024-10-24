@@ -43,6 +43,9 @@ parameters:
   - name: paramTagValue
     type: string
     default: none
+  - name: paramDBCCSID
+    type: string
+    default: ''
 
 stages:
   - stage: ${{ parameters.stageName }}
@@ -168,6 +171,9 @@ stages:
             }, {
                 "ParameterKey": "ELBSubnetIds",   
                 "ParameterValue": "$(ELBSubnetIds)"
+            }, {
+                "ParameterKey": "DBCCSID",   	
+                "ParameterValue": "${{ parameters.paramDBCCSID }}"
             }, {
                 "ParameterKey": "03DBUsername",   
                 "ParameterValue": "$(03DBUsername)"
