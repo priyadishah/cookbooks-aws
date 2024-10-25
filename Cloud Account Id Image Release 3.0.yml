@@ -35,7 +35,7 @@ variables:
     value: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
 
 stages:
-  - template: Cloud Account Id Image Release 3.0 - template.yml
+  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:
       stageName: v15
       stageDisplayname: v15
@@ -46,7 +46,7 @@ stages:
       setGateVariableScriptPath: 'azure_set_gate_variable.ps1'
       msiURL: $(msiURLv15)
 
-  - template: Cloud Account Id Image Release 3.0 - template.yml
+  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:
       stageName: v14sp2
       stageDisplayname: v14sp2
@@ -56,7 +56,7 @@ stages:
       setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
       msiURL: $(msiURLv142)
 
-  - template: Cloud Account Id Image Release 3.0 - template.yml
+  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:
       stageName: v15scalable
       stageDisplayname: v15-scalable
@@ -66,7 +66,7 @@ stages:
       setGateVariableScriptPath: 'azure_set_gate_variable.ps1'
       msiURL: $(msiURLv15)
 
-  - template: Cloud Account Id Image Release 3.0 - template.yml
+  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:
       stageName: v14sp2scalable
       stageDisplayname: v14sp2-scalable
