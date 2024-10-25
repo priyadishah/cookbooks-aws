@@ -965,7 +965,7 @@ stages:
       
       steps:
       
-        - task: ManualIntervention@8
+        - task: ManualValidation@1
           displayName: 'Marketplace Instructions'
           timeoutInMinutes: 43200
           inputs:
@@ -980,6 +980,7 @@ stages:
               3. Even if only the images are being updated, the Template CD pipeline must be run to upload the updated templates to S3 ready for publication.
               4. Increment the Version Numbers in the Build Image Release Artefacts CI pipeline
               5. Increment the VersionText-TemplateCI variable for the Template CI pipeline testing
+            onTimeout: 'resume'
 
 - stage: TagGit
   displayName: Tag Git
