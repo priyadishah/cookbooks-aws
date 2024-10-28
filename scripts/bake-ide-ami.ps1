@@ -719,16 +719,7 @@ $jsonObject = @"
             }
 
             # Then we install git using chocolatey and pull down the rest of the files from git
-            Write-Host "Installing Git!"
-            # if ( $Cloud -eq 'Azure' ) {
-                
-            #     Invoke-Command -Session $Script:session {Set-ExecutionPolicy Unrestricted -Scope CurrentUser}
-            #     $remotelastexitcode = invoke-command  -Session $Script:session -ScriptBlock { $lastexitcode}
-            #     if ( $remotelastexitcode -and $remotelastexitcode -ne 0 ) {
-            #         Write-Error "LastExitCode: $remotelastexitcode"
-            #         throw 1
-            #     }
-            # }
+           
             Execute-RemoteScript -Session $Script:session -FilePath $script:IncludeDir\installGit.ps1 -ArgumentList  @($Script:GitRepo, $Script:GitRepoPath, $GitBranch, $GitUserName, $true)
 
             Execute-RemoteBlock $Script:session { "Path = $([Environment]::GetEnvironmentVariable('PATH', 'Machine'))" | Out-Default | Write-Host }
@@ -745,15 +736,7 @@ $jsonObject = @"
                 . "$script:IncludeDir\Init-Baking-Includes.ps1"
                 . "$script:IncludeDir\dot-CommonTools.ps1"
             }
-
-
-            if ( $Cloud -eq 'Azure' ) {
-                . "$script:IncludeDir\Init-Baking-Vars.ps1"
-                . "$script:IncludeDir\Init-Baking-Includes.ps1"
-                . "$script:IncludeDir\dot-CommonTools.ps1"
-            }
-
-
+           
             # Upload files that are not in Git. Should be limited to secure files that must not be in Git.
             # Git is a far faster mechansim for transferring files than using RemotePS.
             # From now on we may execute scripts which rely on other scripts to be present from the LANSA Cookbooks git repo
@@ -1334,4 +1317,3 @@ function SetUpAccount {
     Select-AzureSubscription -SubscriptionId $subscription
     set-AzureSubscription -SubscriptionId $subscription -CurrentStorageAccount $Storage
 }
-
