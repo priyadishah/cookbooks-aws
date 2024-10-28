@@ -10,7 +10,7 @@ param (
 
 Write-Host "version is - $Version"
 # Set the Gate variable if the file exists
-$path = "$($env:System_DefaultWorkingDirectory)/_Lansa Images - Cookbooks/$Version/$Version.txt"
+$path = "$($env:Pipeline_Workspace)/_BuildImageReleaseArtefacts/$Version/$Version.txt"
 if (Test-Path $path) {
     # Remove characters from Version so reduce length to less than 9 and which are not compatible with resource ids in the template.
     # In particular, the VM base name in a Scale Set

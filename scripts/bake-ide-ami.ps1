@@ -136,7 +136,7 @@ param (
 
     [Parameter(Mandatory=$true)]
     [string]
-    $GitUserName,
+    $GitUserName="robe070",
 
     [Parameter(Mandatory=$false)]
     [switch]
@@ -685,15 +685,15 @@ $jsonObject = @"
 
             if ( $Cloud -eq 'Azure' ) {
                 Write-Host("$(Log-Date) Azure requires a reboot after installing choco. Rebooting now..")
-                
+
                 Execute-RemoteBlock $Script:session {
                     Restart-Computer -force
                 }
                 Start-Sleep -Seconds 10
-            
+
                 Write-Host "$(Log-Date) Reconnecting session..."
                 if ( $Script:session ) { Remove-PSSession $Script:session | Out-Default | Write-Host }
-            
+
                 Connect-RemoteSession | Out-Default | Write-Host
                 Invoke-Command -Session $Script:session {Set-ExecutionPolicy Unrestricted -Scope CurrentUser}
                 $remotelastexitcode = invoke-command  -Session $Script:session -ScriptBlock { $lastexitcode}
@@ -703,9 +703,20 @@ $jsonObject = @"
                 }
                 Execute-RemoteInit | Out-Default | Write-Host
                 Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\dot-CommonTools.ps1"
-                Write-host "$(Log-Date) The VM is now rebooted."
+
+                Write-host "$(Log-Date) Rebooted the VM!"
+                Execute-RemoteBlock $Script:session {
+
+                    Write-Host( "$(Log-Date) Path before changing it: $ENV:Path ")
+
+                   Add-DirectoryToEnvPathOnce -Directory "C:\ProgramData\chocolatey\bin\" | Out-Default | Write-Host
+
+                    Write-Host( "$(Log-Date) Path after changing it: $ENV:Path")
+
+                   choco | Out-Default | Write-Host
+
+                 }
             }
-            
 
             # Then we install git using chocolatey and pull down the rest of the files from git
             Write-Host "Installing Git!"
@@ -730,6 +741,13 @@ $jsonObject = @"
             
             if ( $Cloud -eq 'Azure' ) {
                 Write-Host "Installing .Net!"
+                . "$script:IncludeDir\Init-Baking-Vars.ps1"
+                . "$script:IncludeDir\Init-Baking-Includes.ps1"
+                . "$script:IncludeDir\dot-CommonTools.ps1"
+            }
+
+
+            if ( $Cloud -eq 'Azure' ) {
                 . "$script:IncludeDir\Init-Baking-Vars.ps1"
                 . "$script:IncludeDir\Init-Baking-Includes.ps1"
                 . "$script:IncludeDir\dot-CommonTools.ps1"
@@ -790,16 +808,18 @@ $jsonObject = @"
                 # Check out a potentially different branch
                 Write-Host "Branch: $using:GitBranch"
                 # Check out ORIGINs correct branch so we can then FORCE checkout of potentially an existing, but rebased branch
-                cmd /c git checkout "origin/$using:GitBranch"  '2>&1'
+                cmd /c git branch -d "$using:GitBranch"  '2>&1'
+                Write-host "All branches: $(git branch)"
                 if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 128)
                 {
-                    throw 'Git checkout failed'
+                    throw "Git branch $using:GitBranch failed with LASTEXITCODE $LASTEXITCODE"
                 }
                 # Overwrite the origin's current tree onto the branch we really want - the local branch
                 cmd /c git checkout -B $using:GitBranch  '2>&1'
+                Write-host "All branches after checkout: $(git branch)"
                 if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 128)
                 {
-                    throw 'Git checkout failed'
+                    throw "Git checkout $using:GitBranch failed with LASTEXITCODE $LASTEXITCODE"
                 }
             }
             # $dummy = MessageBox "Check that git repo is the latest. Please RDP into $Script:vmname $Script:publicDNS as $AdminUserName using password '$Script:password'. When complete, click OK on this message box" -Pipeline:$Pipeline
@@ -1083,25 +1103,25 @@ $jsonObject = @"
                 }
                Invoke-Command -Session $Script:session {
                   # Set the path you want to check
-                  $pathToCheck = "$ENV:ProgramData\Amazon\EC2-Windows\Launch\Scripts" 
- 
+                  $pathToCheck = "$ENV:ProgramData\Amazon\EC2-Windows\Launch\Scripts"
+
                   # Check if the path exists
                   Write-Host("$(Log-Date) Checking if $pathToCheck exists")
                   if (Test-Path -Path $pathToCheck) {
                      Write-Host( "$(Log-Date) EC2-Launch path exists")
                      Write-Host "Executing Windows 2016 & 2019 sysprep"
- 
+
                      cd $pathToCheck | Out-Default | Write-Host
                      ./InitializeInstance.ps1 -Schedule | Out-Default | Write-Host
                      ./SysprepInstance.ps1 | Out-Default | Write-Host
- 
+
                   } else {
                      $pathToCheck = "$ENV:ProgramFiles\Amazon\EC2Launch"
                      Write-Host("$(Log-Date) Checking if $pathToCheck exists")
                      if (Test-Path -Path $pathToCheck) {
                         Write-Host( "$(Log-Date) EC2-Launch path exists")
                         Write-Host "Executing Windows 2022 sysprep"
- 
+
                         cd $pathToCheck | Out-Default | Write-Host
                         ./ec2launch.exe sysprep -c -s | Out-Default | Write-Host
                      } else {
@@ -1242,6 +1262,7 @@ $jsonObject = @"
         $tagName = $amiName # String for use with the name TAG -- as opposed to the AMI name, which is something else and set in New-EC2Image
 
         New-EC2Tag -Resources $amiID -Tags @{ Key = "Name" ; Value = $amiName} | Out-Default
+        New-EC2Tag -Resources $amiID -Tags @{ Key = "Environment" ; Value = "Lansa-Prod"} | Out-Default
 
         while ( $true )
         {

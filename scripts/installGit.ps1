@@ -37,6 +37,7 @@ try {
     {
         Write-Host "Installing Git"
         Run-ExitCode 'choco' @('install', 'git', '-y', '--no-progress', '--force' ) | Out-Default | Write-Host
+    
         refreshenv | Out-Default | Write-Host
 
         # Note, the Git install overwrites the current environment so need to modify path here

@@ -71,8 +71,49 @@ function DownloadAndInstallMSI {
     $p = Start-Process -FilePath $installer_file -ArgumentList @('/qn', "/lv*x $log_file") -Wait -PassThru
     if ( $p.ExitCode -ne 0 ) {
         $ExitCode = $p.ExitCode
-        $ErrorMessage = "MSI Install of $MSIuri returned error code $($p.ExitCode)."
+        $ErrorMessage = "MSI Install of $MSIuri returned error code $($p.ExitCode).  See $log_file"
         throw $ErrorMessage
+    } else {
+        Write-Host "$Installer_file successfully installed.  See $log_file"
+    }
+}
+
+function DownloadAndInstallCRuntime {
+    param (
+        [string] $MSIuri,
+        [string] $installer_file,
+        [string] $log_file
+    )
+    Write-Host ("$(Log-Date) Downloading $MSIuri to $installer_file")
+    $downloaded = $false
+    $TotalFailedDownloadAttempts = 0
+    $loops = 0
+    while (-not $Downloaded -and ($Loops -le 10) ) {
+        try {
+            (New-Object System.Net.WebClient).DownloadFile($MSIuri, $installer_file) | Out-Default | Write-Host
+            $downloaded = $true
+        } catch {
+            $TotalFailedDownloadAttempts += 1
+            $loops += 1
+
+            Write-Host ("$(Log-Date) Total Failed Download Attempts = $TotalFailedDownloadAttempts")
+
+            if ($loops -gt 10) {
+                throw "Failed to download $MSIuri from S3"
+            }
+
+            # Pause for 30 seconds. Maybe that will help it work?
+            Start-Sleep 30
+        }
+    }
+
+    $p = Start-Process -FilePath $installer_file -ArgumentList @('/install', '/quiet', '/norestart',"/log $log_file") -Wait -PassThru
+    if ( $p.ExitCode -ne 0 ) {
+        $ExitCode = $p.ExitCode
+        $ErrorMessage = "Install of $MSIuri returned error code $($p.ExitCode). See $log_file"
+        throw $ErrorMessage
+    } else {
+        Write-Host "$Installer_file successfully installed. See $log_file"
     }
 }
 
@@ -100,12 +141,13 @@ try
     }
     #  Enabling TLS 1.2 security protocol to establsih a secure connection with the server when making web requests.
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-    
+
     Write-Host( "$(Log-Date) Installing Windows Feature WebServer")
     Install-WindowsFeature -name Web-Server -IncludeManagementTools
 
-    #  Enabling TLS 1.2 security protocol to establsih a secure connection with the server when making web requests.
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Write-Host "Installing C Runtime V12 Visual Studio 2013"
+    DownloadAndInstallCRuntime -MSIuri 'https://lansa.s3-ap-southeast-2.amazonaws.com/uploads/CRuntime2013/vcredist2013_x64.exe' -installer_file (Join-Path $temppath 'vcredist2013_x64.exe') -log_file (Join-Path $temppath 'vcredist2013_x64.log');
+    DownloadAndInstallCRuntime -MSIuri 'https://lansa.s3-ap-southeast-2.amazonaws.com/uploads/CRuntime2013/vcredist2013_x86.exe' -installer_file (Join-Path $temppath 'vcredist2013_x86.exe') -log_file (Join-Path $temppath 'vcredist2013_x86.log');
 
     $Cloud = (Get-ItemProperty -Path HKLM:\Software\LANSA  -Name 'Cloud').Cloud
     $InstallSQLServer = $false
@@ -176,8 +218,7 @@ try
                 (New-Object System.Net.WebClient).DownloadFile($CWASetup, $installer_file) | Out-Default | Write-Host
                 $downloaded = $true
             } catch {
-                $_
-                $TotalFailedDownloadAttempts += 1 
+                $TotalFailedDownloadAttempts += 1
                 New-ItemProperty -Path HKLM:\Software\LANSA  -Name 'TotalFailedDownloadAttempts' -Value ($TotalFailedDownloadAttempts) -PropertyType DWORD -Force | Out-Null
                 $loops += 1
 
