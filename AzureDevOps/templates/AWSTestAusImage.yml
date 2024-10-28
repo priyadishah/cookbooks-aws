@@ -19,7 +19,7 @@ parameters:
     default: none
   - name: stackname
     type: string
-    default: none    
+    default: none
   - name: vmImage
     type: string
     default: windows-2019
@@ -87,7 +87,7 @@ stages:
         path: _robe070_cookbooks
 
       - task: AmazonWebServices.aws-vsts-tools.AWSPowerShellModuleScript.AWSPowerShellModuleScript@1
-        displayName: 'Artifact Check : Set Gate Variable'
+        displayName: 'Set Gate Variable'
         name: Gate
         inputs:
           awsCredentials: AzureDevOps
@@ -99,7 +99,7 @@ stages:
       - pwsh: |
          # Print the Gate variables.
          Write-Host "Gate.IsEnabled: $(Gate.IsEnabled); Gate.ImageID: $(Gate.ImageID); Gate.version:$(Gate.version); Gate.stack:$(Gate.stack)"| Out-Default
-        displayName: 'Artifact Check : Output Gate Variable'
+        displayName: 'Output Gate Variable'
         #condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))'], 'true'))
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
@@ -130,52 +130,52 @@ stages:
                 "ParameterKey": "$(WebPasswordKey)",
                 "ParameterValue": "$(WebPasswordValue)"
             }, {
-                "ParameterKey": "$(KeyNameKey)",    
+                "ParameterKey": "$(KeyNameKey)",
                 "ParameterValue": "$(KeyNameValue)"
             }, {
-                "ParameterKey": "$(RemoteAccessLocationKey)",   
+                "ParameterKey": "$(RemoteAccessLocationKey)",
                 "ParameterValue": "$(RemoteAccessLocationValue)"
             }, {
-                "ParameterKey": "ImageSource",   
+                "ParameterKey": "ImageSource",
                 "ParameterValue": "Marketplace"
             }, {
-                "ParameterKey": "LansaVersion",   
+                "ParameterKey": "LansaVersion",
                 "ParameterValue": "${{ parameters.paramLansaVersion }}"
             }, {
-                "ParameterKey": "TagValue",   
+                "ParameterKey": "TagValue",
                 "ParameterValue": "${{ parameters.paramTagValue }}"
             }, {
-                "ParameterKey": "11WebserverOSVersion",   
+                "ParameterKey": "11WebserverOSVersion",
                 "ParameterValue": "${{ parameters.paramWebserverOSVersionValue }}"
             }, {
-                "ParameterKey": "10LansaGitRepoBranch",   
+                "ParameterKey": "10LansaGitRepoBranch",
                 "ParameterValue": "$(CookbooksBranch)"
             },  {
-                "ParameterKey": "TemplateS3Namespace",   
+                "ParameterKey": "TemplateS3Namespace",
                 "ParameterValue": "$(TemplateS3Namespace)"
             }, {
-                "ParameterKey": "$(LansaMSIKey)",   
+                "ParameterKey": "$(LansaMSIKey)",
                 "ParameterValue": "${{ parameters.parammsiURL }}"
             }, {
-                "ParameterKey": "CurrentVPC",   
+                "ParameterKey": "CurrentVPC",
                 "ParameterValue": "$(CurrentVPC)"
             }, {
-                "ParameterKey": "AvailabilityZones",   
+                "ParameterKey": "AvailabilityZones",
                 "ParameterValue": "$(AvailabilityZones)"
             }, {
-                "ParameterKey": "NumberOfAZs",   
+                "ParameterKey": "NumberOfAZs",
                 "ParameterValue": "$(NumberOfAZs)"
             }, {
-                "ParameterKey": "DBSubnetGroupName",   
+                "ParameterKey": "DBSubnetGroupName",
                 "ParameterValue": "$(DBSubnetGroupName)"
             }, {
-                "ParameterKey": "ELBSubnetIds",   
+                "ParameterKey": "ELBSubnetIds",
                 "ParameterValue": "$(ELBSubnetIds)"
             }, {
-                "ParameterKey": "DBCCSID",   	
+                "ParameterKey": "DBCCSID",
                 "ParameterValue": "${{ parameters.paramDBCCSID }}"
             }, {
-                "ParameterKey": "03DBUsername",   
+                "ParameterKey": "03DBUsername",
                 "ParameterValue": "$(03DBUsername)"
             } ]
           tags: 'usage=test-temp'
