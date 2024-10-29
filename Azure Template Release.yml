@@ -1,0 +1,492 @@
+trigger: none
+
+resources:
+  pipelines:
+    - pipeline: _TemplatesCI
+      source: CI Templates 3.0
+    - pipeline: _BuildImageReleaseArtefacts
+      source: Build Image Release Artefacts 3.0
+  repositories:
+    - repository: _lansa_azure_quickstart_templates
+      type: github
+      endpoint: Harinder-accolite
+      name: lansa/azure-quickstart-templates
+      ref: support/scalable
+    - repository: _robe070_cookbooks_nkhl
+      type: github
+      endpoint: Harinder-accolite
+      name: robe070/cookbooks
+      ref: debug/paas
+
+variables:
+  - group: Template Parameters
+  - group: SKU Versions
+  - group: Image Names
+  - group: Azure Logins
+  - group: Git Repos
+  - name: Build-w12r2d-14-2
+    value: false
+  - name: Build-w12r2d-15-0
+    value: false
+  - name: Build-w16d-14-2
+    value: false
+  - name: Build-w16d-14-2j
+    value: false
+  - name: Build-w16d-15-0
+    value: false
+  - name: Build-w16d-15-0j
+    value: false
+  - name: Build-w19d-14-2
+    value: false
+  - name: Build-w19d-14-2j
+    value: false
+  - name: Build-w19d-15-0
+    value: false
+  - name: Build-w19d-15-0j
+    value: false
+  - name : CookbooksSource
+    value: $(System.DefaultWorkingDirectory)\cookbooks
+  - name: imageReleaseState
+    value: Production
+  - name: jpnLanguage
+    value: JPN
+  - name: LansaReleaseTemplateUrl
+    value: https://raw.githubusercontent.com/lansa/azure-quickstart-templates/support/scalable/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
+  - name : SubscriptionId
+    value: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+
+stages:
+# - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+#   parameters:
+#     dependsOn:
+#     stageName: AUSSQLAZURE1DBw22d142
+#     stageDisplayname: AUS SQLAZURE1 DB w22d-14-2
+#     jobName: AUSSQLAZURE1DBw22d142
+#     jobDisplayname: AUS SQLAZURE1 DB w22d-14-2
+#     jobcondition: and(succeeded(), or(eq(variables['Build-w22d-14-2'], 'true'), eq(variables['Build-all'], 'true')))
+#     version: w22d-14-2
+#     osName: Windows Server 2022
+#     SqlDeploymentName: SQLAZURE1
+#     deploymentOutputs: SQLAZURE1-deploymentOutput
+#     resourceGroup: SQLAZURE1-TEST
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSSQLAZURE2DBw19d142
+    stageDisplayname: AUS SQLAZURE2 DB w19d-14-2
+    jobName: AUSSQLAZURE2DBw19d142
+    jobDisplayname: AUS SQLAZURE2 DB w19d-14-2
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2'], 'True'), eq(variables['Build-all'], 'True')))
+    databaseNewOrExisting: new
+    lansaVersion: V14 SP2
+    msiURL: $(msiURLv142)
+    osName: Windows Server 2019
+    requestedServiceObjectiveName: S0
+    resourceGroup: SQLAZURE2-TEST
+    SqlDeploymentName: SQLAZURE2
+    stackName: SQL2VMSS
+    version: w19d-14-2
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSSQLAZURE3DBw16d142
+    stageDisplayname: AUS SQLAZURE3 DB w16d-14-2
+    jobName: AUSSQLAZURE3DBw16d142
+    databaseNewOrExisting: new
+    jobDisplayname: AUS SQLAZURE3 DB w16d-14-2
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-14-2'], 'true'), eq(variables['Build-all'], 'true')))
+    lansaVersion: V14 SP2
+    msiURL: $(msiURLv142)
+    osName: Windows Server 2016
+    requestedServiceObjectiveName: S4
+    resourceGroup: SQLAZURE3-TEST
+    SqlDeploymentName: SQLAZURE3
+    stackName: SQL3VMSS
+    version: w16d-14-2
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSSQLAZURE4DBw19d150 
+    stageDisplayname: AUS SQLAZURE4 DB w19d-15-0
+    jobName: AUSSQLAZURE4DBw19d150 
+    jobDisplayname: AUS SQLAZURE4 DB w19d-15-0
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'true'), eq(variables['Build-all'], 'true')))
+    applicationGatewaySkuTier: WAF_v2
+    applicationGatewaySkuName: WAF_Medium
+    databaseNewOrExisting: new
+    lansaVersion: V15 GA
+    msiURL: $(msiURLv15)
+    osName: Windows Server 2019
+    requestedServiceObjectiveName: S12
+    resourceGroup: SQLAZURE4-TEST 
+    SqlDeploymentName: SQLAZURE4
+    stackName: SQL4VMSS
+    version: w19d-15-0
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSSQLAZURE5DBw16d150 
+    stageDisplayname: AUS SQLAZURE5 DB w16d-15-0
+    jobName: AUSSQLAZURE5DBw16d150 
+    jobDisplayname: AUS SQLAZURE5 DB w16d-15-0
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0'], 'true'), eq(variables['Build-all'], 'true'))) 
+    lansaVersion: V15 GA
+    databaseNewOrExisting: new
+    edition: Premium
+    applicationGatewaySkuTier: WAF_v2
+    applicationGatewaySkuName: WAF_Large
+    msiURL: $(msiURLv15)
+    osName: Windows Server 2016 
+    requestedServiceObjectiveName: P1
+    resourceGroup: SQLAZURE5-TEST 
+    SqlDeploymentName: SQLAZURE5
+    stackName: SQL5VMSS
+    version: w16d-15-0 
+
+# - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+#   parameters:
+#     dependsOn: 
+#     stageName: AUSSQLAZURE6DBw22d150 
+#     stageDisplayname: AUS SQLAZURE6 DB w22d-15-0
+#     jobName: AUSSQLAZURE6DBw22d150 
+#     jobDisplayname: AUS SQLAZURE6 DB w22d-15-0
+#     jobcondition: and(succeeded(), or(eq(variables['Build-w22d-15-0'], 'true'), eq(variables['Build-all'], 'true')))
+#     databaseNewOrExisting: new
+#     edition: Premium
+#     lansaVersion: V15 GA
+#     applicationGatewaySkuTier: WAF_v2
+#     applicationGatewaySkuName: WAF_Large
+#     msiURL: $(msiURLv15)
+#     osName: Windows Server 2012
+#     requestedServiceObjectiveName: P11
+#     resourceGroup: SQLAZURE6-TEST
+#     SqlDeploymentName: SQLAZURE5
+#     stackName: SQL6VMSS
+#     version: w12r2d-15-0
+    
+- template: AzureDevOps\templates\AzureTestTemplateValidationMSSQLandMYSQL.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSMYSQL1DBw19d150
+    stageDisplayname: AUS MYSQL1 DB w19d-15-0
+    jobName: AUSMYSQL1DBw19d150
+    jobDisplayname: AUS MYSQL1 DB w19d-15-0
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'true'), eq(variables['Build-all'], 'true')))
+    databaseNewOrExisting: existing
+    lansaVersion: V15 GA
+    databaseType: MYSQL
+    msiURL: $(msiURLv15)
+    osName: Windows Server 2019
+    resourceGroup: mysql1Test
+    SqlDeploymentName: mysql1Test
+    stackName: MYSQLVMSS
+    version: w19d-15-0
+
+- template: AzureDevOps\templates\AzureTestTemplateValidationMSSQLandMYSQL.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSMSSQLS1DBw19d142
+    stageDisplayname: AUS MSSQLS1 DB w19d-14-2
+    jobName: AUSMSSQLS1DBw19d142
+    jobDisplayname: AUS MSSQLS1 DB w19d-14-2
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2'], 'true'), eq(variables['Build-all'], 'true')))
+    databaseType: MSSQLS
+    databaseNewOrExisting: existing
+    lansaVersion: V14 SP2
+    msiURL: $(msiURLv142)
+    osName: Windows Server 2019
+    requestedServiceObjectiveName: S2
+    resourceGroup: mssqls1Test
+    SqlDeploymentName: mssqls1Test
+    stackName: MSSQLVMSS
+    version: w19d-14-2
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSDevShoe_WithKeyVaultCert_Sizesw19d150 
+    stageDisplayname: AUS Dev Shoe (With Key Vault Cert) Sizes w19d-15-0
+    jobName: AUSDevShoe_WithKeyVaultCert_Sizesw19d150 
+    jobDisplayname: AUS Dev Shoe (With Key Vault Cert) Sizes w19d-15-0
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'true'), eq(variables['Build-all'], 'true')))
+    databaseNewOrExisting: new
+    lansaVersion: V15 GA
+    applicationGatewaySkuTier: WAF_v2
+    applicationGatewaySkuName: WAF_Large
+    msiURL: $(msiURLv15)
+    osName: Windows Server 2019
+    requestedServiceObjectiveName: P1
+    resourceGroup: SQLAZURE5-TEST 
+    SqlDeploymentName: DevStack
+    stackName: DevSt
+    version: w19d-15-0
+    imageReleaseState: $(imageReleaseState)
+    virtualMachineSize: Standard_B4ms
+    dbVirtualMachineSize: Standard_B2ms
+    edition: Serverless
+    dbMinCapacity: 0.5
+    maxSizeBytes: 10737418240
+    applicationGatewayCapacity: 1
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSTestShoe_WithKeyVaultCert_Sizesw16142j
+    stageDisplayname: AUS Test Shoe (With Key Vault Cert) Sizes w16-14-2j
+    jobName: AUSTestShoe_WithKeyVaultCert_Sizesw16142j
+    jobDisplayname: AUS Test Shoe (With Key Vault Cert) Sizes w16-14-2j
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-14-2j'], 'true'), eq(variables['Build-all'], 'true')))
+    lansaVersion: V14 SP2
+    msiURL: $(msiURLJPN)
+    osName: Windows Server 2016 JPN 
+    resourceGroup: TestStack-TEST 
+    SqlDeploymentName: TestStack
+    stackName: TestSt
+    version: w16d-14-2j 
+    imageReleaseState: $(imageReleaseState)
+    virtualMachineSize: Standard_B4ms
+    dbVirtualMachineSize: Standard_B2ms
+    keyVaultEnabled: 'true'
+    edition: Serverless
+    serverlessDbCapacity: 4
+    dbMinCapacity: 0.5
+    maxSizeBytes: '107374182400'
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSSmallStackShoeSizesw19d150j
+    stageDisplayname: AUS Small Stack Shoe Sizes w19d-15-0j
+    jobName: AUSSmallStackShoeSizesw19d150j
+    jobDisplayname: AUS Small Stack Shoe Sizes w19d-15-0j
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0j'], 'true'), eq(variables['Build-all'], 'true')))
+    lansaVersion: V15 GA
+    msiURL: $(msiURLJPNLatest)
+    osName: Windows Server 2019 JPN 
+    requestedServiceObjectiveName: S4
+    resourceGroup: SmallStack-TEST 
+    SqlDeploymentName: SmallStack
+    stackName: SmallSt
+    version: w19d-15-0j
+    imageReleaseState: $(imageReleaseState)
+    virtualMachineSize: Standard_B4ms
+    dbVirtualMachineSize: Standard_B2ms
+    maxSizeBytes: 536870912000
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSMediumStackShoeSizesw16d150j
+    stageDisplayname: AUS Medium Stack Shoe Sizes w16d-15-0j
+    jobName: AUSMediumStackShoeSizesw16d150j
+    jobDisplayname: AUS Medium Stack Shoe Sizes w16d-15-0j
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'true'), eq(variables['Build-all'], 'true')))
+    lansaVersion: V15 GA
+    msiURL: $(msiURLJPNLatest)
+    osName: Windows Server 2016 JPN 
+    requestedServiceObjectiveName: S12
+    resourceGroup: MediumStack-TEST 
+    SqlDeploymentName: MediumStack
+    stackName: MedSt
+    version: w16d-15-0j
+    imageReleaseState: $(imageReleaseState)
+    virtualMachineSize: Standard_B12ms
+    dbVirtualMachineSize: Standard_B2ms
+    maxSizeBytes: 1099511627776
+    applicationGatewaySkuTier: WAF_v2
+    autoScaleMinCapacity: 1
+    autoScaleMaxCapacity: 15
+     
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: 
+    stageName: AUSLargeStackShoeSizesw19d142j
+    stageDisplayname: AUS Large Stack Shoe Sizes w19d-14-2j
+    jobName: AUSLargeStackShoeSizesw19d142j
+    jobDisplayname: AUS Large Stack Shoe Sizes w19d-14-2j
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2j'], 'true'), eq(variables['Build-all'], 'true')))  
+    lansaVersion: V14 SP2
+    msiURL: $(msiURLJPN)
+    osName: Windows Server 2019 JPN 
+    requestedServiceObjectiveName: P1
+    resourceGroup: LargeStack-TEST 
+    SqlDeploymentName: LargeStack
+    edition: Premium
+    stackName: LargeSt
+    version: w19d-14-2j
+    imageReleaseState: $(imageReleaseState)
+    virtualMachineSize: Standard_B20ms
+    dbVirtualMachineSize: Standard_B2ms
+    dbMinCapacity: 0
+    maxSizeBytes: 1099511627776
+    applicationGatewayCapacity: 2
+    applicationGatewaySkuTier: WAF_v2
+    enableAutoscaling: true
+    autoScaleMinCapacity: 2
+    autoScaleMaxCapacity: 30
+
+- stage: ProductionStage
+  displayName: Production Stage
+  dependsOn:
+    - AUSSQLAZURE2DBw19d142
+    - AUSSQLAZURE3DBw16d142
+    - AUSSQLAZURE4DBw19d150
+    - AUSSQLAZURE5DBw16d150
+    # - AUSSQLAZURE6DBw22r2d150
+    - AUSMYSQL1DBw19d150
+    - AUSMSSQLS1DBw19d142
+    - AUSDevShoe_WithKeyVaultCert_Sizesw19d150
+    - AUSTestShoe_WithKeyVaultCert_Sizesw16142j
+    - AUSSmallStackShoeSizesw19d150j
+    - AUSMediumStackShoeSizesw16d150j
+    - AUSLargeStackShoeSizesw19d142j
+  jobs: 
+  - job: AgentlessJob
+    displayName: 'Manual Intervention: Deploy Template'
+    timeoutInMinutes: 43200 # 30 days
+    pool: server
+    steps:
+    - task: ManualValidation@0
+      displayName: 'Manual Validation: Production Template'
+      inputs:
+        instructions: "Deploy the template to the Production Stage"
+        onTimeout: 'reject'
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: ProductionStage
+    stageName: ProductionTestsw19d150
+    stageDisplayname: Production Tests w19d-15-0
+    jobName: ProductionTestsw19d150
+    jobDisplayname: Production Tests w19d-15-0
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'true'), eq(variables['Build-all'], 'true')))
+    databaseNewOrExisting: new
+    lansaVersion: V15 GA
+    msiURL: $(msiURLv15)
+    osName: Windows Server 2019
+    requestedServiceObjectiveName: S4
+    resourceGroup: TemplateProd-Test-w19d-15-0
+    SqlDeploymentName: TemplateProd-Test-w19d-15-0
+    stackName: "$(Gate.VersionClean)"
+    version: w19d-15-0
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: ProductionStage
+    stageName: ProductionTestsw19d150j
+    stageDisplayname: Production Tests w19d-15-0j
+    jobName: ProductionTestsw19d150j
+    jobDisplayname: Production Tests w19d-15-0j
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0j'], 'true'), eq(variables['Build-all'], 'true')))
+    databaseNewOrExisting: new
+    lansaVersion: V15 GA
+    msiURL: $(msiURLJPNLatest)
+    osName: Windows Server 2019 JPN
+    requestedServiceObjectiveName: S4
+    resourceGroup: TemplateProd-Test-w19d-15-0j
+    SqlDeploymentName: TemplateProd-Test-w19d-15-0j
+    stackName: "$(Gate.VersionClean)"
+    version: w19d-15-0j
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: ProductionStage
+    stageName: ProductionTestsw16d150j
+    stageDisplayname: Production Tests w16d-15-0j
+    jobName: ProductionTestsw16d150j
+    jobDisplayname: Production Tests w16d-15-0j
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'true'), eq(variables['Build-all'], 'true')))
+    databaseNewOrExisting: new
+    lansaVersion: V15 GA
+    msiURL: $(msiURLJPNLatest)
+    osName: Windows Server 2016 JPN
+    requestedServiceObjectiveName: S12
+    resourceGroup: TemplateProd-Test-w16d-15-0j
+    SqlDeploymentName: TemplateProd-Test-w16d-15-0j
+    stackName: "$(Gate.VersionClean)"
+    version: w16d-15-0j
+
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: ProductionStage
+    stageName: ProductionTestsw16d142j
+    stageDisplayname: Production Tests w16d-14-2j
+    jobName: ProductionTestsw16d142j
+    jobDisplayname: Production Tests w16d-14-2j
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'true'), eq(variables['Build-all'], 'true')))
+    databaseNewOrExisting: new
+    lansaVersion: V14 SP2
+    msiURL: $(msiURLJPN)
+    osName: Windows Server 2016 JPN
+    requestedServiceObjectiveName: S12
+    resourceGroup: TemplateProd-Test-w16d-14-2j
+    SqlDeploymentName: TemplateProd-Test-w16d-14-2j
+    stackName: "$(Gate.VersionClean)"
+    version: w16d-14-2j
+  
+- template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
+  parameters:
+    dependsOn: ProductionStage
+    stageName: ProductionTestsw19d142j
+    stageDisplayname: Production Tests w19d-14-2j
+    jobName: ProductionTestsw19d142j
+    jobDisplayname: Production Tests w19d-14-2j
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'true'), eq(variables['Build-all'], 'true')))
+    databaseNewOrExisting: new
+    lansaVersion: V14 SP2
+    msiURL: $(msiURLJPN)
+    osName: Windows Server 2016 JPN
+    requestedServiceObjectiveName: S4
+    resourceGroup: TemplateProd-Test-w19d-14-2
+    SqlDeploymentName: TemplateProd-Test-w19d-14-2
+    stackName: "$(Gate.VersionClean)"
+    version: w16d-14-2j
+
+- stage: TagAzureQuickstartTemplatesRepo
+  dependsOn:
+    - ProductionTestsw19d150
+    - ProductionTestsw19d150j
+  displayName: Tag azure-quickstart-templates repo
+  jobs:
+  - job: TagAzureQuickstartTemplatesRepo
+    timeoutInMinutes: 120
+    cancelTimeoutInMinutes: 1
+    displayName: Tag azure-quickstart-templates repo
+    pool:
+      vmImage: Windows-2022 
+
+    steps:
+    - task: PowerShell@2
+      displayName: 'Artifact Check - Set Gate Variable'
+      name: Gate
+      inputs:
+        targetType: filePath
+        filePath: '$(Pipeline.Workspace)/_robe070_cookbooks_nkhl/scripts/azure_set_gate_variable.ps1'
+        arguments: '-Version "w19d-15-0" -osName "Windows Server 2019"'
+
+    - powershell: |
+        # Print the Gate variables.
+        if ( $(Gate.IsEnabled) -eq 'true' ) {
+            Write-Host "Gate.IsEnabled: $(Gate.IsEnabled); Gate.ImageUrl: $(Gate.ImageUrl) Gate.Sku: $(Gate.Sku)" | Out-Default
+        } else {
+          Write-Host 'Gate.IsEnabled is set to false.'
+        }
+      displayName: 'Artifact Check - Output Gate Variable'
+
+    - task: PowerShell@2
+      displayName: 'Write access to Git Repo'
+      inputs:
+        targetType: filePath
+        filePath: '$(Pipeline.Workspace)/_robe070_cookbooks_nkhl/scripts/GitRepoWriteAccess.ps1'
+        arguments: '-GitBranch ''$(TemplatesBranchLive)'' -GitURL ''https://$(GitRobe070CookbooksPAT):x-oauth-basic@$(TemplatesGitHubName)'' -GitUserEmail ''$(GitUserEmail)'' -GitUserName ''$(GitUserName)'' -GitRepoName ''$(TemplatesSourceAlias)'''
+
+    - task: PowerShell@2
+      displayName: 'Tag Git repo'
+      inputs:
+        targetType: filePath
+        filePath: '$(Pipeline.Workspace)/_robe070_cookbooks_nkhl/scripts/GitTag.ps1'
+        arguments: '-GitRepoName ''$(TemplatesSourceAlias)'' -Tags ''AzureTemplate-Bld-$(Build.BuildId)-$(Release.ReleaseName)-$(Gate.Sku)'''
