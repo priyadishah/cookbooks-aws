@@ -13,11 +13,6 @@ resources:
       # ref: support/scalable
       ref: feature/classic2yml-release
       endpoint: nkhl-accolite
-    # - repository: _robe070_cookbooks
-    #   type: github
-    #   endpoint: priyadishah
-    #   name: priyadishah/cookbooks
-    #   ref: feature/priyanka-classic2YAML-release
 
 variables:
   - group: Template Parameters
@@ -42,8 +37,7 @@ stages:
       jobName: w19d15id
       jobDisplayname: w19d-15-ID
       jobcondition: or(eq(variables['Build-V15'], 'True'), eq(variables['Build-all'], 'True'))
-      # setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
-      setGateVariableScriptPath: 'azure_set_gate_variable.ps1'
+      setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
       msiURL: $(msiURLv15)
 
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
