@@ -482,6 +482,7 @@ stages:
   - job: 'Job_1'
     displayName: 'Agentless Job'
     pool: server
+    timeoutInMinutes: 43200
     steps:
     - task: ManualValidation@1  
       displayName: 'Manual Intervention : Submit Artefacts'
@@ -686,6 +687,7 @@ stages:
   - job: Job_1
     displayName: 'Agentless Job'
     pool: server
+    timeoutInMinutes: 43200
     steps:  
     - task: ManualValidation@1   
       displayName: 'Manual Intervention : Merge & Go Live'
