@@ -677,9 +677,7 @@ $jsonObject = @"
         # Load basic utils before running anything
         Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\dot-CommonTools.ps1"
 
-
-        if ( $InstallBaseSoftware ) {
-            
+        if ( $InstallBaseSoftware ) {            
             # Install Chocolatey
             Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\getchoco.ps1"
 
