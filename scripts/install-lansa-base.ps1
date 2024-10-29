@@ -312,7 +312,8 @@ try
         # Run-ExitCode 'choco' @( 'install', 'adobereader', '-y', '--no-progress', '--%', '-ia', 'LANG_LIST=en_US' )  | Out-Host
 
         # Stop using Adobe Reader because it was dependent on a Windows Update that could not be installed on Win 2012 because it was obsolete.
-        Run-ExitCode 'choco' @( 'install', 'foxitreader', '-s=lansa', '-y', '--no-progress' )  | Write-Host
+        # Specify capital letters in "FoxitReader" in order to install the currently updating version. (foxitreader is an old version 10.x)
+        Run-ExitCode 'choco' @( 'install', 'FoxitReader', '-y', '--no-progress' )  | Write-Host
         ChocoWait
 
         New-Item $ENV:TEMP -type directory -ErrorAction SilentlyContinue | Out-Default | Write-Host
