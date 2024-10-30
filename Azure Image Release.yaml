@@ -7,12 +7,9 @@ resources:
   repositories:
     - repository: _lansa_azure_quickstart_templates
       type: github
-      endpoint: debjitbhowmik807
-      # endpoint: robe070
-      name: debjitbhowmik807/azure-quickstart-templates
-      # name: lansa/azure-quickstart-templates
+      endpoint: robe070
+      name: lansa/azure-quickstart-templates
       ref: support/scalable
-      
 
 variables:
   - group: Template Parameters
@@ -272,6 +269,7 @@ stages:
     resourceGroup: BakingDP-Preview-UW-w16d-14-2
     imageSource: Marketplace
     location: West US
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -288,6 +286,7 @@ stages:
     resourceGroup: BakingDP-Preview-EW-w16d-14-2
     imageSource: Marketplace
     location: West Europe
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -304,6 +303,7 @@ stages:
     resourceGroup: BakingDP-Preview-IC-w16d-14-2
     imageSource: Marketplace
     location: Central India
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -320,6 +320,7 @@ stages:
     resourceGroup: BakingDP-Preview-JW-w16d-14-2j
     imageSource: Marketplace
     location: Japan West
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -336,6 +337,7 @@ stages:
     resourceGroup: BakingDP-Preview-CC-w16d-15-0
     imageSource: Marketplace
     location: Canada Central
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -352,6 +354,7 @@ stages:
     resourceGroup: BakingDP-Preview-SN-w16d-15-0
     imageSource: Marketplace
     location: South Africa North
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -368,6 +371,7 @@ stages:
     resourceGroup: BakingDP-Preview-KC-w16d-15-0j
     imageSource: Marketplace
     location: Korea Central
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -384,6 +388,7 @@ stages:
     resourceGroup: BakingDP-Preview-FC-w19d-14-2
     imageSource: Marketplace
     location: France Central
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -400,6 +405,7 @@ stages:
     resourceGroup: BakingDP-Preview-NC-w19d-14-2j
     imageSource: Marketplace
     location: North Central US
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -416,6 +422,7 @@ stages:
     resourceGroup: BakingDP-Preview-BS-w19d-15-0
     imageSource: Marketplace
     location: Brazil South
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -432,6 +439,7 @@ stages:
     resourceGroup: BakingDP-Preview-UW-w19d-15-0
     imageSource: Marketplace
     location: UK West
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -448,6 +456,7 @@ stages:
     resourceGroup: BakingDP-Preview-GW-w19d-15-0j
     imageSource: Marketplace
     location: Germany West Central
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -463,6 +472,7 @@ stages:
     msiURL: $(msiURLv142)
     resourceGroup: BakingDP-Preview-AE-w22d-14-2
     imageSource: Marketplace
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -479,6 +489,7 @@ stages:
     resourceGroup: BakingDP-Preview-UE-w22d-14-2
     imageSource: Marketplace
     location: East US
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -495,6 +506,7 @@ stages:
     resourceGroup: BakingDP-Preview-FC-w22d-14-2
     imageSource: Marketplace
     location: France Central
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -510,6 +522,7 @@ stages:
     msiURL: $(msiURLv15)
     resourceGroup: BakingDP-Preview-AE-w22d-15-0
     imageSource: Marketplace
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -526,6 +539,7 @@ stages:
     resourceGroup: BakingDP-Preview-UE-w22d-15-0
     imageSource: Marketplace
     location: East US
+    gitBranch: patch/paas
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
@@ -542,6 +556,7 @@ stages:
     resourceGroup: BakingDP-Preview-FC-w22d-15-0
     imageSource: Marketplace
     location: France Central
+    gitBranch: patch/paas
 
 - stage: 'GoLive'
   displayName: 'Go Live'
@@ -654,7 +669,6 @@ stages:
     osNameOverride: Windows Server 2022
     imageSource: Marketplace
     location: East US
-    
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:

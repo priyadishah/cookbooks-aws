@@ -49,6 +49,9 @@ parameters:
   - name: location
     type: string
     default: Australia East
+  - name: gitBranch
+    type: string
+    default: debug/paas
   - name: continueOnError_URLTests
     default: false
 
@@ -126,7 +129,7 @@ stages:
           resourceGroupName: ${{ parameters.resourceGroup }}
           location: ${{ parameters.location }}
           csmFile: $(Pipeline.Workspace)/_lansa_azure_quickstart_templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
-          overrideParameters: -osName "${{ parameters.osNameOverride }}" -stackName "$(Gate.VersionClean)" -imageId "$(Gate.ImageUrl)" -lansaVersion "${{ parameters.lansaVersion }}" -imageSource "${{ parameters.imageSource }}" -msiURL "${{ parameters.msiURL }}" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas" -agpublicIpSku "Standard" -agpublicIpAllocationMethod "Static" $(CollationJPN) $(imageReleaseState)
+          overrideParameters: -osName "${{ parameters.osNameOverride }}" -stackName "$(Gate.VersionClean)" -imageId "$(Gate.ImageUrl)" -lansaVersion "${{ parameters.lansaVersion }}" -imageSource "${{ parameters.imageSource }}" -msiURL "${{ parameters.msiURL }}" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "${{ parameters.gitBranch }}" -agpublicIpSku "Standard" -agpublicIpAllocationMethod "Static" $(CollationJPN) $(imageReleaseState)
           deploymentName: CustomTestTemplate
           deploymentOutputs: deploymentOutput
           addSpnToEnvironment: true
