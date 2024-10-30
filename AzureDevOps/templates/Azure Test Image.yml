@@ -24,7 +24,10 @@ parameters:
     default: none
   - name: osName
     type: string
-    default: "$(Gate.VersionClean)"
+    default: ''
+  - name: osNameOverride
+    type: string
+    default: $(Gate.osName)
   - name: lansaVersion
     type: string
     default: none 
@@ -43,9 +46,11 @@ parameters:
   - name: jobcondition
     type: string
     default: none
-  - name: Collation_JPN
+  - name: location
     type: string
-    default: $(Collation_JPN)
+    default: Australia East
+  - name: continueOnError_URLTests
+    default: false
 
 stages:
   - stage: ${{ parameters.stageName }}
@@ -64,29 +69,27 @@ stages:
       variables:
         - name: ConnectedServiceName
           value: 'Azure Baking Images'
-        - name: Collation_JPN
-          ${{ if contains( parameters.osName, 'JPN' ) }}: 
-            value: -collation $(Collation_JPN)
+        - name: CollationJPN
+          ${{ if contains(parameters.osName, 'JPN') }}: 
+            value: -collation "$(Collation_JPN)"
+          ${{ else }}:
+            value: ''
+        - name: imageReleaseState
+          ${{ if contains(lower(parameters.stageName), 'production') }}: 
+            value: -imageReleaseState "Production"
+          ${{ elseif endsWith(lower(parameters.stageName), 'preview') }}: 
+            value: -imageReleaseState "Preview"
           ${{ else }}:
             value: ''
 
       steps:
       - download: _BuildImageReleaseArtefacts
-        # displayName: Downloading latest artefacts from Build Image Release Artefacts 3.0
+        displayName: Downloading artefacts from Build Image Release Artefacts 3.0
 
       - checkout: _lansa_azure_quickstart_templates
         path: _lansa_azure_quickstart_templates
- 
-      # - checkout: _robe070_cookbooks
-      #   path: _robe070_cookbooks
 
-      # - repository: _robe070_cookbooks
-      #   type: github
-      #   endpoint: debjitbhowmik807
-      #   name: debjitbhowmik807/cookbooks
-      #   ref: Feature/Image-Release-Debjit
-      
-      - checkout: self # Checking out self (and calling it _robe070_cookbooks) because the original _robe070_cookbooks does not have the latests changes needed for the pipeline to run
+      - checkout: self
         path: _robe070_cookbooks
 
       - task: PowerShell@2
@@ -115,23 +118,15 @@ stages:
           azurePowerShellVersion: LatestVersion
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      # - task: AzureResourceManagerTemplateDeployment@3
-      #   inputs:
-      #     deploymentScope: 'Resource Group'
-      #     azureResourceManagerConnection: $(ConnectedServiceName)
-      #     subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
-      #     action: 'DeleteRG'
-      #     resourceGroupName: ${{ parameters.resourceGroup }}
-
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: 'Deploy ARM Template'
         inputs:
           azureResourceManagerConnection: $(ConnectedServiceName)
           subscriptionId: '739c4e86-bd75-4910-8d6e-d7eb23ab94f3'
           resourceGroupName: ${{ parameters.resourceGroup }}
-          location: 'Australia East'
+          location: ${{ parameters.location }}
           csmFile: $(Pipeline.Workspace)/_lansa_azure_quickstart_templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
-          overrideParameters: -osName "$(Gate.osName)" -stackName "$(Gate.VersionClean)" -imageId "$(Gate.ImageUrl)" -lansaVersion "${{ parameters.lansaVersion }}" -imageSource "${{ parameters.imageSource }}" -msiURL "${{ parameters.msiURL }}" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas" -agpublicIpSku "Standard" -agpublicIpAllocationMethod "Static" $(Collation_JPN)
+          overrideParameters: -osName "${{ parameters.osNameOverride }}" -stackName "$(Gate.VersionClean)" -imageId "$(Gate.ImageUrl)" -lansaVersion "${{ parameters.lansaVersion }}" -imageSource "${{ parameters.imageSource }}" -msiURL "${{ parameters.msiURL }}" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "debug/paas" -agpublicIpSku "Standard" -agpublicIpAllocationMethod "Static" $(CollationJPN) $(imageReleaseState)
           deploymentName: CustomTestTemplate
           deploymentOutputs: deploymentOutput
           addSpnToEnvironment: true
@@ -171,7 +166,6 @@ stages:
           ScriptArguments: -SkuName "$(Gate.Sku)" -deploymentOutput '$(deploymentOutput)'
           azurePowerShellVersion: LatestVersion
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
-
 
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: 'Delete ResourceGroup'
