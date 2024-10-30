@@ -962,7 +962,7 @@ stages:
     - job: 'Job_1'
       displayName: 'Agentless Job'
       pool: server
-      
+      timeoutInMinutes: 43200
       steps:
       
         - task: ManualValidation@1
