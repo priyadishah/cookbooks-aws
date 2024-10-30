@@ -679,7 +679,7 @@ $jsonObject = @"
 
 
         if ( $InstallBaseSoftware ) {
-
+            
             # Install Chocolatey
             Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\getchoco.ps1"
 
@@ -719,7 +719,16 @@ $jsonObject = @"
 
 
             # Then we install git using chocolatey and pull down the rest of the files from git
-
+            Write-Host "Installing Git!"
+            # if ( $Cloud -eq 'Azure' ) {
+                
+            #     Invoke-Command -Session $Script:session {Set-ExecutionPolicy Unrestricted -Scope CurrentUser}
+            #     $remotelastexitcode = invoke-command  -Session $Script:session -ScriptBlock { $lastexitcode}
+            #     if ( $remotelastexitcode -and $remotelastexitcode -ne 0 ) {
+            #         Write-Error "LastExitCode: $remotelastexitcode"
+            #         throw 1
+            #     }
+            # }
             Execute-RemoteScript -Session $Script:session -FilePath $script:IncludeDir\installGit.ps1 -ArgumentList  @($Script:GitRepo, $Script:GitRepoPath, $GitBranch, $GitUserName, $true)
 
             Execute-RemoteBlock $Script:session { "Path = $([Environment]::GetEnvironmentVariable('PATH', 'Machine'))" | Out-Default | Write-Host }
