@@ -730,7 +730,6 @@ $jsonObject = @"
             Execute-RemoteInitPostGit
             
             if ( $Cloud -eq 'Azure' ) {
-                Write-Host "Installing .Net!"
                 . "$script:IncludeDir\Init-Baking-Vars.ps1"
                 . "$script:IncludeDir\Init-Baking-Includes.ps1"
                 . "$script:IncludeDir\dot-CommonTools.ps1"
