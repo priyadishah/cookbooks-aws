@@ -2,17 +2,14 @@ resources:
   pipelines: 
     - pipeline: _Build Cloud Account Id Artefacts
       source: Build Cloud Account Id Artefacts 3.0
-
     - pipeline: _Lansa Images - Cookbooks
       source: Build Image Release Artefacts 3.0
   repositories:
     - repository: _lansa_azure-quickstart-templates
-      # name: lansa/azure-quickstart-templates
-      name: nkhl-accolite/azure-quickstart-templates-nkhl
+      name: lansa/azure-quickstart-templates
       type: github
-      # ref: support/scalable
-      ref: feature/classic2yml-release
-      endpoint: nkhl-accolite
+      ref: support/scalable
+      endpoint: robe070
 
 variables:
   - group: Template Parameters
