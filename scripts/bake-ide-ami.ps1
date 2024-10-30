@@ -677,7 +677,9 @@ $jsonObject = @"
         # Load basic utils before running anything
         Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\dot-CommonTools.ps1"
 
+
         if ( $InstallBaseSoftware ) {            
+
             # Install Chocolatey
             Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\getchoco.ps1"
 
@@ -718,7 +720,7 @@ $jsonObject = @"
             }
 
             # Then we install git using chocolatey and pull down the rest of the files from git
-           
+
             Execute-RemoteScript -Session $Script:session -FilePath $script:IncludeDir\installGit.ps1 -ArgumentList  @($Script:GitRepo, $Script:GitRepoPath, $GitBranch, $GitUserName, $true)
 
             Execute-RemoteBlock $Script:session { "Path = $([Environment]::GetEnvironmentVariable('PATH', 'Machine'))" | Out-Default | Write-Host }
