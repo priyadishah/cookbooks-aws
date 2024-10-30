@@ -682,8 +682,10 @@ $jsonObject = @"
             Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\getchoco.ps1"
 
             if ( $Cloud -eq 'Azure' ) {
-                Write-Host("$(Log-Date) Azure requires a reboot after installing choco. Rebooting now..")
-
+                # This section exists for when choco 2.0 is being installed. It was never fully functional,
+                # but left as a marker of where the work reached. Choco 1.4 is actually being used"
+                # It all works OK on Azure, so as it aint broke we're not fixing it"
+                Write-Host("$(Log-Date) Azure requires a reboot after installing choco 2.0. Rebooting now..")
                 Execute-RemoteBlock $Script:session {
                     Restart-Computer -force
                 }

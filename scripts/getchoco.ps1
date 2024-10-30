@@ -32,10 +32,7 @@
 $url = ''
 
 try {
-    # This section exists for when choco 2.0 is being installed. It was never fully functional,
-    # but left as a marker of where the work reached. Choco 1.4 is actually being used"
-    # It all works OK on Azure, so as it aint broke we're not fixing it"
-    Write-Host("$(Log-Date) Azure requires a reboot after installing choco 2.0. Rebooting now..")
+    Write-Host("$(Log-Date) On Azure, choco 2.0 requires .Net 4.8. Firstly this requires the caller to action a reboot. Then when executing choco from a remote session it fails to locate .Net 4.8. If you RDP in, choco works fine. Note that AWS does not have this issue so there is a setting somewhere but this could not be located.")
     $env:chocolateyVersion = '1.4.0'
     $chocolateyVersion = $env:chocolateyVersion
     if (![string]::IsNullOrEmpty($chocolateyVersion)){
