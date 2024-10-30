@@ -9,12 +9,12 @@ resources:
   repositories:
     - repository: _lansa_azure_quickstart_templates
       type: github
-      endpoint: Harinder-accolite
+      endpoint: robe070
       name: lansa/azure-quickstart-templates
       ref: support/scalable
     - repository: _robe070_cookbooks_nkhl
       type: github
-      endpoint: Harinder-accolite
+      endpoint: robe070
       name: robe070/cookbooks
       ref: debug/paas
 
