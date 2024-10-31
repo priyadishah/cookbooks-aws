@@ -460,6 +460,15 @@ stages:
       vmImage: Windows-2022 
 
     steps:
+    - download: _TemplatesCI
+      displayName: Download artefacts from Template CI 3.0
+
+    - download: _BuildImageReleaseArtefacts
+      displayName: Download artefacts from Build Image Release Artefacts 3.0
+
+    - checkout: _lansa_azure_quickstart_templates
+      path: _lansa_azure_quickstart_templates
+      
     - checkout: self
       path: _robe070_cookbooks
 
