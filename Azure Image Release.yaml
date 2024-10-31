@@ -651,7 +651,7 @@ stages:
       inputs:
         targetType: filePath
         filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/GitTag.ps1'
-        arguments: '-GitRepoName ''$(CookbooksSourceAlias)'' -Tags  ''AzureImage-Bld-$(Build.BuildId)-$(Release.ReleaseName)-$(Gate.Sku)'''
+        arguments: '-GitRepoName ''$(CookbooksSourceAlias)'' -Tags  ''AzureImage-Bld-$(Build.ContainerId)-$(Build.BuildNumber)-$(Gate.Sku)'''
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
