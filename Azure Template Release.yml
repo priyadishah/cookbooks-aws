@@ -12,7 +12,7 @@ resources:
       endpoint: robe070
       name: lansa/azure-quickstart-templates
       ref: support/scalable
-    - repository: _robe070_cookbooks_nkhl
+    - repository: _robe070_cookbooks
       type: github
       endpoint: robe070
       name: robe070/cookbooks
@@ -460,12 +460,15 @@ stages:
       vmImage: Windows-2022 
 
     steps:
+    - checkout: self
+      path: _robe070_cookbooks
+
     - task: PowerShell@2
       displayName: 'Artifact Check - Set Gate Variable'
       name: Gate
       inputs:
         targetType: filePath
-        filePath: '$(Pipeline.Workspace)/_robe070_cookbooks_nkhl/scripts/azure_set_gate_variable.ps1'
+        filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_set_gate_variable.ps1'
         arguments: '-Version "w19d-15-0" -osName "Windows Server 2019"'
 
     - powershell: |
@@ -481,12 +484,12 @@ stages:
       displayName: 'Write access to Git Repo'
       inputs:
         targetType: filePath
-        filePath: '$(Pipeline.Workspace)/_robe070_cookbooks_nkhl/scripts/GitRepoWriteAccess.ps1'
+        filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/GitRepoWriteAccess.ps1'
         arguments: '-GitBranch ''$(TemplatesBranchLive)'' -GitURL ''https://$(GitRobe070CookbooksPAT):x-oauth-basic@$(TemplatesGitHubName)'' -GitUserEmail ''$(GitUserEmail)'' -GitUserName ''$(GitUserName)'' -GitRepoName ''$(TemplatesSourceAlias)'''
 
     - task: PowerShell@2
       displayName: 'Tag Git repo'
       inputs:
         targetType: filePath
-        filePath: '$(Pipeline.Workspace)/_robe070_cookbooks_nkhl/scripts/GitTag.ps1'
+        filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/GitTag.ps1'
         arguments: '-GitRepoName ''$(TemplatesSourceAlias)'' -Tags ''AzureTemplate-Publish-$(Build.BuildNumber)-$(Gate.Sku)'''
