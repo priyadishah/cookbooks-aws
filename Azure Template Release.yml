@@ -478,14 +478,14 @@ stages:
       inputs:
         targetType: filePath
         filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_set_gate_variable.ps1'
-        arguments: '-Version "w19d-15-0" -osName "Windows Server 2019"'
+        arguments: '-Version "w22d-15-0" -osName "Windows Server 2022"'
 
     - powershell: |
         # Print the Gate variables.
-        if ( $(Gate.IsEnabled) -eq 'true' ) {
+        if ( $(Gate.IsEnabled) -eq 'True' ) {
             Write-Host "Gate.IsEnabled: $(Gate.IsEnabled); Gate.ImageUrl: $(Gate.ImageUrl) Gate.Sku: $(Gate.Sku)" | Out-Default
         } else {
-          Write-Host 'Gate.IsEnabled is set to false.'
+          Write-Host "Gate.IsEnabled is set to $(Gate.IsEnabled)."
         }
       displayName: 'Artifact Check - Output Gate Variable'
 
