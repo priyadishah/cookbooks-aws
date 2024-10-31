@@ -489,4 +489,4 @@ stages:
       inputs:
         targetType: filePath
         filePath: '$(Pipeline.Workspace)/_robe070_cookbooks_nkhl/scripts/GitTag.ps1'
-        arguments: '-GitRepoName ''$(TemplatesSourceAlias)'' -Tags ''AzureTemplate-Bld-$(Build.BuildId)-$(Release.ReleaseName)-$(Gate.Sku)'''
+        arguments: '-GitRepoName ''$(TemplatesSourceAlias)'' -Tags ''AzureTemplate-Publish-$(Build.BuildNumber)-$(Gate.Sku)'''
