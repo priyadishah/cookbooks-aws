@@ -220,7 +220,7 @@ stages:
     msiURL: $(msiURLv15)
     osName: Windows Server 2019
     requestedServiceObjectiveName: P1
-    resourceGroup: SQLAZURE5-TEST 
+    resourceGroup: DevStack-PubTempl 
     SqlDeploymentName: DevStack
     stackName: DevSt
     version: w19d-15-0
@@ -243,7 +243,7 @@ stages:
     lansaVersion: V14 SP2
     msiURL: $(msiURLJPN)
     osName: Windows Server 2016 JPN 
-    resourceGroup: TestStack-TEST 
+    resourceGroup: TestStack-PubTempl 
     SqlDeploymentName: TestStack
     stackName: TestSt
     version: w16d-14-2j 
@@ -268,7 +268,7 @@ stages:
     msiURL: $(msiURLJPNLatest)
     osName: Windows Server 2019 JPN 
     requestedServiceObjectiveName: S4
-    resourceGroup: SmallStack-TEST 
+    resourceGroup: SmallStack-PubTempl 
     SqlDeploymentName: SmallStack
     stackName: SmallSt
     version: w19d-15-0j
@@ -289,7 +289,7 @@ stages:
     msiURL: $(msiURLJPNLatest)
     osName: Windows Server 2016 JPN 
     requestedServiceObjectiveName: S12
-    resourceGroup: MediumStack-TEST 
+    resourceGroup: MediumStack-PubTempl 
     SqlDeploymentName: MediumStack
     stackName: MedSt
     version: w16d-15-0j
@@ -313,7 +313,7 @@ stages:
     msiURL: $(msiURLJPN)
     osName: Windows Server 2019 JPN 
     requestedServiceObjectiveName: P1
-    resourceGroup: LargeStack-TEST 
+    resourceGroup: LargeStack-PubTempl 
     SqlDeploymentName: LargeStack
     edition: Premium
     stackName: LargeSt
