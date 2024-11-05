@@ -468,6 +468,7 @@ stages:
 
     - checkout: _lansa_azure_quickstart_templates
       path: _lansa_azure_quickstart_templates
+      fetchDepth: 0
       
     - checkout: self
       path: _robe070_cookbooks
@@ -488,7 +489,7 @@ stages:
           Write-Host "Gate.IsEnabled is set to $(Gate.IsEnabled)."
         }
       displayName: 'Artifact Check - Output Gate Variable'
-
+        
     - task: PowerShell@2
       displayName: 'Write access to Git Repo'
       inputs:
