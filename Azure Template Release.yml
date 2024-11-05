@@ -115,7 +115,7 @@ stages:
     jobDisplayname: AUS SQLAZURE4 DB w19d-15-0
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'true'), eq(variables['Build-all'], 'true')))
     applicationGatewaySkuTier: WAF_v2
-    applicationGatewaySkuName: WAF_Medium
+    applicationGatewaySkuName: WAF_v2
     databaseNewOrExisting: new
     lansaVersion: V15 GA
     msiURL: $(msiURLv15)
@@ -138,7 +138,7 @@ stages:
     databaseNewOrExisting: new
     edition: Premium
     applicationGatewaySkuTier: WAF_v2
-    applicationGatewaySkuName: WAF_Large
+    applicationGatewaySkuName: WAF_v2
     msiURL: $(msiURLv15)
     osName: Windows Server 2016 
     requestedServiceObjectiveName: P1
@@ -159,7 +159,7 @@ stages:
 #     edition: Premium
 #     lansaVersion: V15 GA
 #     applicationGatewaySkuTier: WAF_v2
-#     applicationGatewaySkuName: WAF_Large
+#     applicationGatewaySkuName: WAF_v2
 #     msiURL: $(msiURLv15)
 #     osName: Windows Server 2012
 #     requestedServiceObjectiveName: P11
@@ -216,7 +216,7 @@ stages:
     databaseNewOrExisting: new
     lansaVersion: V15 GA
     applicationGatewaySkuTier: WAF_v2
-    applicationGatewaySkuName: WAF_Large
+    applicationGatewaySkuName: WAF_v2
     msiURL: $(msiURLv15)
     osName: Windows Server 2019
     requestedServiceObjectiveName: P1
