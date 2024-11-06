@@ -794,7 +794,7 @@ stages:
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
     Version: w19d-14-2j
     osName: Windows Server 2019 JPN
-    lansaVersion: 14 SP2
+    lansaVersion: V14 SP2
     msiURL: $(msiURLJPN)
     ResourceGroup: BakingDP-Prod-WI-w19d-14-2j
     imageSource: Marketplace
