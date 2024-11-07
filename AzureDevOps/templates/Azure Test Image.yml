@@ -77,6 +77,11 @@ stages:
             value: -collation "$(Collation_JPN)"
           ${{ else }}:
             value: ''
+        - name: LanguageJPN
+          ${{ if contains(parameters.osName, 'JPN') }}: 
+            value: -Language "$(jpnLanguage)"
+          ${{ else }}:
+            value: ''
         - name: imageReleaseState
           ${{ if contains(lower(parameters.stageName), 'production') }}: 
             value: -imageReleaseState "Production"
@@ -156,7 +161,7 @@ stages:
         inputs:
           targetType: filePath
           filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_url_tests.ps1'
-          arguments: -deploymentOutput '$(deploymentOutput)'
+          arguments: -deploymentOutput '$(deploymentOutput)' $(LanguageJPN)
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
       - task: AzurePowerShell@5
