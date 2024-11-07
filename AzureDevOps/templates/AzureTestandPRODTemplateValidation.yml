@@ -116,7 +116,11 @@ stages:
           value: 'Azure Baking Images'
         - name: location
           value: 'Australia East'
-
+        - name: LanguageJPN
+          ${{ if contains(parameters.osName, 'JPN') }}: 
+            value: -Language "$(jpnLanguage)"
+          ${{ else }}:
+            value: ''
         - name: additionalOverrideParameters
           ${{ if eq(parameters.stageName, 'AUSDevShoe_WithKeyVaultCert_Sizesw19d150') }}: 
             value: '-virtualMachineSize "${{ parameters.virtualMachineSize }}" -dbVirtualMachineSize "${{ parameters.dbVirtualMachineSize }}" -keyVaultEnabled "${{ parameters.keyVaultEnabled }}" -serverlessDbCapacity ${{ parameters.serverlessDbCapacity }} -dbMinCapacity "${{ parameters.dbMinCapacity }}" -maxSizeBytes "${{ parameters.maxSizeBytes }}" -applicationGatewayCapacity "${{ parameters.applicationGatewayCapacity }}"'
@@ -221,7 +225,7 @@ stages:
           inputs:
             targetType: filePath
             filePath: $(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_url_tests.ps1
-            arguments: -deploymentOutput '$(deploymentOutput)'
+            arguments: -deploymentOutput '$(deploymentOutput)' $(LanguageJPN)
           condition: and(succeeded(), eq(lower(variables['Gate.IsEnabled']), 'true'))
 
         - task: AzurePowerShell@5
