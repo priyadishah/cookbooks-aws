@@ -74,6 +74,9 @@ try {
     Write-Host "URLs to be run..."
     $urls | Format-List | Out-Default | Write-Host
 
+    Write-Host "Waiting 5 minutes to ensure that stack has completed setup"
+    Start-Sleep -Seconds 300
+
     Write-Host  # Blank line
     Write-Host "Running URLs"
 
