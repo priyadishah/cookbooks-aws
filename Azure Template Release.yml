@@ -386,7 +386,7 @@ stages:
     lansaVersion: V15 GA
     msiURL: $(msiURLJPNLatest)
     osName: Windows Server 2019 JPN
-    requestedServiceObjectiveName: S4
+    requestedServiceObjectiveName: S12
     resourceGroup: TemplateProd-Test-w19d-15-0j
     SqlDeploymentName: TemplateProd-Test-w19d-15-0j
     stackName: "$(Gate.VersionClean)"
@@ -440,7 +440,7 @@ stages:
     lansaVersion: V14 SP2
     msiURL: $(msiURLJPN)
     osName: Windows Server 2016 JPN
-    requestedServiceObjectiveName: S4
+    requestedServiceObjectiveName: S12
     resourceGroup: TemplateProd-Test-w19d-14-2
     SqlDeploymentName: TemplateProd-Test-w19d-14-2
     stackName: "$(Gate.VersionClean)"
