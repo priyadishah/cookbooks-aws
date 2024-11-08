@@ -116,6 +116,11 @@ stages:
           value: 'Azure Baking Images'
         - name: location
           value: 'Australia East'
+        - name: CollationJPN
+          ${{ if contains(parameters.osName, 'JPN') }}: 
+            value: -collation "$(Collation_JPN)"
+          ${{ else }}:
+            value: ''
         - name: LanguageJPN
           ${{ if contains(parameters.osName, 'JPN') }}: 
             value: -Language "$(jpnLanguage)"
@@ -199,7 +204,7 @@ stages:
             location: $(location)
             csmFile: $(Pipeline.Workspace)/_TemplatesCI/Solution Template/mainTemplate.json
             deploymentName: ${{ parameters.SqlDeploymentName }}
-            overrideParameters: -osName "$(Gate.osName)" -lansaVersion "${{ parameters.lansaVersion }}" -imageReleaseState "${{ parameters.imageReleaseState }}" -msiURL "${{ parameters.msiURL }}" -stackName "${{ parameters.stackName }}" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseNewOrExisting "${{ parameters.databaseNewOrExisting }}" -databaseName "${{ parameters.databaseName }}" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -edition "${{ parameters.edition }}" -requestedServiceObjectiveName "${{ parameters.requestedServiceObjectiveName }}" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "${{ parameters.gitBranch }}" -agpublicIpSku "${{ parameters.agpublicIpSku }}" -agpublicIpAllocationMethod "${{ parameters.agpublicIpAllocationMethod }}" -applicationGatewaySkuName "${{ parameters.applicationGatewaySkuName }}" -applicationGatewaySkuTier "${{ parameters.applicationGatewaySkuTier }}" $(additionalOverrideParameters)
+            overrideParameters: -osName "$(Gate.osName)" -lansaVersion "${{ parameters.lansaVersion }}" -imageReleaseState "${{ parameters.imageReleaseState }}" -msiURL "${{ parameters.msiURL }}" -stackName "${{ parameters.stackName }}" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseNewOrExisting "${{ parameters.databaseNewOrExisting }}" -databaseName "${{ parameters.databaseName }}" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -edition "${{ parameters.edition }}" -requestedServiceObjectiveName "${{ parameters.requestedServiceObjectiveName }}" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "${{ parameters.gitBranch }}" -agpublicIpSku "${{ parameters.agpublicIpSku }}" -agpublicIpAllocationMethod "${{ parameters.agpublicIpAllocationMethod }}" -applicationGatewaySkuName "${{ parameters.applicationGatewaySkuName }}" -applicationGatewaySkuTier "${{ parameters.applicationGatewaySkuTier }}" $(additionalOverrideParameters) $(CollationJPN)
             deploymentOutputs: deploymentOutput
             addSpnToEnvironment: true
           condition: and(succeeded(), eq(lower(variables['Gate.IsEnabled']), 'true'))
