@@ -14,7 +14,7 @@ function DownloadLanguagePack {
        [string] $installer_file,
        [string] $log_file
    )
-   Write-Host ("$(Log-Date) Downloading $Uri to $installer_file")
+   Write-Host ("Downloading $Uri to $installer_file")
    $downloaded = $false
    $TotalFailedDownloadAttempts = 0
    $loops = 0
@@ -27,7 +27,7 @@ function DownloadLanguagePack {
          $TotalFailedDownloadAttempts += 1
          $loops += 1
 
-         Write-Host ("$(Log-Date) Total Failed Download Attempts = $TotalFailedDownloadAttempts")
+         Write-Host ("Total Failed Download Attempts = $TotalFailedDownloadAttempts")
 
          if ($loops -gt 10) {
             throw "Failed to download $Uri"
@@ -42,6 +42,9 @@ function DownloadLanguagePack {
 Write-Host "Language = $Language, Platform = $Platform"
 
 try {
+   #  Enabling TLS 1.2 security protocol to establish a secure connection with the server when making web requests.
+   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
    switch ( $Platform) {
       "win2016" {
          switch ( $Language ) {
