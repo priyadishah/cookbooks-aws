@@ -71,7 +71,7 @@ try {
       "win2022" {
          switch ( $Language ) {
                "jpn" {
-                  $lpurl = ""
+                  $lpurl = "https://lansa.s3.ap-southeast-2.amazonaws.com/3rd+party/Japanese+Language+Packs/Server+2022/jpn/Microsoft-Windows-Server-Language-Pack_x64_ja-jp.cab"
                   $langcode = "ja-JP"
                }
                default {
