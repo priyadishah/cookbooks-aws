@@ -83,17 +83,18 @@ try {
    }
    $lppath = "$ENV:temp\lang-pack.cab"
 
-   # DownloadLanguagePack -Uri $lpurl -installer_file $lppath
-   # Invoke-WebRequest -Uri $lpurl -OutFile $lppath
+   DownloadLanguagePack -Uri $lpurl -installer_file $lppath
+   Invoke-WebRequest -Uri $lpurl -OutFile $lppath
 
    # Write-Host( "Install the Japanese language Pack using the Lpksetup.exe command. Forces a reboot after installation" )
    # C:\windows\system32\Lpksetup.exe /i $langcode /f /s /p $lppath
 
-   # Write-Host( "Install the Japanese language Pack using dism.exe command. It does not force a reboot after installation so do it explicitly" )
-   # dism.exe /Online /Add-Package /PackagePath:$lppath
+   Write-Host( "Install the Japanese language Pack using dism.exe command. It does not force a reboot after installation so do it explicitly" )
+   dism.exe /Online /Add-Package /PackagePath:$lppath
 
-   Write-Host( "Install the lanuage pack using PowerShell in-built cmdlet")
-   Install-Language -Language $langcode
+   # This method is only available on client operating systems. Not on Server operating systems
+   # Write-Host( "Install the language pack using PowerShell in-built cmdlet")
+   # Install-Language -Language $langcode | Out-Default | Write-Host
 
    Start-Sleep -Seconds 30
    Write-Host "Language Pack installation succeeded"
