@@ -74,31 +74,38 @@ try {
     Write-Host "URLs to be run..."
     $urls | Format-List | Out-Default | Write-Host
 
-    Write-Host "Waiting 5 minutes to ensure that stack has completed setup"
-    Start-Sleep -Seconds 300
-
     Write-Host  # Blank line
     Write-Host "Running URLs"
 
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 
     forEach ($url in $urls) {
-        Write-Host $url
-        try{
-            $response = Invoke-WebRequest -Uri $url -TimeoutSec 14 -UseBasicParsing
+      Write-Host $url
+      $Timeout = 0
+      do {
+         try{
+            $response = Invoke-WebRequest -Uri $url -TimeoutSec 120 -UseBasicParsing
             $ResponseCode = $response.StatusCode
-            if($ResponseCode -ne 200) {
-                Write-Host "Response code not equal to 200: $ResponseCode"
-                $failureCount = $failureCount + 1
+            if($ResponseCode -eq 200) {
+               Write-Host $ResponseCode
             } else {
-                Write-Host $ResponseCode
+               # This is not expected to be executed as Invoke-WebRequest has only been seen to throw when response is not 200
+               throw
             }
-        } catch {
+         } catch {
             Write-Host $_.Exception
-            $ResponseCode = $_.Exception.Response.StatusCode.Value__
-            $failureCount = $failureCount + 1
-            Write-Host $ResponseCode
-        }
+            if ( $_.Exception.Response.StatusCode.Value__) {
+               $ResponseCode = $_.Exception.Response.StatusCode.Value__
+            }
+            $Timeout += 1
+            Write-Host "Response Code = $ResponseCode. Timeout = $Timeout"
+            Start-Sleep -Seconds 30
+         }
+      } until ($ResponseCode -eq 200 -or $Timeout -ge 30) # 15 minute timeout
+
+      if ($Timeout -ge 30) {
+         $failureCount = $failureCount + 1
+      }
     }
 
     if ($failureCount) {
