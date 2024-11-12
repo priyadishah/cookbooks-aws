@@ -87,6 +87,7 @@ stages:
     SqlDeploymentName: SQLAZURE2
     stackName: SQL2VMSS
     version: w19d-14-2
+    imageReleaseState: Preview
 
 - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
   parameters:
@@ -105,6 +106,7 @@ stages:
     SqlDeploymentName: SQLAZURE3
     stackName: SQL3VMSS
     version: w16d-14-2
+    imageReleaseState: Preview
 
 - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
   parameters:
@@ -125,6 +127,7 @@ stages:
     SqlDeploymentName: SQLAZURE4
     stackName: SQL4VMSS
     version: w19d-15-0
+    imageReleaseState: Preview
 
 - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
   parameters:
@@ -140,12 +143,13 @@ stages:
     applicationGatewaySkuTier: WAF_v2
     applicationGatewaySkuName: WAF_v2
     msiURL: $(msiURLv15)
-    osName: Windows Server 2016 
+    osName: Windows Server 2016
     requestedServiceObjectiveName: P1
-    resourceGroup: SQLAZURE5-TEST 
+    resourceGroup: SQLAZURE5-TEST
     SqlDeploymentName: SQLAZURE5
     stackName: SQL5VMSS
-    version: w16d-15-0 
+    version: w16d-15-0
+    imageReleaseState: Preview
 
 # - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
 #   parameters:
@@ -215,8 +219,8 @@ stages:
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-15-0'], 'true'), eq(variables['Build-all'], 'true')))
     databaseNewOrExisting: new
     lansaVersion: V15 GA
-    applicationGatewaySkuTier: WAF_v2
-    applicationGatewaySkuName: WAF_v2
+    applicationGatewaySkuTier: Standard_v2
+    applicationGatewaySkuName: Standard_v2
     msiURL: $(msiURLv15)
     osName: Windows Server 2019
     requestedServiceObjectiveName: P1
@@ -297,7 +301,6 @@ stages:
     virtualMachineSize: Standard_B12ms
     dbVirtualMachineSize: Standard_B2ms
     maxSizeBytes: 1099511627776
-    applicationGatewaySkuTier: WAF_v2
     autoScaleMinCapacity: 1
     autoScaleMaxCapacity: 15
      
@@ -325,6 +328,7 @@ stages:
     maxSizeBytes: 1099511627776
     applicationGatewayCapacity: 2
     applicationGatewaySkuTier: WAF_v2
+    applicationGatewaySkuName: WAF_v2
     enableAutoscaling: true
     autoScaleMinCapacity: 2
     autoScaleMaxCapacity: 30
@@ -373,6 +377,7 @@ stages:
     SqlDeploymentName: TemplateProd-Test-w19d-15-0
     stackName: "$(Gate.VersionClean)"
     version: w19d-15-0
+    location: East US
 
 - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
   parameters:
@@ -386,11 +391,12 @@ stages:
     lansaVersion: V15 GA
     msiURL: $(msiURLJPNLatest)
     osName: Windows Server 2019 JPN
-    requestedServiceObjectiveName: S4
+    requestedServiceObjectiveName: S12
     resourceGroup: TemplateProd-Test-w19d-15-0j
     SqlDeploymentName: TemplateProd-Test-w19d-15-0j
     stackName: "$(Gate.VersionClean)"
     version: w19d-15-0j
+    location: East US
 
 - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
   parameters:
@@ -399,7 +405,7 @@ stages:
     stageDisplayname: Production Tests w16d-15-0j
     jobName: ProductionTestsw16d150j
     jobDisplayname: Production Tests w16d-15-0j
-    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'true'), eq(variables['Build-all'], 'true')))
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))
     databaseNewOrExisting: new
     lansaVersion: V15 GA
     msiURL: $(msiURLJPNLatest)
@@ -409,6 +415,7 @@ stages:
     SqlDeploymentName: TemplateProd-Test-w16d-15-0j
     stackName: "$(Gate.VersionClean)"
     version: w16d-15-0j
+    location: East US
 
 - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
   parameters:
@@ -417,7 +424,7 @@ stages:
     stageDisplayname: Production Tests w16d-14-2j
     jobName: ProductionTestsw16d142j
     jobDisplayname: Production Tests w16d-14-2j
-    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'true'), eq(variables['Build-all'], 'true')))
+    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
     databaseNewOrExisting: new
     lansaVersion: V14 SP2
     msiURL: $(msiURLJPN)
@@ -427,6 +434,7 @@ stages:
     SqlDeploymentName: TemplateProd-Test-w16d-14-2j
     stackName: "$(Gate.VersionClean)"
     version: w16d-14-2j
+    location: East US
   
 - template: AzureDevOps\templates\AzureTestandPRODTemplateValidation.yml
   parameters:
@@ -435,16 +443,17 @@ stages:
     stageDisplayname: Production Tests w19d-14-2j
     jobName: ProductionTestsw19d142j
     jobDisplayname: Production Tests w19d-14-2j
-    jobcondition: and(succeeded(), or(eq(variables['Build-w16d-15-0j'], 'true'), eq(variables['Build-all'], 'true')))
+    jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
     databaseNewOrExisting: new
     lansaVersion: V14 SP2
     msiURL: $(msiURLJPN)
     osName: Windows Server 2016 JPN
-    requestedServiceObjectiveName: S4
-    resourceGroup: TemplateProd-Test-w19d-14-2
-    SqlDeploymentName: TemplateProd-Test-w19d-14-2
+    requestedServiceObjectiveName: S12
+    resourceGroup: TemplateProd-Test-w19d-14-2j
+    SqlDeploymentName: TemplateProd-Test-w19d-14-2j
     stackName: "$(Gate.VersionClean)"
-    version: w16d-14-2j
+    version: w19d-14-2j
+    location: East US
 
 - stage: TagAzureQuickstartTemplatesRepo
   dependsOn:

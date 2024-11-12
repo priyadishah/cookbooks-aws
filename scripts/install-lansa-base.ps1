@@ -162,8 +162,10 @@ try
         DownloadAndInstallMSI -MSIuri 'https://lansa.s3-ap-southeast-2.amazonaws.com/3rd+party/PowerShellTools.MSI' -installer_file (Join-Path $temppath 'PowerShellTools.msi') -log_file (Join-Path $temppath 'PowerShellTools.log');
     }
 
-    Write-Host "$(Log-Date) Install AWS CLI"
-    DownloadAndInstallMSI -MSIuri 'https://awscli.amazonaws.com/AWSCLIV2.msi' -installer_file (Join-Path $temppath 'AWSCLIV2.msi') -log_file (Join-Path $temppath 'AWSCLI.log');
+    if ( $Cloud -eq "AWS" ) {
+      Write-Host "$(Log-Date) Install AWS CLI"
+      DownloadAndInstallMSI -MSIuri 'https://awscli.amazonaws.com/AWSCLIV2.msi' -installer_file (Join-Path $temppath 'AWSCLIV2.msi') -log_file (Join-Path $temppath 'AWSCLI.log');
+    }
 
     Write-Host "Clear the UTF-8 system locale option. If already switched off this code has no effect"
     $Locale =  Get-WinSystemLocale
