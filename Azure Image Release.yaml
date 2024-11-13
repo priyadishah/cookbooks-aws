@@ -607,7 +607,7 @@ stages:
         onTimeout: 'reject'
         instructions: |
           1. ASAP Publish the preview image in the marketplace
-          2. Wait for the email our offer, LANSA Scalable License, has been published and is now live in the commercial marketplace” before continuing these steps.
+          2. Wait for the email “Your offer, LANSA Scalable License, has been published and is now live in the commercial marketplace” before continuing these steps.
           3. Increment the Test Version Production Variable (TestVersion<SKU>) in the "SKU Version" Variable Group.
           4. Only now can the pipeline be continued to test the production images.
 
