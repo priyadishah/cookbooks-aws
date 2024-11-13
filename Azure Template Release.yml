@@ -447,7 +447,7 @@ stages:
     databaseNewOrExisting: new
     lansaVersion: V14 SP2
     msiURL: $(msiURLJPN)
-    osName: Windows Server 2016 JPN
+    osName: Windows Server 2019 JPN
     requestedServiceObjectiveName: S12
     resourceGroup: TemplateProd-Test-w19d-14-2j
     SqlDeploymentName: TemplateProd-Test-w19d-14-2j
