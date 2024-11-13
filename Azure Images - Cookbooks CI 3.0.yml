@@ -1,6 +1,10 @@
 name: CI Images-$(Build.BuildId)
 
-trigger: none
+trigger: 
+  batch: 'true'
+  branches:
+    include:
+      - debug/paas
 
 pr: none
 
