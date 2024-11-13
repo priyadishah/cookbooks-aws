@@ -226,6 +226,7 @@ stages:
       timeoutInMinutes: 43200 # 30 Days
       inputs:
         onTimeout: 'reject'
+        notifyUsers: rob.goodridge@lansa.com.au
         instructions: |
           1. All preceding stages must be successful, or skipped
           2. Publish the preview images in the marketplace
@@ -599,17 +600,16 @@ stages:
     timeoutInMinutes: 43200
     steps:
     - task: ManualValidation@1
-      displayName: 'Publish Preview Images'
+      displayName: 'Go Live'
       timeoutInMinutes: 43200 # 30 Days
       inputs:
+        notifyUsers: rob.goodridge@lansa.com.au
         onTimeout: 'reject'
         instructions: |
-          1. All preceding stages must be successful, or skipped
-          2. Publish the preview images in the marketplace
-          3. Wait for the email "Approve the offer preview for LANSA Scalable License"
-          4. Increment the Version number in the Build Image Release Artefacts Pipeline
-          5. Increment the Test Version Preview Variable (TestVersionPrev<SKU>) in the "SKU Version" Variable Group.
-          6. Only now the pipeline may be continued to test the preview images
+          1. ASAP Publish the preview image in the marketplace
+          2. Wait for the email our offer, LANSA Scalable License, has been published and is now live in the commercial marketplace” before continuing these steps.
+          3. Increment the Test Version Production Variable (TestVersion<SKU>) in the "SKU Version" Variable Group.
+          4. Only now can the pipeline be continued to test the production images.
 
 - stage: 'CookbooksMergeAndTag'
   displayName: 'Cookbooks Merge & Tag'
