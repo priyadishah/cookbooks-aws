@@ -12,16 +12,8 @@ variables:
     value: $False
   - name: azureUserId
     value: PowershellScriptsSP
-  - name: GitBranch
-    value: $(Build.SourceBranch)
-  - name: GitBranchPR
-    value: feature/priyanka-classic2YAML
-  - name: GitUserName
-    value: priyadishah
   - name: JpnLanguage
-    value: ENG
-  - name: quickstart-scripts
-    value: $(Agent.BuildDirectory)\test
+    value: JPN
   - name: VersionText-w16d-14-2
     value: 0
   - name: VersionText-w16d-15-0
