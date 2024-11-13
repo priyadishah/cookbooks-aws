@@ -1,4 +1,4 @@
-name: Azure Images Cookbooks CI-$(Build.BuildId)
+name: CI Images-$(Build.BuildId)
 
 trigger: none
 
