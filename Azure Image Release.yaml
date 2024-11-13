@@ -703,6 +703,39 @@ stages:
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
+    stageName: 'w22d142jUSEastProduction'
+    stagedisplayName: 'w22d142j US East Production'
+    jobName: 'w22d142jUSEastProduction'
+    jobDisplayname: 'w22d142j US East Production'
+    dependsOn: CookbooksMergeAndTag
+    jobcondition: and(succeeded(), or(eq(variables['Build-w22d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
+    Version: w22d-14-2j
+    osName: Windows Server 2022 JPN
+    lansaVersion: V14 SP2
+    msiURL: $(msiURLJPN)
+    resourceGroup: BakingDP-Prod-UE-w22d-14-2j
+    osNameOverride: Windows Server 2022 JPN
+    imageSource: Marketplace
+    location: East US
+
+- template: AzureDevOps\templates\Azure Test Image.yml
+  parameters:
+    stageName: 'w22d150jAsiaEastProduction'
+    stagedisplayName: 'w22d150j Asia East Production'
+    jobName: 'w22d150jAsiaEastProduction'
+    jobDisplayname: 'w22d150j Asia East Production'
+    dependsOn: CookbooksMergeAndTag
+    jobcondition: and(succeeded(), or(eq(variables['Build-w22d-15-0j'], 'True'), eq(variables['Build-all'], 'True')))
+    Version: w22d-15-0j
+    osName: Windows Server 2022 JPN
+    lansaVersion: V15 GA
+    msiURL: $(msiURLJPN)
+    resourceGroup: BakingDP-Prod-AE-w22d-15-0j
+    osNameOverride: Windows Server 2022 JPN
+    imageSource: Marketplace
+    location: East Asia
+- template: AzureDevOps\templates\Azure Test Image.yml
+  parameters:
     stageName: 'w16d142EuropeWestProduction'
     stagedisplayName: 'w16d142 Europe West Production'
     jobName: 'w16d142EuropeWestProduction'
@@ -799,18 +832,18 @@ stages:
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
     stageName: 'w19d142jWestIndiaProduction'
-    stagedisplayName: 'w19d142j West India Production'
+    stagedisplayName: 'w19d142j Central India Production'
     jobName: 'w19d142jWestIndiaProduction'
-    jobDisplayname: 'w19d142j West India Production'
+    jobDisplayname: 'w19d142j Central India Production'
     dependsOn: CookbooksMergeAndTag
     jobcondition: and(succeeded(), or(eq(variables['Build-w19d-14-2j'], 'True'), eq(variables['Build-all'], 'True')))
     Version: w19d-14-2j
     osName: Windows Server 2019 JPN
     lansaVersion: V14 SP2
     msiURL: $(msiURLJPN)
-    ResourceGroup: BakingDP-Prod-WI-w19d-14-2j
+    ResourceGroup: BakingDP-Prod-CI-w19d-14-2j
     imageSource: Marketplace
-    location: West India
+    location: Central India
 
 - template: AzureDevOps\templates\Azure Test Image.yml
   parameters:
