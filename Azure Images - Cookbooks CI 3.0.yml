@@ -4,7 +4,7 @@ trigger: none
 
 pr: none
 
-variables: 
+variables:
   - group: 'External IP Addresses'
   - group: 'Image Names'
   - group: 'Azure Logins'
@@ -12,8 +12,6 @@ variables:
     value: $False
   - name: azureUserId
     value: PowershellScriptsSP
-  - name: JpnLanguage
-    value: JPN
   - name: VersionText-w16d-14-2
     value: 0
   - name: VersionText-w16d-15-0
@@ -48,7 +46,7 @@ jobs:
 
   pool:
     vmImage: windows-2019
-    
+
   steps:
   - checkout: self
     fetchTags: false
@@ -272,7 +270,7 @@ jobs:
         TestVmName: Test16142$(VersionText-w16d-14-2)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
-      
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -355,7 +353,7 @@ jobs:
         TestVmName: Test16150$(VersionText-w16d-15-0)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
-  
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -438,7 +436,7 @@ jobs:
         TestVmName: Test19142$(VersionText-w19d-14-2)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
-      
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -521,7 +519,7 @@ jobs:
         TestVmName: Test19150$(VersionText-w19d-15-0)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
-     
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -572,7 +570,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w16d-14-2j-$(VersionText-w16d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -Language $(JpnLanguage)
+      arguments: -VersionText 'w16d-14-2j-$(VersionText-w16d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
 
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
@@ -604,7 +602,7 @@ jobs:
         TestVmName: Test16142j$(VersionText-w16d-14-2j)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
-      
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -655,7 +653,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w16d-15-0j-$(VersionText-w16d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -Language $(JpnLanguage)
+      arguments: -VersionText 'w16d-15-0j-$(VersionText-w16d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
 
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
@@ -687,7 +685,7 @@ jobs:
         TestVmName: Test16150j$(VersionText-w16d-15-0j)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
-      
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -737,7 +735,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w19d-15-0j-$(VersionText-w19d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -Language $(JpnLanguage)
+      arguments: -VersionText 'w19d-15-0j-$(VersionText-w19d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
 
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
@@ -769,7 +767,7 @@ jobs:
         TestVmName: Test19150j$(VersionText-w19d-15-0j)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
- 
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -820,7 +818,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w19d-14-2j-$(VersionText-w19d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName  $(Windows-2019-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -Language $(JpnLanguage)
+      arguments: -VersionText 'w19d-14-2j-$(VersionText-w19d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName  $(Windows-2019-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
 
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
@@ -852,7 +850,7 @@ jobs:
         TestVmName: Test19142j$(VersionText-w19d-14-2j)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
-      
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -903,7 +901,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w22d-15-0j-$(VersionText-w22d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2022-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -Language $(JpnLanguage)
+      arguments: -VersionText 'w22d-15-0j-$(VersionText-w22d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2022-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
 
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
@@ -935,7 +933,7 @@ jobs:
         TestVmName: Test22150j$(VersionText-w22d-15-0j)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
-   
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -986,7 +984,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w22d-14-2j-$(VersionText-w22d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName  $(Windows-2022-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -Language $(JpnLanguage)
+      arguments: -VersionText 'w22d-14-2j-$(VersionText-w22d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName  $(Windows-2022-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -GitUserName $(GitUserName) -MaxRetry $(MaxRetry) -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
 
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
@@ -1018,7 +1016,7 @@ jobs:
         TestVmName: Test22142j$(VersionText-w22d-14-2j)
     inputs:
       filePath: scripts/invoke-pester-tests.ps1
-    
+
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
     inputs:
@@ -1032,7 +1030,7 @@ jobs:
       PathtoPublish: $(Build.ArtifactStagingDirectory)/w22d-14-2j.txt
       ArtifactName: w22d-14-2j
       FileCopyOptions: ''
-      
+
   - task: AzureResourceManagerTemplateDeployment@3
     displayName: Delete Resource Group
     inputs:
