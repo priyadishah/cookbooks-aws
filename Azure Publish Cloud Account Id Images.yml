@@ -1,3 +1,10 @@
+# This pipeline tests the Old Cloud Account Id works with V14 SP2 and V15 MSIs
+# It also validates that the scalable licenses still works. The scalable license is tested
+# by all the other template deployments in the other pipelines. Its also done here so that
+# the one pipeline can be used to verify that all the Cloud licensing works after the changes
+# made to the runtime. 
+# A major input to this pipeline is that the MSIs have been rebuilt using the latest version
+# of LANSA.
 resources:
   pipelines: 
     - pipeline: _Build Cloud Account Id Artefacts
