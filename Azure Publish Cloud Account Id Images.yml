@@ -1,0 +1,84 @@
+# This pipeline tests the Old Cloud Account Id works with V14 SP2 and V15 MSIs
+# It also validates that the scalable licenses still works. The scalable license is tested
+# by all the other template deployments in the other pipelines. Its also done here so that
+# the one pipeline can be used to verify that all the Cloud licensing works after the changes
+# made to the runtime. 
+# A major input to this pipeline is that the MSIs have been rebuilt using the latest version
+# of LANSA.
+# Here are samples of the template parameters used for each job. 
+# Notice the Cloud Account Id uses the w19d-15-IDimage which has the Cloud Account Id baked in to it:
+# Cloud Account Id V15 MSI
+##[debug]overrideParameters=-osName "Windows Server 2019" -imageId "/subscriptions/739c4e86-bd75-4910-8d6e-d7eb23ab94f3/resourceGroups/BakingDP/providers/Microsoft.Compute/images/w19d-15-IDimage" -stackName "w19d15IDmobjpev" -lansaVersion "V15 GA"  -imageSource "Custom" -msiURL https://stagingdpauseast.blob.core.windows.net/app/test/AWAMAPP_v15.0.21217_en-us.msi  -certificateBase64Encoded "***" -certificatePassword "***" -databaseLogin "testsrv-dp" -databaseLoginPassword "***" -adminUsername "lansa" -adminPassword "***" -webUsername "PCXUSER2" -webPassword "***" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static 
+# Cloud Account Id V14 SP2 MSI
+##[debug]overrideParameters=-osName "Windows Server 2019" -imageId "/subscriptions/739c4e86-bd75-4910-8d6e-d7eb23ab94f3/resourceGroups/BakingDP/providers/Microsoft.Compute/images/w19d-15-IDimage" -stackName "w19d15IDqopchnf" -lansaVersion "V15 GA"  -imageSource "Custom" -msiURL https://stagingdpauseast.blob.core.windows.net/app/test/AWAMAPP_v14.2.22040_en-us.msi  -certificateBase64Encoded "***" -certificatePassword "***" -databaseLogin "testsrv-dp" -databaseLoginPassword "***" -adminUsername "lansa" -adminPassword "***" -webUsername "PCXUSER2" -webPassword "***" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static 
+# Scalable license V15 MSI
+##[debug]overrideParameters=-osName "Windows Server 2019" -imageId "/subscriptions/739c4e86-bd75-4910-8d6e-d7eb23ab94f3/resourceGroups/BakingDP/providers/Microsoft.Compute/images/w19d-15-0-17image" -stackName "w19d150gcqifuv" -lansaVersion "V15 GA"  -imageSource "Custom" -msiURL https://stagingdpauseast.blob.core.windows.net/app/test/AWAMAPP_v15.0.21217_en-us.msi  -certificateBase64Encoded "***" -certificatePassword "***" -databaseLogin "testsrv-dp" -databaseLoginPassword "***" -adminUsername "lansa" -adminPassword "***" -webUsername "PCXUSER2" -webPassword "***" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static 
+
+resources:
+  pipelines: 
+    - pipeline: _Build Cloud Account Id Artefacts
+      source: Build Cloud Account Id Artefacts 3.0
+    - pipeline: _BuildImageReleaseArtefacts
+      source: Build Image Release Artefacts 3.0
+  repositories:
+    - repository: _lansa_azure-quickstart-templates
+      name: lansa/azure-quickstart-templates
+      type: github
+      ref: support/scalable
+      endpoint: robe070
+
+variables:
+  - group: Template Parameters
+  - group: SKU Versions
+  - group: Image Names
+  - group: Azure Logins
+  - group: Git Repos
+  - name: CookbooksSource
+    value: $(Pipeline.Workspace)\cookbooks
+  - name: jpnLanguage
+    value: JPN
+  - name: ResourceGroupName
+    value: BakingDP
+  - name: SubscriptionId
+    value: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
+
+stages:
+  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
+    parameters:
+      stageName: v15
+      stageDisplayname: v15
+      jobName: w19d15id
+      jobDisplayname: w19d-15-ID
+      jobcondition: or(eq(variables['Build-V15'], 'True'), eq(variables['Build-all'], 'True'))
+      setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
+      msiURL: $(msiURLv15)
+
+  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
+    parameters:
+      stageName: v14sp2
+      stageDisplayname: v14sp2
+      jobName: w19d15id
+      jobDisplayname: w19d-15-ID
+      jobcondition: or(eq(variables['Build-V14SP2'], 'True'), eq(variables['Build-all'], 'True'))
+      setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
+      msiURL: $(msiURLv142)
+
+  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
+    parameters:
+      stageName: v15scalable
+      stageDisplayname: v15-scalable
+      jobName: w19d150
+      jobDisplayname: w19d-15-0
+      jobcondition: or(eq(variables['Build-V15-scalable'], 'True'), eq(variables['Build-all'], 'True'))
+      setGateVariableScriptPath: 'azure_set_gate_variable.ps1'
+      msiURL: $(msiURLv15)
+
+  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
+    parameters:
+      stageName: v14sp2scalable
+      stageDisplayname: v14sp2-scalable
+      jobName: w19d150
+      jobDisplayname: w19d-15-0
+      jobcondition: or(eq(variables['Build-V14SP2-scalable'], 'True'), eq(variables['Build-all'], 'True'))
+      setGateVariableScriptPath: 'azure_set_gate_variable.ps1'
+      msiURL: $(msiURLv142)
