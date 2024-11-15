@@ -8,8 +8,8 @@ variables:
   - group: 'External IP Addresses'
   - group: 'Image Names'
   - group: 'Azure Logins'
-  - name: azureUserId
-    value: PowershellScriptsSP
+  - name: MaxRetry
+    value: 5
 
 jobs:
 - job: w19d_15_ID_Old
@@ -18,6 +18,7 @@ jobs:
   variables:
     - name: VersionText
       value: w19d_15_ID
+
   condition: and(succeeded(), or(eq(variables['Build-$(VersionText)'], 'true'), eq(variables['Build-all'], 'true')))
 
   pool:
@@ -28,7 +29,7 @@ jobs:
 
   - task: PowerShell@2
     displayName: Install PS Module
-    condition: and(succeeded(), or(eq(variables['Build-w19d-15-ID'], 'true'), eq(variables['Build-all'], 'true')))
+    condition: and(succeeded(), or(eq(variables['Build-$(VersionText)'], 'true'), eq(variables['Build-all'], 'true')))
     inputs:
       filePath: scripts/install-powershell-modules-azure.ps1
       errorActionPreference: continue
@@ -46,7 +47,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText '$(System.JobDisplayName)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -CloudAccountLicense 'x_lic_AZR*.5.lic' -MaxRetry $(MaxRetry)
+      arguments: -VersionText '$(VersionText)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -CloudAccountLicense 'x_lic_AZR*.5.lic' -MaxRetry $(MaxRetry)
       workingDirectory: scripts
 
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
@@ -54,7 +55,7 @@ jobs:
     continueOnError: true
     inputs:
       ConnectedServiceName: $(ConnectedServiceName)
-      ResourceGroupName: BakingDP-$(System.JobDisplayName)
+      ResourceGroupName: BakingDP-$(VersionText)
       Key: Usage
       Value: test-temp
 
@@ -65,7 +66,7 @@ jobs:
       script: >-
         Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
 
-        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "$(System.JobDisplayName).txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "$(VersionText).txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
 
         Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
 
@@ -75,9 +76,9 @@ jobs:
       targetType: filePath
       filePath: './scripts/invoke-pester-tests.ps1'
     env:
-      TestImageName: $(System.JobDisplayName)
+      TestImageName: $(VersionText)
       TestCloudName: Azure
-      TestVmName: $(System.JobDisplayName)
+      TestVmName: $(VersionText)
 
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
@@ -85,13 +86,13 @@ jobs:
     inputs:
       testRunner: NUnit
       testResultsFiles: '**/Test-*.xml'
-      testRunTitle: $(System.JobDisplayName)
+      testRunTitle: $(VersionText)
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: Image URL'
     inputs:
-      PathtoPublish: $(Build.ArtifactStagingDirectory)/$(System.JobDisplayName).txt
-      ArtifactName: $(System.JobDisplayName)
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/$(VersionText).txt
+      ArtifactName: $(VersionText)
       FileCopyOptions: ''
 
   - task: AzureResourceManagerTemplateDeployment@3
@@ -100,22 +101,26 @@ jobs:
       ConnectedServiceName: $(ConnectedServiceName)
       subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
       action: DeleteRG
-      resourceGroupName: BakingDP-$(System.JobDisplayName)
+      resourceGroupName: BakingDP-$(VersionText)
 
-- job: w22d_15_ID
-  displayName: w19d-15-ID
+- job: w22d_15_ID_New
+  displayName: New Cloud Account Id license
   timeoutInMinutes: 360
-  condition: and(succeeded(), or(eq(variables['Build-w19d-15-ID'], 'true'), eq(variables['Build-all'], 'true')))
+  variables:
+    - name: VersionText
+      value: w22d_15_ID
+
+  condition: and(succeeded(), or(eq(variables['Build-$(VersionText)'], 'true'), eq(variables['Build-all'], 'true')))
 
   pool:
-    vmImage: windows-2019
+    vmImage: windows-2022
 
   steps:
   - checkout: self
 
   - task: PowerShell@2
     displayName: Install PS Module
-    condition: and(succeeded(), or(eq(variables['Build-w19d-15-ID'], 'true'), eq(variables['Build-all'], 'true')))
+    condition: and(succeeded(), or(eq(variables['Build-$(VersionText)'], 'true'), eq(variables['Build-all'], 'true')))
     inputs:
       filePath: scripts/install-powershell-modules-azure.ps1
       errorActionPreference: continue
@@ -133,7 +138,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText '$(System.JobDisplayName)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -CloudAccountLicense 'x_lic_AZR*.5.lic' -MaxRetry $(MaxRetry)
+      arguments: -VersionText '$(VersionText)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2022-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -CloudAccountLicense 'x_lic_AZR*.5.lic' -MaxRetry $(MaxRetry)
       workingDirectory: scripts
 
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
@@ -141,7 +146,7 @@ jobs:
     continueOnError: true
     inputs:
       ConnectedServiceName: $(ConnectedServiceName)
-      ResourceGroupName: BakingDP-$(System.JobDisplayName)
+      ResourceGroupName: BakingDP-$(VersionText)
       Key: Usage
       Value: test-temp
 
@@ -152,7 +157,7 @@ jobs:
       script: >-
         Write-Host "Writing the Full Image URL $(BuildImage.ImageUrl) in the $(Build.ArtifactStagingDirectory)" | Out-Default | Write-Host
 
-        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "$(System.JobDisplayName).txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
+        Out-File -FilePath (Join-Path $(Build.ArtifactStagingDirectory) "$(VersionText).txt") -InputObject $(BuildImage.ImageUrl) | Out-Default | Write-Host
 
         Write-Host "Full Image URL written successfully" | Out-Default | Write-Host
 
@@ -162,9 +167,9 @@ jobs:
       targetType: filePath
       filePath: './scripts/invoke-pester-tests.ps1'
     env:
-      TestImageName: $(System.JobDisplayName)
+      TestImageName: $(VersionText)
       TestCloudName: Azure
-      TestVmName: $(System.JobDisplayName)
+      TestVmName: $(VersionText)
 
   - task: PublishTestResults@2
     displayName: Publish Test Results **/Test-*.xml
@@ -172,13 +177,13 @@ jobs:
     inputs:
       testRunner: NUnit
       testResultsFiles: '**/Test-*.xml'
-      testRunTitle: $(System.JobDisplayName)
+      testRunTitle: $(VersionText)
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact: Image URL'
     inputs:
-      PathtoPublish: $(Build.ArtifactStagingDirectory)/$(System.JobDisplayName).txt
-      ArtifactName: $(System.JobDisplayName)
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/$(VersionText).txt
+      ArtifactName: $(VersionText)
       FileCopyOptions: ''
 
   - task: AzureResourceManagerTemplateDeployment@3
@@ -187,5 +192,5 @@ jobs:
       ConnectedServiceName: $(ConnectedServiceName)
       subscriptionName: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
       action: DeleteRG
-      resourceGroupName: BakingDP-$(System.JobDisplayName)
+      resourceGroupName: BakingDP-$(VersionText)
 
