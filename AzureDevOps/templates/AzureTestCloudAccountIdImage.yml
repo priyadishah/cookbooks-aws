@@ -98,10 +98,10 @@ stages:
       - task: PowerShell@2
         name: Gate
         displayName: 'Artifact Check: Set Gate Variable'
-        #env:
+        env:
           #RESOURCEGROUPNAME: $ResourceGroupName
           #SYSTEM_STAGEDISPLAYNAME: 'PubCloudAccountId'
-          #SYSTEM_JOBDISPLAYNAME: ${{ parameters.jobName }}
+          LANSA_JOBNAME: ${{ parameters.jobName }}
         inputs:
           targetType: filePath
           filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/${{ parameters.setGateVariableScriptPath }}'

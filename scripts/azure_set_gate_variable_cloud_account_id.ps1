@@ -23,7 +23,7 @@ if (Test-Path $path) {
     }
     Write-Host "Clean version = $VersionClean"
 
-    $stackname = "$env:RESOURCEGROUPNAME-PubCloudAccountId-$env:SYSTEM_JOBNAME"
+    $stackname = "$env:RESOURCEGROUPNAME-PubCloudAccountId-$env:LANSA_JOBNAME"
     Write-Host "StackName is $stackname"
 
     $rawUri = Get-Content -Path $path -Raw
