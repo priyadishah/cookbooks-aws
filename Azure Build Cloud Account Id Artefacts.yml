@@ -12,14 +12,14 @@ variables:
     value: 5
 
 jobs:
-- job: w19d_15_ID_Old
+- job: w19d-15-ID-Old
   displayName: Old Cloud Account Id license
   timeoutInMinutes: 360
   variables:
     - name: VersionText
-      value: w19d_15_ID
+      value: w19d-15-ID
 
-  condition: and(succeeded(), or(eq(variables['Build-w19d_15_ID'], 'true'), eq(variables['Build-all'], 'true')))
+  condition: and(succeeded(), or(eq(variables['Build-w19d-15-ID'], 'true'), eq(variables['Build-all'], 'true')))
 
   pool:
     vmImage: windows-2019
@@ -102,14 +102,14 @@ jobs:
       action: DeleteRG
       resourceGroupName: BakingDP-$(VersionText)
 
-- job: w22d_15_ID_New
+- job: w22d-15-ID-New
   displayName: New Cloud Account Id license
   timeoutInMinutes: 360
   variables:
     - name: VersionText
-      value: w22d_15_ID
+      value: w22d-15-ID
 
-  condition: and(succeeded(), or(eq(variables['Build-w22d_15_ID'], 'true'), eq(variables['Build-all'], 'true')))
+  condition: and(succeeded(), or(eq(variables['Build-w22d-15-ID'], 'true'), eq(variables['Build-all'], 'true')))
 
   pool:
     vmImage: windows-2022
