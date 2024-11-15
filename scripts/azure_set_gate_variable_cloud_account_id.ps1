@@ -23,7 +23,7 @@ if (Test-Path $path) {
     }
     Write-Host "Clean version = $VersionClean"
 
-    $stackname = "$env:RESOURCEGROUPNAME-$env:SYSTEM_STAGEDISPLAYNAME-$env:SYSTEM_JOBDISPLAYNAME"
+    $stackname = "$env:RESOURCEGROUPNAME-pcaid-$env:LANSA_JOBNAME"
     Write-Host "StackName is $stackname"
 
     $rawUri = Get-Content -Path $path -Raw
@@ -45,5 +45,5 @@ if (Test-Path $path) {
     Write-Host "##vso[task.setvariable variable=Sku;isOutput=true]$sku"
     Write-host "The value of Variable IsEnabled is updated to True and output variable ImageUrl to $uri"
 } else {
-    Write-Host "Artifact path $path does NOT exist for $Version"
+    throw "Artifact path $path does NOT exist for $Version"
 }
