@@ -110,7 +110,7 @@ jobs:
     - name: VersionText
       value: w22d_15_ID
 
-  condition: and(succeeded(), or(eq(variables['Build-$(VersionText)'], 'true'), eq(variables['Build-all'], 'true')))
+  condition: and(succeeded(), or(eq(variables['Build-w22d_15_ID'], 'true'), eq(variables['Build-all'], 'true')))
 
   pool:
     vmImage: windows-2022
