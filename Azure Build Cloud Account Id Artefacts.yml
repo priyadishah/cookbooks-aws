@@ -12,7 +12,7 @@ variables:
     value: 5
 
 jobs:
-- job: w19d-15-ID-Old
+- job: w19d_15_ID_Old
   displayName: Old Cloud Account Id license
   timeoutInMinutes: 360
   variables:
@@ -102,7 +102,7 @@ jobs:
       action: DeleteRG
       resourceGroupName: BakingDP-$(VersionText)
 
-- job: w22d-15-ID-New
+- job: w22d_15_ID_New
   displayName: New Cloud Account Id license
   timeoutInMinutes: 360
   variables:
