@@ -109,6 +109,7 @@ stages:
 
       - powershell: |
           # Print the Gate variables.
+          Write-Host "Gate.StackName: $(Gate.StackName)"
           Write-Host "Gate.IsEnabled: $(Gate.IsEnabled)"
           Write-Host "Gate.Version: $(Gate.Version)"
           Write-Host "Gate.VersionClean: $(Gate.VersionClean)"
