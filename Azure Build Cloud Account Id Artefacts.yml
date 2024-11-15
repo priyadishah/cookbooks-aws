@@ -13,7 +13,7 @@ variables:
 
 jobs:
 - job: w19d_15_ID_Old
-  displayName: Old Cloud Account Id license
+  displayName: Build w19d-15-ID Image to test Old Cloud Account Id license
   timeoutInMinutes: 360
   variables:
     - name: VersionText
@@ -103,7 +103,7 @@ jobs:
       resourceGroupName: BakingDP-$(VersionText)
 
 - job: w22d_15_ID_New
-  displayName: New Cloud Account Id license
+  displayName: Build w22d-15-ID Image to test New Cloud Account Id license
   timeoutInMinutes: 360
   variables:
     - name: VersionText
