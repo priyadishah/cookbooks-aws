@@ -100,8 +100,8 @@ stages:
         displayName: 'Artifact Check: Set Gate Variable'
         env:
           RESOURCEGROUPNAME: 'BakingDP'
-          SYSTEM_STAGEDISPLAYNAME: ${{ parameters.stageDisplayname }}
-          SYSTEM_JOBDISPLAYNAME: ${{ parameters.jobDisplayname }}
+          SYSTEM_STAGEDISPLAYNAME: 'PubCloudAccountId'
+          SYSTEM_JOBDISPLAYNAME: ${{ parameters.jobName }}
         inputs:
           targetType: filePath
           filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/${{ parameters.setGateVariableScriptPath }}'
