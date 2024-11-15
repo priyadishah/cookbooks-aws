@@ -33,6 +33,10 @@ variables:
   - group: Image Names
   - group: Azure Logins
   - group: Git Repos
+  - name: ResourceGroupName
+    value: BakingDP
+  - name: SubscriptionId
+    value: 739c4e86-bd75-4910-8d6e-d7eb23ab94f3
 
 stages:
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml

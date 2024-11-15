@@ -99,7 +99,7 @@ stages:
         name: Gate
         displayName: 'Artifact Check: Set Gate Variable'
         env:
-          RESOURCEGROUPNAME: 'BakingDP'
+          RESOURCEGROUPNAME: $ResourceGroupName
           SYSTEM_STAGEDISPLAYNAME: 'PubCloudAccountId'
           SYSTEM_JOBDISPLAYNAME: ${{ parameters.jobName }}
         inputs:
