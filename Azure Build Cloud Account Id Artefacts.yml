@@ -29,7 +29,6 @@ jobs:
 
   - task: PowerShell@2
     displayName: Install PS Module
-    condition: and(succeeded(), or(eq(variables['Build-$(VersionText)'], 'true'), eq(variables['Build-all'], 'true')))
     inputs:
       filePath: scripts/install-powershell-modules-azure.ps1
       errorActionPreference: continue
@@ -120,7 +119,6 @@ jobs:
 
   - task: PowerShell@2
     displayName: Install PS Module
-    condition: and(succeeded(), or(eq(variables['Build-$(VersionText)'], 'true'), eq(variables['Build-all'], 'true')))
     inputs:
       filePath: scripts/install-powershell-modules-azure.ps1
       errorActionPreference: continue
