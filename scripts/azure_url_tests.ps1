@@ -91,7 +91,7 @@ try {
                Write-Host $ResponseCode
             } else {
                # This is not expected to be executed as Invoke-WebRequest has only been seen to throw when response is not 200
-               throw
+               throw "ResponseCode = $ResponseCode"
             }
          } catch {
             Write-Host $_.Exception
@@ -100,11 +100,11 @@ try {
             }
             $Timeout += 1 # The only time this timeout has been seen is when its an unrecoverable error
             Write-Host "Response Code = $ResponseCode. Timeout = $Timeout"
-            Start-Sleep -Seconds 30
+            Start-Sleep -Seconds 30 # If a timeout is occuring on the web request then a further 2 mins needs to be added to this to get the total timeout
          }
-      } until ($ResponseCode -eq 200 -or $Timeout -ge 6) # 3 minute timeout.
+      } until ($ResponseCode -eq 200 -or $Timeout -ge 6) # Between minimum 3 and maximum 15 minute timeout
 
-      if ($Timeout -ge 30) {
+      if ($ResponseCode -ne 200) {
          $failureCount = $failureCount + 1
       }
     }
