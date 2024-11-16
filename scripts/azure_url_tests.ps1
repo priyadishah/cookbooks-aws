@@ -104,7 +104,7 @@ try {
          }
       } until ($ResponseCode -eq 200 -or $Timeout -ge 6) # Between minimum 3 and maximum 15 minute timeout
 
-      if (ResponseCode -ne 200) {
+      if ($ResponseCode -ne 200) {
          $failureCount = $failureCount + 1
       }
     }
