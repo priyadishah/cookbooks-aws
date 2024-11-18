@@ -16,9 +16,12 @@ parameters:
   - name: jobDisplayname
     type: string
     default: none
-  - name: vmImage
+  - name: jobImage
     type: string
     default: windows-2022
+  - name: osName
+    type: string
+    default: Windows Server 2019
   - name: jobcondition
     type: string
     default: ''
@@ -78,7 +81,7 @@ stages:
           value: Azure Baking Images
 
       pool:
-        vmImage: ${{ parameters.vmImage }}
+        vmImage: ${{ parameters.jobImage }}
 
       steps:
       - download: _Build Cloud Account Id Artefacts
@@ -105,7 +108,7 @@ stages:
         inputs:
           targetType: filePath
           filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/${{ parameters.setGateVariableScriptPath }}'
-          arguments: '-Version "$(System.JobDisplayName)" -osName "Windows Server 2019"'
+          arguments: '-Version "$(System.JobDisplayName)" -osName ${{ parameters.osName }}'
 
       - powershell: |
           # Print the Gate variables.
