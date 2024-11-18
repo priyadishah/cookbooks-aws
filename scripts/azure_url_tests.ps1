@@ -84,7 +84,7 @@ try {
       $Timeout = 0
       do {
          try{
-            # Increasing this timeout from 14 to 120 seems to have fixed all the issues to do with timing.
+            # Increasing this timeout from 14 to 120 has fixed some of the issues to do with timing.
             $response = Invoke-WebRequest -Uri $url -TimeoutSec 120 -UseBasicParsing
             $ResponseCode = $response.StatusCode
             if($ResponseCode -eq 200) {
@@ -98,7 +98,7 @@ try {
             if ( $_.Exception.Response.StatusCode.Value__) {
                $ResponseCode = $_.Exception.Response.StatusCode.Value__
             }
-            $Timeout += 1 # The only time this timeout has been seen is when its an unrecoverable error
+            $Timeout += 1 # This timeout is seen quite frequently, usually just the once (one check revealed 3 occurences in 28 runs of this script), and then the next web request works (500 internal server error)
             Write-Host "Response Code = $ResponseCode. Timeout = $Timeout"
             Start-Sleep -Seconds 30 # If a timeout is occuring on the web request then a further 2 mins needs to be added to this to get the total timeout
          }

@@ -2,7 +2,7 @@
 # It also validates that the scalable licenses still works. The scalable license is tested
 # by all the other template deployments in the other pipelines. Its also done here so that
 # the one pipeline can be used to verify that all the Cloud licensing works after the changes
-# made to the runtime. 
+# made to the runtime.
 # A major input to this pipeline is that the MSIs have been rebuilt using the latest version
 # of LANSA.
 # Here are samples of the template parameters used for each job.
@@ -67,6 +67,7 @@ stages:
       jobDisplayname: w22d-15-ID
       jobcondition: or(eq(variables['Build-w22d-15-ID'], 'True'), eq(variables['Build-all'], 'True'))
       setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
+      osName: Windows Server 2022
       msiURL: $(msiURLv142)
 
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
