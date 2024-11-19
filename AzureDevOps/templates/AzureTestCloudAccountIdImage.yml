@@ -108,7 +108,7 @@ stages:
         inputs:
           targetType: filePath
           filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/${{ parameters.setGateVariableScriptPath }}'
-          arguments: '-Version "$(System.JobDisplayName)" -osName ${{ parameters.osName }}'
+          arguments: '-Version "$(System.JobDisplayName)" -osName "${{ parameters.osName }}"'
 
       - powershell: |
           # Print the Gate variables.

@@ -79,35 +79,39 @@ try {
 
     [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
 
-    forEach ($url in $urls) {
-      Write-Host $url
-      $Timeout = 0
-      do {
-         try{
-            # Increasing this timeout from 14 to 120 has fixed some of the issues to do with timing.
-            $response = Invoke-WebRequest -Uri $url -TimeoutSec 120 -UseBasicParsing
-            $ResponseCode = $response.StatusCode
-            if($ResponseCode -eq 200) {
-               Write-Host $ResponseCode
-            } else {
-               # This is not expected to be executed as Invoke-WebRequest has only been seen to throw when response is not 200
-               throw "ResponseCode = $ResponseCode"
+    Write-Host( "Call each URL twice to log the response time for the second call")
+    for ($i = 1; $i -le 2; $i++) {
+      Write-Host( "Loop $i")
+      forEach ($url in $urls) {
+         Write-Host $url
+         $Timeout = 0
+         do {
+            try{
+               # Increasing this timeout from 14 to 120 has fixed some of the issues to do with timing.
+               $response = Invoke-WebRequest -Uri $url -TimeoutSec 120 -UseBasicParsing
+               $ResponseCode = $response.StatusCode
+               if($ResponseCode -eq 200) {
+                  Write-Host $ResponseCode
+               } else {
+                  # This is not expected to be executed as Invoke-WebRequest has only been seen to throw when response is not 200
+                  throw "ResponseCode = $ResponseCode"
+               }
+            } catch {
+               Write-Host $_.Exception
+               if ( $_.Exception.Response.StatusCode.Value__) {
+                  $ResponseCode = $_.Exception.Response.StatusCode.Value__
+               }
+               $Timeout += 1 # This timeout is seen quite frequently, usually just the once (one check revealed 3 occurences in 28 runs of this script), and then the next web request works (500 internal server error)
+               Write-Host "Response Code = $ResponseCode. Timeout = $Timeout"
+               Start-Sleep -Seconds 30 # If a timeout is occuring on the web request then a further 2 mins needs to be added to this to get the total timeout
             }
-         } catch {
-            Write-Host $_.Exception
-            if ( $_.Exception.Response.StatusCode.Value__) {
-               $ResponseCode = $_.Exception.Response.StatusCode.Value__
-            }
-            $Timeout += 1 # This timeout is seen quite frequently, usually just the once (one check revealed 3 occurences in 28 runs of this script), and then the next web request works (500 internal server error)
-            Write-Host "Response Code = $ResponseCode. Timeout = $Timeout"
-            Start-Sleep -Seconds 30 # If a timeout is occuring on the web request then a further 2 mins needs to be added to this to get the total timeout
-         }
-      } until ($ResponseCode -eq 200 -or $Timeout -ge 6) # Between minimum 3 and maximum 15 minute timeout
+         } until ($ResponseCode -eq 200 -or $Timeout -ge 6) # Between minimum 3 and maximum 15 minute timeout
 
-      if ($ResponseCode -ne 200) {
-         $failureCount = $failureCount + 1
+         if ($ResponseCode -ne 200) {
+            $failureCount = $failureCount + 1
+         }
       }
-    }
+   }
 
     if ($failureCount) {
         Write-Host "Request failed for $($failureCount) URL(s)"
