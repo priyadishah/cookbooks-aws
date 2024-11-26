@@ -42,12 +42,12 @@ stages:
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:
       stageName: w19d15id
-      stageDisplayname: Win 2019 v15 Old Cloud Account Id
+      stageDisplayname: Win 2019 v14 SP2 Old Cloud Account Id
       jobName: w19d15id
       jobDisplayname: w19d-15-ID
-      jobcondition: or(eq(variables['Build-w19d-15-ID'], 'True'), eq(variables['Build-all'], 'True'))
+      jobcondition: or(eq(variables['Build-w19d-14SP2-ID'], 'True'), eq(variables['Build-all'], 'True'))
       setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
-      msiURL: $(msiURLv15)
+      msiURL: $(msiURLv142)
 
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:
@@ -58,7 +58,7 @@ stages:
       jobcondition: or(eq(variables['Build-w22d-15-ID'], 'True'), eq(variables['Build-all'], 'True'))
       setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
       osName: Windows Server 2022
-      msiURL: $(msiURLv142)
+      msiURL: $(msiURLv15)
 
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:
