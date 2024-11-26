@@ -45,7 +45,7 @@ stages:
       stageDisplayname: Win 2019 v15 Old Cloud Account Id
       jobName: w19d15id
       jobDisplayname: w19d-15-ID
-      jobcondition: or(eq(variables['Build-w19d-15'], 'True'), eq(variables['Build-all'], 'True'))
+      jobcondition: or(eq(variables['Build-w19d-15-ID'], 'True'), eq(variables['Build-all'], 'True'))
       setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
       msiURL: $(msiURLv15)
 
