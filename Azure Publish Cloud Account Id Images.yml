@@ -51,16 +51,6 @@ stages:
 
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:
-      stageName: w19d142id
-      stageDisplayname: Win 2019 v14sp2 Old Cloud Account Id
-      jobName: w19d142id
-      jobDisplayname: w19d-15-ID
-      jobcondition: or(eq(variables['Build-w19d-14SP2'], 'True'), eq(variables['Build-all'], 'True'))
-      setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
-      msiURL: $(msiURLv142)
-
-  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
-    parameters:
       stageName: w22d15id
       stageDisplayname: Win 2022 v15 New Cloud Account Id
       jobName: w22d15id
