@@ -100,6 +100,10 @@ try {
                Write-Host $_.Exception
                if ( $_.Exception.Response.StatusCode.Value__) {
                   $ResponseCode = $_.Exception.Response.StatusCode.Value__
+                  # A timeout returns 200, which makes the request successful, which it clearly isn't
+                  if ($ResponseCode -eq 200) {
+                     $ResponseCode = 500
+                  }
                }
                $Timeout += 1 # This timeout is seen quite frequently, usually just the once (one check revealed 3 occurences in 28 runs of this script), and then the next web request works (500 internal server error)
                Write-Host "Response Code = $ResponseCode. Timeout = $Timeout. Waiting 30 seconds..."
