@@ -102,7 +102,7 @@ try {
                   $ResponseCode = $_.Exception.Response.StatusCode.Value__
                }
                $Timeout += 1 # This timeout is seen quite frequently, usually just the once (one check revealed 3 occurences in 28 runs of this script), and then the next web request works (500 internal server error)
-               Write-Host "Response Code = $ResponseCode. Timeout = $Timeout"
+               Write-Host "Response Code = $ResponseCode. Timeout = $Timeout. Waiting 30 seconds..."
                Start-Sleep -Seconds 30 # If a timeout is occuring on the web request then a further 2 mins needs to be added to this to get the total timeout
             }
          } until ($ResponseCode -eq 200 -or $Timeout -ge 6) # Between minimum 3 and maximum 15 minute timeout
