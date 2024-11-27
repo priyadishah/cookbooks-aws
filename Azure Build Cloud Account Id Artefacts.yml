@@ -19,7 +19,9 @@ jobs:
     - name: VersionText
       value: w19d-15-ID
 
-  condition: and(succeeded(), or(eq(variables['Build-w19d-15-ID'], 'true'), eq(variables['Build-all'], 'true')))
+  # condition: and(succeeded(), or(eq(variables['Build-w19d-15-ID'], 'true'), eq(variables['Build-all'], 'true')))
+  # There is not a Win 2019 old azure license
+  condition: false
 
   pool:
     vmImage: windows-2019
