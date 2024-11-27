@@ -48,6 +48,17 @@ switch ( $Platform) {
             }
         }
     }
+   "win2022" {
+      switch ( $Language ) {
+         "jpn" {
+              $LangCode = 'ja-JP'
+         }
+         Default {
+            Write-Host("$Language does not have any language configuration")
+            return
+         }
+      }
+   }
 }
 
 Write-Host( "Make the time / date format the same as the Windows language")
