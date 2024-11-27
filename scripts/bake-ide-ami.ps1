@@ -412,7 +412,7 @@ try
 
         Write-Host "$(Log-Date) Delete image if it already exists. Note that if the image is being used it cannot be deleted, not even forced"
         $ImageName = "$($VersionText)image"
-        Get-AzImage -Location $Location -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage -Location $Location -Force -ErrorAction Stop | Out-Default | Write-Host
+        Get-AzImage -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage  -Force -ErrorAction Stop | Out-Default | Write-Host
 
         $vmsize="Standard_B4ms"
         $Script:password = "Pcxuser@122"
