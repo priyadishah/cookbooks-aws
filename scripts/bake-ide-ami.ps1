@@ -351,6 +351,10 @@ try
     } elseif ($Cloud -eq 'Azure' ) {
         $Location = "Australia East"
 
+        Write-Host "$(Log-Date) Delete image if it already exists. Note that if the image is being used it cannot be deleted, not even forced"
+        $ImageName = "$($VersionText)image"
+        Get-AzImage -Location $Location -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage -Location $Location -Force -ErrorAction Stop | Out-Default | Write-Host
+
         if ($AzureImage) {
             Write-Host( "$(Log-Date) Using non-Microsoft MP image")
             $Publisher = $AzureImage.Publisher
@@ -678,7 +682,7 @@ $jsonObject = @"
         Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\dot-CommonTools.ps1"
 
 
-        if ( $InstallBaseSoftware ) {            
+        if ( $InstallBaseSoftware ) {
 
             # Install Chocolatey
             Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\getchoco.ps1"
@@ -713,7 +717,7 @@ $jsonObject = @"
                     Add-DirectoryToEnvPathOnce -Directory "C:\ProgramData\chocolatey\bin\" | Out-Default | Write-Host
 
                     Write-Host( "$(Log-Date) Path after changing it: $ENV:Path")
-                    
+
                     choco | Out-Default | Write-Host
 
                  }
@@ -730,13 +734,13 @@ $jsonObject = @"
             # Requires the git repo to be pulled down so the scripts are present and the script variables initialised with Init-Baking-Vars.ps1.
             # Reflect local variables into remote session
             Execute-RemoteInitPostGit
-            
+
             if ( $Cloud -eq 'Azure' ) {
                 . "$script:IncludeDir\Init-Baking-Vars.ps1"
                 . "$script:IncludeDir\Init-Baking-Includes.ps1"
                 . "$script:IncludeDir\dot-CommonTools.ps1"
             }
-           
+
             # Upload files that are not in Git. Should be limited to secure files that must not be in Git.
             # Git is a far faster mechansim for transferring files than using RemotePS.
             # From now on we may execute scripts which rely on other scripts to be present from the LANSA Cookbooks git repo
@@ -1190,9 +1194,9 @@ $jsonObject = @"
 
         Write-Host "$(Log-Date) Starting Azure Image Creation"
 
-        Write-Host "$(Log-Date) Delete image if it already exists"
-        $ImageName = "$($VersionText)image"
-        Get-AzImage -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage -Force -ErrorAction SilentlyContinue | Out-Default | Write-Host
+      #   Write-Host "$(Log-Date) Delete image if it already exists. Note that if the image is being used it cannot be deleted, not even forced"
+      #   $ImageName = "$($VersionText)image"
+      #   Get-AzImage -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage -Force -ErrorAction Stop | Out-Default | Write-Host
 
         Write-Host "$(Log-Date) Terminating VM..."
         Stop-AzVM -ResourceGroupName $VmResourceGroup -Name $Script:vmname -Force | Out-Default | Write-Host
