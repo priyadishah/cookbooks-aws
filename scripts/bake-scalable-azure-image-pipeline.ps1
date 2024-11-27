@@ -152,7 +152,7 @@ while($count -ne 0 ) {
             throw "Image Bake failed even after $MaxRetry retries"
             break
         }
-        elseif ($Cloud -eq 'AWS'){
+        elseif ($Cloud -eq 'AWS' -or ($Cloud -eq 'Azure')){
             Write-Host "Image bake failed. Retry number : $($MaxRetry - $count + 1)"
         }
     }
@@ -160,11 +160,4 @@ while($count -ne 0 ) {
         Write-Host "Image bake succesful: Retry number : $($MaxRetry - $count + 1)"
         break
     }
-    if($Cloud -eq 'Azure'){
-        throw "Image bake failed. Retry not enabled in Azure"
-        break
-    }
-
-
-
 }

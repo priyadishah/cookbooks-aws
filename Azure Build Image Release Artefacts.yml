@@ -31,7 +31,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w22d-14-2-$(VersionText-w22d-14-2)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2022-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $true -ExternalIPAddresses  $(ExternalIPAddresses) -MaxRetry $(MaxRetry)
+      arguments: -VersionText 'w22d-14-2-$(VersionText-w22d-14-2)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2022-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -MaxRetry $(MaxRetry)
       workingDirectory: scripts
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
     displayName: Azure Resource Group Tagging
@@ -106,7 +106,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w22d-15-0-$(VersionText-w22d-15-0)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2022-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $true -ExternalIPAddresses  $(ExternalIPAddresses) -MaxRetry $(MaxRetry)
+      arguments: -VersionText 'w22d-15-0-$(VersionText-w22d-15-0)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2022-IMAGE-NAME) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -MaxRetry $(MaxRetry)
       workingDirectory: scripts
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
     displayName: Azure Resource Group Tagging
@@ -180,7 +180,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w22d-14-2j-$(VersionText-w22d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2022-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $true -ExternalIPAddresses  $(ExternalIPAddresses) -MaxRetry $(MaxRetry)
+      arguments: -VersionText 'w22d-14-2j-$(VersionText-w22d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2022-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -MaxRetry $(MaxRetry) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
     displayName: Azure Resource Group Tagging
@@ -254,7 +254,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w22d-15-0j-$(VersionText-w22d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2022-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $true -ExternalIPAddresses  $(ExternalIPAddresses) -MaxRetry $(MaxRetry)
+      arguments: -VersionText 'w22d-15-0j-$(VersionText-w22d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2022-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -MaxRetry $(MaxRetry) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
     displayName: Azure Resource Group Tagging
@@ -568,7 +568,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w19d-14-2-$(VersionText-w19d-14-2)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2019-IMAGE-NAME) -GitBranch $(GitBranch) -GitUserName $(GitUserName) -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) 
+      arguments: -VersionText 'w19d-14-2-$(VersionText-w19d-14-2)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2019-IMAGE-NAME) -GitBranch "$(GitBranch)" -GitUserName $(GitUserName) -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) 
       workingDirectory: scripts
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
     displayName: Azure Resource Group Tagging
@@ -715,7 +715,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: "-VersionText 'w16d-14-2j-$(VersionText-w16d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch \"$(GitBranch)\" -Cloud 'Azure' -Win2012 $false -MaxRetry $(MaxRetry) -ExternalIPAddresses $(ExternalIPAddresses) -Language 'JPN' "
+      arguments: -VersionText 'w16d-14-2j-$(VersionText-w16d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -MaxRetry $(MaxRetry) -ExternalIPAddresses $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
     displayName: Azure Resource Group Tagging
@@ -788,7 +788,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: "-VersionText 'w16d-15-0j-$(VersionText-w16d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch \"$(GitBranch)\" -Cloud 'Azure' -Win2012 $false -MaxRetry $(MaxRetry) -ExternalIPAddresses $(ExternalIPAddresses) -Language 'JPN' "
+      arguments: -VersionText 'w16d-15-0j-$(VersionText-w16d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2016-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -MaxRetry $(MaxRetry) -ExternalIPAddresses $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
     displayName: Azure Resource Group Tagging
@@ -863,7 +863,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: "-VersionText 'w19d-14-2j-$(VersionText-w19d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName  $(Windows-2019-IMAGE-URI-JPN) -GitBranch \"$(GitBranch)\" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true  -Language 'JPN' "
+      arguments: -VersionText 'w19d-14-2j-$(VersionText-w19d-14-2j)' -VersionMajor 14 -VersionMinor 2 -AmazonAMIName  $(Windows-2019-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
     displayName: Azure Resource Group Tagging
@@ -937,7 +937,7 @@ jobs:
     timeoutInMinutes: 120
     inputs:
       filePath: scripts/bake-scalable-azure-image-pipeline.ps1
-      arguments: -VersionText 'w19d-15-0j-$(VersionText-w19d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -Language 'JPN' -InstallLanguagePack:$true
+      arguments: -VersionText 'w19d-15-0j-$(VersionText-w19d-15-0j)' -VersionMajor 15 -VersionMinor 0 -AmazonAMIName $(Windows-2019-IMAGE-URI-JPN) -GitBranch "$(GitBranch)" -Cloud 'Azure' -Win2012 $false -ExternalIPAddresses  $(ExternalIPAddresses) -InstallLanguagePack:$true -Language 'JPN'
       workingDirectory: scripts
   - task: maikvandergaag.maikvandergaag-azurergtag.azurergtag.azurergtag@1
     displayName: Azure Resource Group Tagging

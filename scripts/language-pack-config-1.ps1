@@ -35,6 +35,17 @@ switch ( $Platform) {
             }
         }
     }
+    "win2022" {
+        switch ( $Language ) {
+            "jpn" {
+                Write-Host( "Set the language used by the user to Japanese")
+                Set-WinUserLanguageList -LanguageList ja-JP,en-US -Force
+
+                Write-Host( "Overwrite the input language with Japanese" )
+                Set-WinDefaultInputMethodOverride -InputTip "0411:00000411"
+            }
+        }
+    }
 }
 Start-Sleep -Seconds 30
 Restart-Computer -ErrorAction SilentlyContinue
