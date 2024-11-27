@@ -30,10 +30,7 @@ parameters:
     default: $(Gate.osName)
   - name: lansaVersion
     type: string
-    default: none 
-  - name: imageId
-    type: string
-    default: "$(Gate.ImageUrl)"
+    default: none
   - name: imageSource
     type: string
     default: Custom
@@ -51,7 +48,7 @@ parameters:
     default: Australia East
   - name: gitBranch
     type: string
-    default: debug/paas
+    default: ''
   - name: continueOnError_URLTests
     default: false
 
@@ -89,6 +86,13 @@ stages:
             value: -imageReleaseState "Preview"
           ${{ else }}:
             value: ''
+        - name: imageId
+          ${{ if contains(lower(parameters.stageName), 'production') }}: 
+            value: ''
+          ${{ elseif endsWith(lower(parameters.stageName), 'preview') }}: 
+            value: ''
+          ${{ else }}:
+            value: -imageId "$(Gate.ImageUrl)"
 
       steps:
       - download: _BuildImageReleaseArtefacts
@@ -134,7 +138,7 @@ stages:
           resourceGroupName: ${{ parameters.resourceGroup }}
           location: ${{ parameters.location }}
           csmFile: $(Pipeline.Workspace)/_lansa_azure_quickstart_templates/lansa-vmss-windows-autoscale-sql-database/mainTemplate.json
-          overrideParameters: -osName "${{ parameters.osNameOverride }}" -stackName "$(Gate.VersionClean)" -imageId "$(Gate.ImageUrl)" -lansaVersion "${{ parameters.lansaVersion }}" -imageSource "${{ parameters.imageSource }}" -msiURL "${{ parameters.msiURL }}" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "${{ parameters.gitBranch }}" -agpublicIpSku "Standard" -agpublicIpAllocationMethod "Static" $(CollationJPN) $(imageReleaseState)
+          overrideParameters: -osName "${{ parameters.osNameOverride }}" -stackName "$(Gate.VersionClean)" $(imageId) -lansaVersion "${{ parameters.lansaVersion }}" -imageSource "${{ parameters.imageSource }}" -msiURL "${{ parameters.msiURL }}" -certificateBase64Encoded "$(certificateBase64Encoded)" -certificatePassword "$(certificatePassword)" -databaseLogin "$(databaseLogin)" -databaseLoginPassword "$(databaseLoginPassword)" -adminUsername "$(adminUsername)" -adminPassword "$(adminPassword)" -webUsername "$(webUsername)" -webPassword "$(webPassword)" -gitBranch "${{ parameters.gitBranch }}" -agpublicIpSku "Standard" -agpublicIpAllocationMethod "Static" $(CollationJPN) $(imageReleaseState)
           deploymentName: CustomTestTemplate
           deploymentOutputs: deploymentOutput
           addSpnToEnvironment: true
