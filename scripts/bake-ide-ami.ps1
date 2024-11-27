@@ -351,10 +351,6 @@ try
     } elseif ($Cloud -eq 'Azure' ) {
         $Location = "Australia East"
 
-        Write-Host "$(Log-Date) Delete image if it already exists. Note that if the image is being used it cannot be deleted, not even forced"
-        $ImageName = "$($VersionText)image"
-        Get-AzImage -Location $Location -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage -Location $Location -Force -ErrorAction Stop | Out-Default | Write-Host
-
         if ($AzureImage) {
             Write-Host( "$(Log-Date) Using non-Microsoft MP image")
             $Publisher = $AzureImage.Publisher
@@ -392,7 +388,7 @@ try
         $StorageAccountResourceGroup = $ImageResourceGroup
         $StorageContainer = "vhds"
 
-        # use a separate resource group for easier deletion
+        # use a separate resource group for the VM for easier deletion
         $VmResourceGroup = "BakingDP-$VersionText"
 
         # Create or update the resource group using the specified parameter
@@ -413,6 +409,10 @@ try
             $templateUri = "$(Split-Path -Parent $script:IncludeDir)\ARM\storage-account\stagingdp.json"
             New-AzResourceGroupDeployment -ResourceGroupName $StorageAccountResourceGroup -TemplateFile $templateUri -TemplateParameterObject @{name = $StorageAccountName} | Out-Default | Write-Host
         }
+
+        Write-Host "$(Log-Date) Delete image if it already exists. Note that if the image is being used it cannot be deleted, not even forced"
+        $ImageName = "$($VersionText)image"
+        Get-AzImage -Location $Location -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage -Location $Location -Force -ErrorAction Stop | Out-Default | Write-Host
 
         $vmsize="Standard_B4ms"
         $Script:password = "Pcxuser@122"
