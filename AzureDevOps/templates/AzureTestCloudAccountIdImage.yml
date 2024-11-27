@@ -218,13 +218,13 @@ stages:
           arguments: -deploymentOutput '$(deploymentOutput)'
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      - task: AzureResourceManagerTemplateDeployment@3
-        displayName: 'Delete Resource Group'
-        inputs:
-          azureResourceManagerConnection: $(ConnectedServiceName)
-          subscriptionId: $(SubscriptionId)
-          action: DeleteRG
-          resourceGroupName: '$(Gate.StackName)'
-        continueOnError: true
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
-        timeoutInMinutes: 240
+      # - task: AzureResourceManagerTemplateDeployment@3
+      #   displayName: 'Delete Resource Group'
+      #   inputs:
+      #     azureResourceManagerConnection: $(ConnectedServiceName)
+      #     subscriptionId: $(SubscriptionId)
+      #     action: DeleteRG
+      #     resourceGroupName: '$(Gate.StackName)'
+      #   continueOnError: true
+      #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+      #   timeoutInMinutes: 240

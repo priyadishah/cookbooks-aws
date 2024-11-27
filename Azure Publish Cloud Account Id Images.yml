@@ -5,11 +5,12 @@
 # made to the runtime.
 # A major input to this pipeline is that the MSIs have been rebuilt using the latest version
 # of LANSA.
+# N.B. Because the JobDisplayname is used to specify the image to use AND as the unique identify, only one Job should use each image, otherwise there will be name clashes.
 # Here are samples of the template parameters used for each job.
 # Notice the Cloud Account Id uses the w19d-15-IDimage which has the Cloud Account Id baked in to it:
-# Cloud Account Id V15 MSI
-##[debug]overrideParameters=-osName "Windows Server 2019" -imageId "/subscriptions/739c4e86-bd75-4910-8d6e-d7eb23ab94f3/resourceGroups/BakingDP/providers/Microsoft.Compute/images/w19d-15-IDimage" -stackName "w19d15IDmobjpev" -lansaVersion "V15 GA"  -imageSource "Custom" -msiURL https://stagingdpauseast.blob.core.windows.net/app/test/AWAMAPP_v15.0.21217_en-us.msi  -certificateBase64Encoded "***" -certificatePassword "***" -databaseLogin "testsrv-dp" -databaseLoginPassword "***" -adminUsername "lansa" -adminPassword "***" -webUsername "PCXUSER2" -webPassword "***" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static
-# Cloud Account Id V14 SP2 MSI
+# Cloud Account Id Win 2022 V15 MSI
+##[debug]overrideParameters=-osName "Windows Server 2022" -imageId "/subscriptions/739c4e86-bd75-4910-8d6e-d7eb23ab94f3/resourceGroups/BakingDP/providers/Microsoft.Compute/images/w19d-15-IDimage" -stackName "w19d15IDmobjpev" -lansaVersion "V15 GA"  -imageSource "Custom" -msiURL https://stagingdpauseast.blob.core.windows.net/app/test/AWAMAPP_v15.0.21217_en-us.msi  -certificateBase64Encoded "***" -certificatePassword "***" -databaseLogin "testsrv-dp" -databaseLoginPassword "***" -adminUsername "lansa" -adminPassword "***" -webUsername "PCXUSER2" -webPassword "***" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static
+# Cloud Account Id Win 2019 V14 SP2 MSI
 ##[debug]overrideParameters=-osName "Windows Server 2019" -imageId "/subscriptions/739c4e86-bd75-4910-8d6e-d7eb23ab94f3/resourceGroups/BakingDP/providers/Microsoft.Compute/images/w19d-15-IDimage" -stackName "w19d15IDqopchnf" -lansaVersion "V15 GA"  -imageSource "Custom" -msiURL https://stagingdpauseast.blob.core.windows.net/app/test/AWAMAPP_v14.2.22040_en-us.msi  -certificateBase64Encoded "***" -certificatePassword "***" -databaseLogin "testsrv-dp" -databaseLoginPassword "***" -adminUsername "lansa" -adminPassword "***" -webUsername "PCXUSER2" -webPassword "***" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static
 # Scalable license V15 MSI
 ##[debug]overrideParameters=-osName "Windows Server 2019" -imageId "/subscriptions/739c4e86-bd75-4910-8d6e-d7eb23ab94f3/resourceGroups/BakingDP/providers/Microsoft.Compute/images/w19d-15-0-17image" -stackName "w19d150gcqifuv" -lansaVersion "V15 GA"  -imageSource "Custom" -msiURL https://stagingdpauseast.blob.core.windows.net/app/test/AWAMAPP_v15.0.21217_en-us.msi  -certificateBase64Encoded "***" -certificatePassword "***" -databaseLogin "testsrv-dp" -databaseLoginPassword "***" -adminUsername "lansa" -adminPassword "***" -webUsername "PCXUSER2" -webPassword "***" -gitBranch "debug/paas" -agpublicIpSku Standard -agpublicIpAllocationMethod Static
@@ -42,20 +43,10 @@ stages:
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:
       stageName: w19d15id
-      stageDisplayname: Win 2019 v15 Old Cloud Account Id
+      stageDisplayname: Win 2019 v14 SP2 Old Cloud Account Id
       jobName: w19d15id
       jobDisplayname: w19d-15-ID
-      jobcondition: or(eq(variables['Build-w19d-15'], 'True'), eq(variables['Build-all'], 'True'))
-      setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
-      msiURL: $(msiURLv15)
-
-  - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
-    parameters:
-      stageName: w19d142id
-      stageDisplayname: Win 2019 v14sp2 Old Cloud Account Id
-      jobName: w19d142id
-      jobDisplayname: w19d-15-ID
-      jobcondition: or(eq(variables['Build-w19d-14SP2'], 'True'), eq(variables['Build-all'], 'True'))
+      jobcondition: or(eq(variables['Build-w19d-14SP2-ID'], 'True'), eq(variables['Build-all'], 'True'))
       setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
       msiURL: $(msiURLv142)
 
@@ -68,7 +59,7 @@ stages:
       jobcondition: or(eq(variables['Build-w22d-15-ID'], 'True'), eq(variables['Build-all'], 'True'))
       setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
       osName: Windows Server 2022
-      msiURL: $(msiURLv142)
+      msiURL: $(msiURLv15)
 
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:

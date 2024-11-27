@@ -84,10 +84,14 @@ try {
       Write-Host( "Loop $i")
       forEach ($url in $urls) {
          Write-Host $url
-         $Timeout = 0
+         # Only reset the timeout the first loop. The second loop will fail immediately if the first loop ended due to timing out completely.
+         if ( $i -eq 1){
+            $Timeout = 0
+         }
          do {
             try{
                # Increasing this timeout from 14 to 120 has fixed some of the issues to do with timing.
+               $ResponseCode = 0
                $response = Invoke-WebRequest -Uri $url -TimeoutSec 120 -UseBasicParsing
                $ResponseCode = $response.StatusCode
                if($ResponseCode -eq 200) {
@@ -100,9 +104,13 @@ try {
                Write-Host $_.Exception
                if ( $_.Exception.Response.StatusCode.Value__) {
                   $ResponseCode = $_.Exception.Response.StatusCode.Value__
+                  # A timeout returns 200, which makes the request successful, which it clearly isn't
+                  if ($ResponseCode -eq 200) {
+                     $ResponseCode = 0
+                  }
                }
                $Timeout += 1 # This timeout is seen quite frequently, usually just the once (one check revealed 3 occurences in 28 runs of this script), and then the next web request works (500 internal server error)
-               Write-Host "Response Code = $ResponseCode. Timeout = $Timeout"
+               Write-Host "Response Code = $ResponseCode. Timeout = $Timeout. Waiting 30 seconds..."
                Start-Sleep -Seconds 30 # If a timeout is occuring on the web request then a further 2 mins needs to be added to this to get the total timeout
             }
          } until ($ResponseCode -eq 200 -or $Timeout -ge 6) # Between minimum 3 and maximum 15 minute timeout
