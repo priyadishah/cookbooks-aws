@@ -54,7 +54,7 @@ parameters:
     type: string
     default: debug/paas
   - name: testSetParam
-    type: decimal
+    type: number
     default: 15
 
 stages:
