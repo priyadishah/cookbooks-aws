@@ -53,7 +53,7 @@ resources:
       type: github
       endpoint: robe070
       name: robe070/cookbooks
-      ref: debug/paas    
+      ref: debug/paas
 
 pool:
   vmImage: windows-2022
@@ -69,20 +69,6 @@ stages:
     jobcondition: or(eq(variables['Build-V15-OLD'], 'true'), eq(variables['Build-all'], 'true'))
     paramLansaVersion: $(lansaVersion)
     parammsiURL: $(msiURLLatest)
-    paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
-    paramsetGateVariable: 'SetGateVariableCloudAccountId.ps1'
-    paramTagValue: "Lansa-Prod"
-
-- template: AzureDevOps/templates/AWSTestCloudAccountIdImage.yml
-  parameters:
-    stageName: 'v14sp2idnew'
-    stageDisplayname: 'v14sp2-id-new'
-    jobName: 'w19d15idnew'
-    jobDisplayname: 'w19d-15-id-new'
-    jobDemand: DotNetFramework
-    jobcondition: or(eq(variables['Build-V14SP2-NEW'], 'True'), eq(variables['Build-all'], 'True'))
-    paramLansaVersion: $(lansaVersionPrevious)
-    parammsiURL: $(msiURLPrevious)
     paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
     paramsetGateVariable: 'SetGateVariableCloudAccountId.ps1'
     paramTagValue: "Lansa-Prod"
