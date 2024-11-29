@@ -208,7 +208,7 @@ stages:
           regionName: 'ap-southeast-2'
           arguments: '-Gatestack $(Gate.stack) -DisableIntegratorTest'
           filePath: '$(Pipeline.Workspace)/_lansa_aws-templates/scripts/TestCFNDeployment.ps1'
-        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true')), ${{ parameters.disableIntegratorTest }})
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'true'), ${{ parameters.disableIntegratorTest }})
 
       - task: AWSPowerShellModuleScript@1
         displayName: 'Delete Stack'
