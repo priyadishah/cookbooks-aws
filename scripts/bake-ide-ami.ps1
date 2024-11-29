@@ -788,26 +788,23 @@ $jsonObject = @"
                 Write-Host "$(Log-Date) Refreshing git tools repo"
                 # Ensure we cope with an existing repo, not just a new clone...
                 cd $using:GitRepoPath  | Out-Default | Write-Host
-                # Throw away any working directory changes
-                cmd /c git reset --hard HEAD '2>&1' | Out-Default | Write-Host
-                # Ensure we have all changes
-                cmd /c git fetch --all '2>&1' | Out-Default | Write-Host
-                # Check out a potentially different branch
+
                 Write-Host "Branch: $using:GitBranch" | Out-Default | Write-Host
-                # Check out ORIGINs correct branch so we can then FORCE checkout of potentially an existing, but rebased branch
-                cmd /c git branch -d "$using:GitBranch"  '2>&1' | Out-Default | Write-Host
-                Write-host "All branches: $(git branch)"
+
+                # Ensure we have all changes
+                cmd /c git fetch origin '2>&1' | Out-Default | Write-Host
                 if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 128)
                 {
                     throw "Git branch $using:GitBranch failed with LASTEXITCODE $LASTEXITCODE"
                 }
-                # Overwrite the origin's current tree onto the branch we really want - the local branch
-                cmd /c git checkout -B $using:GitBranch  '2>&1' | Out-Default | Write-Host
-                Write-host "All branches after checkout: $(git branch)"
+
+                # Throw away any working directory changes
+                cmd /c git reset --hard origin/$using:GitBranch '2>&1' | Out-Default |
                 if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 128)
                 {
-                    throw "Git checkout $using:GitBranch failed with LASTEXITCODE $LASTEXITCODE"
+                    throw "Git branch $using:GitBranch failed with LASTEXITCODE $LASTEXITCODE"
                 }
+                Write-Host
             }
             # $dummy = MessageBox "Check that git repo is the latest. Please RDP into $Script:vmname $Script:publicDNS as $AdminUserName using password '$Script:password'. When complete, click OK on this message box" -Pipeline:$Pipeline
         }
