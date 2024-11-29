@@ -799,12 +799,11 @@ $jsonObject = @"
                 }
 
                 # Throw away any working directory changes
-                cmd /c git reset --hard origin/$using:GitBranch '2>&1' | Out-Default |
+                cmd /c git reset --hard origin/$using:GitBranch '2>&1' | Out-Default | Write-Host
                 if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 128)
                 {
                     throw "Git branch $using:GitBranch failed with LASTEXITCODE $LASTEXITCODE"
                 }
-                Write-Host
             }
             # $dummy = MessageBox "Check that git repo is the latest. Please RDP into $Script:vmname $Script:publicDNS as $AdminUserName using password '$Script:password'. When complete, click OK on this message box" -Pipeline:$Pipeline
         }
