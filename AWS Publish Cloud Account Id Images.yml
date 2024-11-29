@@ -86,7 +86,7 @@ stages:
     paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
     paramsetGateVariable: 'SetGateVariableCloudAccountId.ps1'
     paramTagValue: "Lansa-Prod"
-    disableIntegratorTest: 'True'
+    disableIntegratorTest: True
 
 - template: AzureDevOps/templates/AWSTestCloudAccountIdImage.yml
   parameters:
