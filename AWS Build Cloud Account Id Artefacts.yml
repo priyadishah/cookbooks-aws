@@ -150,9 +150,10 @@ jobs:
          Remove-EC2SecurityGroup -GroupName 'w19d-15-0-$(VersionText-w19d-15-0)' -Force
 
 - job: Job_6
-  displayName: w19d-15-ID-NEW
+  displayName: w19d-15-ID-NEW Not Supported
   timeoutInMinutes: 360
-  condition: and(succeeded(), or(eq(variables['Build-w19d-15-ID-NEW'], 'True'), eq(variables['Build-all'], 'True')))
+  # Disable building the old account ID because it is no longer supported
+  condition: and(False, succeeded(), or(eq(variables['Build-w19d-15-ID-NEW'], 'True'), eq(variables['Build-all'], 'True')))
   pool:
     vmImage: windows-2019
   steps:
