@@ -109,7 +109,8 @@ stages:
     jobName: 'w19d150'
     jobDisplayname: 'w19d-15-0'
     jobDemand: DotNetFramework
-    jobcondition: or(eq(variables['Build-V15-Scalable'], 'True'), eq(variables['Build-all'], 'True'))
+    # Disable this job until CCS 164246 is incorporated into the MSI.
+    jobcondition: and(False, or(eq(variables['Build-V15-Scalable'], 'True'), eq(variables['Build-all'], 'True')))
     paramLansaVersion: $(lansaVersion)
     parammsiURL: $(msiURLLatest)
     paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
