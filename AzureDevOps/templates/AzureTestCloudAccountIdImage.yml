@@ -53,6 +53,9 @@ parameters:
   - name: gitBranch
     type: string
     default: debug/paas
+  - name: testSetParam
+    type: number
+    default: 15
 
 stages:
   - stage: ${{ parameters.stageName }}
@@ -215,16 +218,16 @@ stages:
         inputs:
           targetType: filePath
           filePath: '$(Pipeline.Workspace)/_robe070_cookbooks/scripts/azure_url_tests.ps1'
-          arguments: -deploymentOutput '$(deploymentOutput)'
+          arguments: -deploymentOutput '$(deploymentOutput)' -TestSetParam ${{ parameters.TestSetParam }}
         condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
 
-      # - task: AzureResourceManagerTemplateDeployment@3
-      #   displayName: 'Delete Resource Group'
-      #   inputs:
-      #     azureResourceManagerConnection: $(ConnectedServiceName)
-      #     subscriptionId: $(SubscriptionId)
-      #     action: DeleteRG
-      #     resourceGroupName: '$(Gate.StackName)'
-      #   continueOnError: true
-      #   condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
-      #   timeoutInMinutes: 240
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: 'Delete Resource Group'
+        inputs:
+          azureResourceManagerConnection: $(ConnectedServiceName)
+          subscriptionId: $(SubscriptionId)
+          action: DeleteRG
+          resourceGroupName: '$(Gate.StackName)'
+        continueOnError: true
+        condition: and(succeeded(), eq(variables['Gate.IsEnabled'], 'True'))
+        timeoutInMinutes: 240

@@ -53,7 +53,7 @@ resources:
       type: github
       endpoint: robe070
       name: robe070/cookbooks
-      ref: debug/paas    
+      ref: debug/paas
 
 pool:
   vmImage: windows-2022
@@ -75,20 +75,6 @@ stages:
 
 - template: AzureDevOps/templates/AWSTestCloudAccountIdImage.yml
   parameters:
-    stageName: 'v14sp2idnew'
-    stageDisplayname: 'v14sp2-id-new'
-    jobName: 'w19d15idnew'
-    jobDisplayname: 'w19d-15-id-new'
-    jobDemand: DotNetFramework
-    jobcondition: or(eq(variables['Build-V14SP2-NEW'], 'True'), eq(variables['Build-all'], 'True'))
-    paramLansaVersion: $(lansaVersionPrevious)
-    parammsiURL: $(msiURLPrevious)
-    paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
-    paramsetGateVariable: 'SetGateVariableCloudAccountId.ps1'
-    paramTagValue: "Lansa-Prod"
-
-- template: AzureDevOps/templates/AWSTestCloudAccountIdImage.yml
-  parameters:
     stageName: 'v15idnew'
     stageDisplayname: 'v15-id-new'
     jobName: 'w19d15idnew'
@@ -100,6 +86,7 @@ stages:
     paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)
     paramsetGateVariable: 'SetGateVariableCloudAccountId.ps1'
     paramTagValue: "Lansa-Prod"
+    disableIntegratorTest: True
 
 - template: AzureDevOps/templates/AWSTestCloudAccountIdImage.yml
   parameters:
@@ -122,7 +109,8 @@ stages:
     jobName: 'w19d150'
     jobDisplayname: 'w19d-15-0'
     jobDemand: DotNetFramework
-    jobcondition: or(eq(variables['Build-V15-Scalable'], 'True'), eq(variables['Build-all'], 'True'))
+    # Disable this job until CCS 164246 is incorporated into the MSI.
+    jobcondition: and(False, or(eq(variables['Build-V15-Scalable'], 'True'), eq(variables['Build-all'], 'True')))
     paramLansaVersion: $(lansaVersion)
     parammsiURL: $(msiURLLatest)
     paramWebserverOSVersionValue: $(WebserverOSLatestVersionValue)

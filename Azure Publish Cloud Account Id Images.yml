@@ -60,6 +60,7 @@ stages:
       setGateVariableScriptPath: 'azure_set_gate_variable_cloud_account_id.ps1'
       osName: Windows Server 2022
       msiURL: $(msiURLv15)
+      testSetParam: 7 # Do not test Integrator as not currently supported in the Cloud Account Id
 
   - template: AzureDevOps\templates\AzureTestCloudAccountIdImage.yml
     parameters:

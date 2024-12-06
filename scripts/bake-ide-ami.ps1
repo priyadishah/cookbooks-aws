@@ -388,7 +388,7 @@ try
         $StorageAccountResourceGroup = $ImageResourceGroup
         $StorageContainer = "vhds"
 
-        # use a separate resource group for easier deletion
+        # use a separate resource group for the VM for easier deletion
         $VmResourceGroup = "BakingDP-$VersionText"
 
         # Create or update the resource group using the specified parameter
@@ -409,6 +409,10 @@ try
             $templateUri = "$(Split-Path -Parent $script:IncludeDir)\ARM\storage-account\stagingdp.json"
             New-AzResourceGroupDeployment -ResourceGroupName $StorageAccountResourceGroup -TemplateFile $templateUri -TemplateParameterObject @{name = $StorageAccountName} | Out-Default | Write-Host
         }
+
+        Write-Host "$(Log-Date) Delete image if it already exists. Note that if the image is being used it cannot be deleted, not even forced"
+        $ImageName = "$($VersionText)image"
+        Get-AzImage -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage  -Force -ErrorAction Stop | Out-Default | Write-Host
 
         $vmsize="Standard_B4ms"
         $Script:password = "Pcxuser@122"
@@ -678,7 +682,7 @@ $jsonObject = @"
         Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\dot-CommonTools.ps1"
 
 
-        if ( $InstallBaseSoftware ) {            
+        if ( $InstallBaseSoftware ) {
 
             # Install Chocolatey
             Execute-RemoteScript -Session $Script:session -FilePath "$script:IncludeDir\getchoco.ps1"
@@ -713,7 +717,7 @@ $jsonObject = @"
                     Add-DirectoryToEnvPathOnce -Directory "C:\ProgramData\chocolatey\bin\" | Out-Default | Write-Host
 
                     Write-Host( "$(Log-Date) Path after changing it: $ENV:Path")
-                    
+
                     choco | Out-Default | Write-Host
 
                  }
@@ -730,13 +734,13 @@ $jsonObject = @"
             # Requires the git repo to be pulled down so the scripts are present and the script variables initialised with Init-Baking-Vars.ps1.
             # Reflect local variables into remote session
             Execute-RemoteInitPostGit
-            
+
             if ( $Cloud -eq 'Azure' ) {
                 . "$script:IncludeDir\Init-Baking-Vars.ps1"
                 . "$script:IncludeDir\Init-Baking-Includes.ps1"
                 . "$script:IncludeDir\dot-CommonTools.ps1"
             }
-           
+
             # Upload files that are not in Git. Should be limited to secure files that must not be in Git.
             # Git is a far faster mechansim for transferring files than using RemotePS.
             # From now on we may execute scripts which rely on other scripts to be present from the LANSA Cookbooks git repo
@@ -783,26 +787,22 @@ $jsonObject = @"
             Execute-RemoteBlock $Script:session {
                 Write-Host "$(Log-Date) Refreshing git tools repo"
                 # Ensure we cope with an existing repo, not just a new clone...
-                cd $using:GitRepoPath
-                # Throw away any working directory changes
-                cmd /c git reset --hard HEAD '2>&1'
+                cd $using:GitRepoPath  | Out-Default | Write-Host
+
+                Write-Host "Branch: $using:GitBranch" | Out-Default | Write-Host
+
                 # Ensure we have all changes
-                cmd /c git fetch --all '2>&1'
-                # Check out a potentially different branch
-                Write-Host "Branch: $using:GitBranch"
-                # Check out ORIGINs correct branch so we can then FORCE checkout of potentially an existing, but rebased branch
-                cmd /c git branch -d "$using:GitBranch"  '2>&1'
-                Write-host "All branches: $(git branch)"
+                cmd /c git fetch origin '2>&1' | Out-Default | Write-Host
                 if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 128)
                 {
                     throw "Git branch $using:GitBranch failed with LASTEXITCODE $LASTEXITCODE"
                 }
-                # Overwrite the origin's current tree onto the branch we really want - the local branch
-                cmd /c git checkout -B $using:GitBranch  '2>&1'
-                Write-host "All branches after checkout: $(git branch)"
+
+                # Throw away any working directory changes
+                cmd /c git reset --hard origin/$using:GitBranch '2>&1' | Out-Default | Write-Host
                 if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 128)
                 {
-                    throw "Git checkout $using:GitBranch failed with LASTEXITCODE $LASTEXITCODE"
+                    throw "Git branch $using:GitBranch failed with LASTEXITCODE $LASTEXITCODE"
                 }
             }
             # $dummy = MessageBox "Check that git repo is the latest. Please RDP into $Script:vmname $Script:publicDNS as $AdminUserName using password '$Script:password'. When complete, click OK on this message box" -Pipeline:$Pipeline
@@ -1190,9 +1190,9 @@ $jsonObject = @"
 
         Write-Host "$(Log-Date) Starting Azure Image Creation"
 
-        Write-Host "$(Log-Date) Delete image if it already exists"
-        $ImageName = "$($VersionText)image"
-        Get-AzImage -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage -Force -ErrorAction SilentlyContinue | Out-Default | Write-Host
+      #   Write-Host "$(Log-Date) Delete image if it already exists. Note that if the image is being used it cannot be deleted, not even forced"
+      #   $ImageName = "$($VersionText)image"
+      #   Get-AzImage -ResourceGroupName $ImageResourceGroup -ImageName $ImageName -ErrorAction SilentlyContinue | Remove-AzImage -Force -ErrorAction Stop | Out-Default | Write-Host
 
         Write-Host "$(Log-Date) Terminating VM..."
         Stop-AzVM -ResourceGroupName $VmResourceGroup -Name $Script:vmname -Force | Out-Default | Write-Host
